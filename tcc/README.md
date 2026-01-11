@@ -35,8 +35,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-
 # Repo Structure
+
 ```
 src/
   pages/
@@ -57,25 +57,25 @@ Think of `pages/` as the **route-level screens** of your app. Each file here rep
 
 #### Route screens
 
-* top-level UI for a specific route
-* composes multiple components together (layout + feature components)
-* usually minimal business logic (calls hooks/services instead)
+- top-level UI for a specific route
+- composes multiple components together (layout + feature components)
+- usually minimal business logic (calls hooks/services instead)
 
 Example files:
 
-* `pages/LandingPage.tsx`
-* `pages/LoginPage.tsx`
-* `pages/DashboardPage.tsx`
-* `pages/SurveyFillPage.tsx`
+- `pages/LandingPage.tsx`
+- `pages/LoginPage.tsx`
+- `pages/DashboardPage.tsx`
+- `pages/SurveyFillPage.tsx`
 
 #### Page-specific layout and guards
 
-* page wrappers (e.g., authenticated pages only)
-* redirects or route protection logic (often using a `ProtectedRoute` component)
+- page wrappers (e.g., authenticated pages only)
+- redirects or route protection logic (often using a `ProtectedRoute` component)
 
 Example:
 
-* `pages/ProtectedRoute.tsx` (if you keep it here; some teams put it in `components/`)
+- `pages/ProtectedRoute.tsx` (if you keep it here; some teams put it in `components/`)
 
 ---
 
@@ -87,25 +87,25 @@ Think of `components/` as **reusable UI building blocks** used across multiple p
 
 #### Shared layout components
 
-* navbar, sidebar, app shell
-* consistent page structure across routes
+- navbar, sidebar, app shell
+- consistent page structure across routes
 
 Example files:
 
-* `components/Sidebar.tsx`
-* `components/TopNav.tsx`
-* `components/AppShell.tsx`
+- `components/Sidebar.tsx`
+- `components/TopNav.tsx`
+- `components/AppShell.tsx`
 
 #### Feature UI components
 
-* reusable widgets used inside a page (but not the entire page)
-* can be feature-specific but still “UI-first”
+- reusable widgets used inside a page (but not the entire page)
+- can be feature-specific but still “UI-first”
 
 Example files:
 
-* `components/SurveyCard.tsx`
-* `components/QuestionEditor.tsx`
-* `components/ResultsTable.tsx`
+- `components/SurveyCard.tsx`
+- `components/QuestionEditor.tsx`
+- `components/ResultsTable.tsx`
 
 ---
 
@@ -117,16 +117,16 @@ Think of `components/ui/` as your **design system primitives**, usually generate
 
 #### shadcn/ui primitives
 
-* Button, Card, Dialog, Tabs, Table, Dropdown, etc.
-* minimal app-specific logic
-* consistent styling and accessibility
+- Button, Card, Dialog, Tabs, Table, Dropdown, etc.
+- minimal app-specific logic
+- consistent styling and accessibility
 
 Example files:
 
-* `components/ui/button.tsx`
-* `components/ui/card.tsx`
-* `components/ui/dialog.tsx`
-* `components/ui/table.tsx`
+- `components/ui/button.tsx`
+- `components/ui/card.tsx`
+- `components/ui/dialog.tsx`
+- `components/ui/table.tsx`
 
 ---
 
@@ -138,24 +138,24 @@ Think of `services/` as the **integration layer** that talks to external systems
 
 #### API service modules (by domain)
 
-* functions that call backend endpoints
-* returns typed data (or throws errors)
-* no UI code
+- functions that call backend endpoints
+- returns typed data (or throws errors)
+- no UI code
 
 Example files:
 
-* `services/surveyService.ts`
-* `services/userService.ts`
-* `services/carbonService.ts`
+- `services/surveyService.ts`
+- `services/userService.ts`
+- `services/carbonService.ts`
 
 #### Auth integration utilities
 
-* login/logout functions
-* token exchange / refresh logic (depending on your auth design)
+- login/logout functions
+- token exchange / refresh logic (depending on your auth design)
 
 Example:
 
-* `services/authService.ts`
+- `services/authService.ts`
 
 ---
 
@@ -167,24 +167,24 @@ Think of `hooks/` as your **reusable logic layer** for React — hooks wrap stat
 
 #### Data fetching hooks
 
-* wraps service calls
-* handles loading/error states
-* often uses React Query (TanStack Query) or SWR
+- wraps service calls
+- handles loading/error states
+- often uses React Query (TanStack Query) or SWR
 
 Example files:
 
-* `hooks/useSurveys.ts`
-* `hooks/useSurveyResults.ts`
-* `hooks/useUser.ts`
+- `hooks/useSurveys.ts`
+- `hooks/useSurveyResults.ts`
+- `hooks/useUser.ts`
 
 #### UI / state hooks
 
-* reusable UI state patterns (debounce, toggles, local storage, etc.)
+- reusable UI state patterns (debounce, toggles, local storage, etc.)
 
 Example files:
 
-* `hooks/useDebounce.ts`
-* `hooks/useLocalStorage.ts`
+- `hooks/useDebounce.ts`
+- `hooks/useLocalStorage.ts`
 
 ---
 
@@ -196,22 +196,22 @@ Think of `types/` as a **shared TypeScript contract layer**. It centralizes inte
 
 #### Domain model types
 
-* Survey, Question, Response, User, Role, etc.
+- Survey, Question, Response, User, Role, etc.
 
 Example files:
 
-* `types/survey.ts`
-* `types/user.ts`
-* `types/inventory.ts`
+- `types/survey.ts`
+- `types/user.ts`
+- `types/inventory.ts`
 
 #### API DTOs (request/response shapes)
 
-* types that match backend payloads
-* helps keep frontend/backed aligned
+- types that match backend payloads
+- helps keep frontend/backed aligned
 
 Example:
 
-* `types/api.ts` or `types/survey.dto.ts`
+- `types/api.ts` or `types/survey.dto.ts`
 
 ---
 
@@ -223,82 +223,82 @@ Think of `lib/` as your **shared toolbox**: reusable helper code that isn’t a 
 
 #### API / networking helpers
 
-* a centralized `fetch`/`axios` wrapper for making HTTP requests
-* automatically attach auth tokens (JWT) to requests
-* common error handling (401/403 redirect, retry logic)
-* base URL handling, timeouts, request/response typing
+- a centralized `fetch`/`axios` wrapper for making HTTP requests
+- automatically attach auth tokens (JWT) to requests
+- common error handling (401/403 redirect, retry logic)
+- base URL handling, timeouts, request/response typing
 
 Example files:
 
-* `lib/api/http.ts` (HTTP client wrapper)
-* `lib/api/endpoints.ts` (API route constants)
-* `lib/api/errors.ts` (standardized error types / mappers)
+- `lib/api/http.ts` (HTTP client wrapper)
+- `lib/api/endpoints.ts` (API route constants)
+- `lib/api/errors.ts` (standardized error types / mappers)
 
 ---
 
 #### Environment config
 
-* a single place to read and validate environment variables
-* prevents `undefined` configs scattered across code
-* keeps production/staging/dev configuration consistent
+- a single place to read and validate environment variables
+- prevents `undefined` configs scattered across code
+- keeps production/staging/dev configuration consistent
 
 Example files:
 
-* `lib/config/env.ts` (reads `import.meta.env`, validates required vars)
-* `lib/config/constants.ts` (shared app constants)
+- `lib/config/env.ts` (reads `import.meta.env`, validates required vars)
+- `lib/config/constants.ts` (shared app constants)
 
 ---
 
 #### Auth utilities (shared, not UI)
 
-* helper functions for token storage/retrieval
-* parsing JWT claims (roles/groups)
-* checking login status (e.g., `isAuthenticated()`)
-* building auth headers
+- helper functions for token storage/retrieval
+- parsing JWT claims (roles/groups)
+- checking login status (e.g., `isAuthenticated()`)
+- building auth headers
 
 Example files:
 
-* `lib/auth/tokenStorage.ts`
-* `lib/auth/jwt.ts`
-* `lib/auth/headers.ts`
+- `lib/auth/tokenStorage.ts`
+- `lib/auth/jwt.ts`
+- `lib/auth/headers.ts`
 
 ---
 
 #### Generic utilities
 
-* shared helper functions used across pages/components
-* formatting and conversions (dates, numbers, units)
-* common functional utilities (debounce, sleep, deep clone if needed)
+- shared helper functions used across pages/components
+- formatting and conversions (dates, numbers, units)
+- common functional utilities (debounce, sleep, deep clone if needed)
 
 Example files:
 
-* `lib/date.ts`
-* `lib/format.ts`
-* `lib/math.ts`
-* `lib/string.ts`
+- `lib/date.ts`
+- `lib/format.ts`
+- `lib/math.ts`
+- `lib/string.ts`
 
 ---
 
 #### Styling utilities (shared helpers)
 
-* helpers that support UI composition, but are not components
-* common className merging utilities (especially with Tailwind + shadcn)
+- helpers that support UI composition, but are not components
+- common className merging utilities (especially with Tailwind + shadcn)
 
 Example files:
 
-* `lib/utils.ts` (e.g., `cn()` helper for Tailwind class merging)
+- `lib/utils.ts` (e.g., `cn()` helper for Tailwind class merging)
 
 ---
 
 #### Validation helpers (optional)
 
-* shared validation schemas and helpers (if you use zod/yup)
-* reusable validators (email format, required fields, etc.)
+- shared validation schemas and helpers (if you use zod/yup)
+- reusable validators (email format, required fields, etc.)
 
 Example files:
 
-* `lib/validation/schemas.ts`
-* `lib/validation/rules.ts`
+- `lib/validation/schemas.ts`
+- `lib/validation/rules.ts`
 
 ---
 
@@ -310,19 +310,19 @@ Think of `styles/` as your **global styling configuration**. It contains Tailwin
 
 #### Tailwind entry + globals
 
-* Tailwind directives and global resets
-* base font and body styles
+- Tailwind directives and global resets
+- base font and body styles
 
 Example files:
 
-* `styles/globals.css`
+- `styles/globals.css`
 
 #### Theme variables (optional)
 
-* CSS variables for colors, spacing, radius
-* light/dark theme tokens (especially common with shadcn)
+- CSS variables for colors, spacing, radius
+- light/dark theme tokens (especially common with shadcn)
 
 Example files:
 
-* `styles/theme.css`
-* `styles/tokens.css`
+- `styles/theme.css`
+- `styles/tokens.css`
