@@ -1,5 +1,5 @@
-const globals = require("globals");
-const prettier = require("eslint-config-prettier");
+const globals = require('globals');
+const prettier = require('eslint-config-prettier');
 
 module.exports = [
   prettier,
