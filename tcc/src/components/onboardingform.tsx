@@ -8,8 +8,8 @@ import ChildDetail from './ChildDetails';
 import Divider from '@mui/material/Divider';
 
 interface ChildDetail {
-  name: string; // Child's name
-  school: string; // Selected school
+    name: string; // Child's name
+    school: string; // Selected school
 }
 
 const OnboardingForm = () => {
@@ -21,9 +21,9 @@ const OnboardingForm = () => {
   const [childDetails, setChildDetails] = React.useState<ChildDetail[]>([]);
   const [error, setError] = React.useState('');
 
-  //   const addChildDetail = () => {
-  //     setChildDetails([...childDetails, { name: '', school: '' }]); // Add a new child detail entry
-  //   };
+//   const addChildDetail = () => {
+//     setChildDetails([...childDetails, { name: '', school: '' }]); // Add a new child detail entry
+//   };
 
   const updateChildDetail = (index: number, detail: { name: string; school: string }) => {
     const updatedDetails = [...childDetails];
@@ -31,9 +31,9 @@ const OnboardingForm = () => {
     setChildDetails(updatedDetails);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log('Child Detail', childDetails);
+    console.log('Child Detail', childDetails)
     setError('');
 
     if (!numberChild) {
@@ -51,7 +51,7 @@ const OnboardingForm = () => {
       buildingName,
       unitNumber,
       numberChild: numberChild?.toString() || '',
-      childDetails,
+      childDetails
     };
 
     console.log(formData);
@@ -77,74 +77,78 @@ const OnboardingForm = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+    <Box component='form' onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={6} item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="Street Name"
+            label='Street Name'
             value={streetName}
-            onChange={(e) => setStreetName(e.target.value)}
+            onChange={e => setStreetName(e.target.value)}
             required
             sx={{ mb: 2 }} // Margin bottom
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={6} item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="Postal Code"
+            label='Postal Code'
             value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
-            type="email"
+            onChange={e => setPostalCode(e.target.value)}
+            type='email'
             required
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={6} item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="Building Name (Optional) "
+            label='Building Name (Optional) '
             value={buildingName}
-            onChange={(e) => setBuildingName(e.target.value)}
+            onChange={e => setBuildingName(e.target.value)}
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={6} item xs={12} sm={6}>
           <TextField
             fullWidth
-            label="House/Unit No. (Optional)"
+            label='House/Unit No. (Optional)'
             value={unitNumber}
-            onChange={(e) => setUnitNo(e.target.value)}
+            onChange={e => setUnitNo(e.target.value)}
             sx={{ mb: 2 }}
           />
         </Grid>
 
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid item size={10} xs={12} sm={6}>
           <Numberfield
-            label="Enter a number"
+            label='Enter a number'
             error={!!error} // Set error state
             value={numberChild}
-            onValueChange={(value) => {
-              setNumberChild(typeof value === 'number' ? value : null);
+            onValueChange={(_, value) => {
+              if (typeof value === 'number') {
+                setNumberChild(value);
+              } else {
+                setNumberChild(null);
+              }
             }} // Handle input change
           ></Numberfield>
-          {error && <Typography color="error">{error}</Typography>} {/* Show error message */}
+          {error && <Typography color='error'>{error}</Typography>} {/* Show error message */}
         </Grid>
       </Grid>
 
-      <Grid container spacing={2} columns={2}>
-        {Array.from({ length: numberChild || 0 }, (_, index) => (
-          <Grid size={12} key={index}>
-            <ChildDetail
-              index={index}
-              childDetail={childDetails[index] || { name: '', school: '' }}
-              onUpdate={updateChildDetail}
-            />
-            <Divider></Divider>
-          </Grid>
-        ))}
-      </Grid>
-      <GenericButton buttonType="submit" buttonText="Submit" />
+      <Grid container spacing={2} column={2}>
+                {Array.from({ length: numberChild || 0 }, (_, index) => (
+                    <Grid item size={12} key={index}>
+                        <ChildDetail
+                            index={index}
+                            childDetail={childDetails[index] || { name: '', school: '' }}
+                            onUpdate={updateChildDetail}
+                        />
+                    <Divider></Divider>
+                    </Grid>
+                ))}
+            </Grid>
+      <GenericButton buttonType='submit' buttonText='Submit' onClick={handleSubmit}> </GenericButton>
     </Box>
   );
 };
