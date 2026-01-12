@@ -15,6 +15,7 @@ const GenericButton = ({ buttonText = "Click Me", buttonType = "button", onClick
                 '&:hover': {
                     backgroundColor: 'var(--main-darker)', // Change on hover
                 },
+                margin:"12px 0"
             }}
         >
             {buttonText} {/* Set button text dynamically */}
