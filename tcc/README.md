@@ -50,8 +50,8 @@ This layer is intentionally kept thin — it wires routes together and delegates
 
 This project uses **route groups**, which:
 
-* Do **not** appear in the URL
-* Allow different layouts and auth rules per group
+- Do **not** appear in the URL
+- Allow different layouts and auth rules per group
 
 ### `(public)` – Pre-login pages
 
@@ -67,13 +67,13 @@ src/app/(public)/
 
 **Purpose**
 
-* Pages accessible **without authentication**
-* Examples: login, marketing pages, simulators, error states
+- Pages accessible **without authentication**
+- Examples: login, marketing pages, simulators, error states
 
 **Notes**
 
-* No AppBar is rendered here
-* Middleware allows unauthenticated access
+- No AppBar is rendered here
+- Middleware allows unauthenticated access
 
 ---
 
@@ -92,14 +92,14 @@ src/app/(authed)/
 
 **Purpose**
 
-* Pages that require the user to be logged in
-* AppBar and other authenticated UI are applied via `(authed)/layout.tsx`
+- Pages that require the user to be logged in
+- AppBar and other authenticated UI are applied via `(authed)/layout.tsx`
 
 **Role-based access**
 
-* `/parents/*` → parents only
-* `/staff/*` → staff only
-* Enforced centrally via `middleware.ts`
+- `/parents/*` → parents only
+- `/staff/*` → staff only
+- Enforced centrally via `middleware.ts`
 
 ---
 
@@ -109,15 +109,15 @@ Each subfolder under `(authed)` or `(public)` represents a **feature area** of t
 
 Examples:
 
-* `parents/onboarding` → parent onboarding flow
-* `staff` → staff-only dashboards or admin tools
-* `carbon-simulator` → standalone public feature
+- `parents/onboarding` → parent onboarding flow
+- `staff` → staff-only dashboards or admin tools
+- `carbon-simulator` → standalone public feature
 
 This allows:
 
-* Clear ownership of features
-* Easy extension as the app grows
-* Clean mapping between URLs and features
+- Clear ownership of features
+- Easy extension as the app grows
+- Clean mapping between URLs and features
 
 ---
 
@@ -135,13 +135,12 @@ src/app/api/
 
 ### Current purpose
 
-* Provides a **mock login/logout API**
-* Sets a lightweight session cookie (e.g. email + role)
-* Enables development of:
-
-  * Role-based routing
-  * Middleware enforcement
-  * Authenticated layouts
+- Provides a **mock login/logout API**
+- Sets a lightweight session cookie (e.g. email + role)
+- Enables development of:
+  - Role-based routing
+  - Middleware enforcement
+  - Authenticated layouts
 
 ### Future: AWS Cognito integration
 
@@ -149,14 +148,13 @@ This folder is intentionally designed to be **temporary**.
 
 When AWS Cognito is introduced:
 
-* `dev-login` / `dev-logout` will be removed
-* Authentication will be handled by:
+- `dev-login` / `dev-logout` will be removed
+- Authentication will be handled by:
+  - Cognito Hosted UI or SDK
+  - JWT/session cookies issued by Cognito
 
-  * Cognito Hosted UI or SDK
-  * JWT/session cookies issued by Cognito
-* Middleware logic remains mostly unchanged
-
-  * Only the session parsing/verification changes
+- Middleware logic remains mostly unchanged
+  - Only the session parsing/verification changes
 
 This minimizes churn and avoids restructuring routes later.
 
@@ -170,14 +168,14 @@ src/app/layout.tsx
 
 **Responsibilities**
 
-* Global fonts
-* Global styles (`globals.css`)
-* App-wide providers (MUI Theme, context providers)
+- Global fonts
+- Global styles (`globals.css`)
+- App-wide providers (MUI Theme, context providers)
 
 **Important**
 
-* Does **not** render AppBar
-* Auth-specific UI lives in `(authed)/layout.tsx`
+- Does **not** render AppBar
+- Auth-specific UI lives in `(authed)/layout.tsx`
 
 ---
 
@@ -190,9 +188,9 @@ src/components/
 └── ...
 ```
 
-* Stateless or minimally stateful UI pieces
-* Used across multiple routes and features
-* Not tied to routing logic
+- Stateless or minimally stateful UI pieces
+- Used across multiple routes and features
+- Not tied to routing logic
 
 ---
 
@@ -206,14 +204,14 @@ src/screens/
 
 **Purpose**
 
-* Contains full-page UI components
-* Imported by `app/**/page.tsx` route files
+- Contains full-page UI components
+- Imported by `app/**/page.tsx` route files
 
 This separation:
 
-* Keeps routing files minimal
-* Avoids coupling UI to Next.js conventions
-* Makes future refactors easier
+- Keeps routing files minimal
+- Avoids coupling UI to Next.js conventions
+- Makes future refactors easier
 
 ---
 
@@ -225,9 +223,9 @@ src/services/
 └── ...
 ```
 
-* Handles API calls, auth helpers, domain logic
-* Cognito SDK integration will live here in future
-* Keeps UI components clean and declarative
+- Handles API calls, auth helpers, domain logic
+- Cognito SDK integration will live here in future
+- Keeps UI components clean and declarative
 
 ---
 
@@ -237,21 +235,21 @@ src/services/
 src/types/
 ```
 
-* Central place for shared interfaces and enums
-* Includes auth/session/role types
-* Helps keep middleware, services, and UI consistent
+- Central place for shared interfaces and enums
+- Includes auth/session/role types
+- Helps keep middleware, services, and UI consistent
 
 ---
 
 ## Why this structure works well with AWS Cognito
 
-* Auth boundaries are **route-based**, not component-based
-* Middleware already enforces roles centrally
-* UI doesn’t depend on how auth is implemented
-* Replacing mock auth with Cognito is mostly a **drop-in change**
+- Auth boundaries are **route-based**, not component-based
+- Middleware already enforces roles centrally
+- UI doesn’t depend on how auth is implemented
+- Replacing mock auth with Cognito is mostly a **drop-in change**
 
 This allows the team to:
 
-* Develop features now
-* Add real authentication later
-* Avoid large-scale refactors
+- Develop features now
+- Add real authentication later
+- Avoid large-scale refactors
