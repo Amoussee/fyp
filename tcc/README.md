@@ -39,7 +39,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ```
 src/
-  pages/
+  screens/
   components/
     ui/
   services/
@@ -49,9 +49,9 @@ src/
   styles/
 ```
 
-# `pages/`
+# `screens/`
 
-Think of `pages/` as the **route-level screens** of your app. Each file here represents a full page the user navigates to (e.g., `/login`, `/dashboard`, `/survey/:id`).
+Think of `screens/` as the **route-level screens** of your app. Each file here represents a full page the user navigates to (e.g., `/login`, `/dashboard`, `/survey/:id`).
 
 ### Typical contents:
 
@@ -63,10 +63,10 @@ Think of `pages/` as the **route-level screens** of your app. Each file here rep
 
 Example files:
 
-- `pages/LandingPage.tsx`
-- `pages/LoginPage.tsx`
-- `pages/DashboardPage.tsx`
-- `pages/SurveyFillPage.tsx`
+- `screens/LandingPage.tsx`
+- `screens/LoginPage.tsx`
+- `screens/DashboardPage.tsx`
+- `screens/SurveyFillPage.tsx`
 
 #### Page-specific layout and guards
 
@@ -75,7 +75,7 @@ Example files:
 
 Example:
 
-- `pages/ProtectedRoute.tsx` (if you keep it here; some teams put it in `components/`)
+- `screens/ProtectedRoute.tsx` (if you keep it here; some teams put it in `components/`)
 
 ---
 
