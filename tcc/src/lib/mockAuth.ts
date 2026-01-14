@@ -1,5 +1,5 @@
 // src/lib/mockAuth.ts
-export type Role = "staff" | "parent";
+export type Role = "admin" | "parent";
 export type UserStatus = "active" | "deactivated";
 
 export type MockUser = {
@@ -24,11 +24,11 @@ const SESSION_TTL_SECONDS = 60 * 60; // 1 hour
 // Mock "user pool"
 export const MOCK_USERS: MockUser[] = [
   {
-    email: "staff@email.com",
+    email: "admin@email.com",
     password: "Password123!",
-    role: "staff",
+    role: "admin",
     status: "active",
-    sub: "user-staff-001",
+    sub: "user-admin-001",
   },
   {
     email: "parent@email.com",

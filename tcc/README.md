@@ -92,11 +92,11 @@ src/app/(public)/
 ```txt
 src/app/(authed)/
 ├── layout.tsx
-├── parents/
+├── parent/
 │   ├── page.tsx
 │   └── onboarding/
 │       └── page.tsx
-└── staff/
+└── admin/
     └── page.tsx
 ```
 
@@ -108,7 +108,7 @@ src/app/(authed)/
 **Role-based access**
 
 - `/parents/*` → parents only
-- `/staff/*` → staff only
+- `/admin/*` → admin only
 - Enforced centrally via `middleware.ts`
 
 ---
@@ -120,7 +120,7 @@ Each subfolder under `(authed)` or `(public)` represents a **feature area** of t
 Examples:
 
 - `parents/onboarding` → parent onboarding flow
-- `staff` → staff-only dashboards or admin tools
+- `admin` → admin-only dashboards or admin tools
 - `carbon-simulator` → standalone public feature
 
 This allows:
