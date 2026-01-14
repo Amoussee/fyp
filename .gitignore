@@ -44,3 +44,8 @@ next-env.d.ts
 # editor/ide
 .vscode/
 .idea/
+
+# Server-specific ignores
+
+server/index.js
+server/package-lock.json
