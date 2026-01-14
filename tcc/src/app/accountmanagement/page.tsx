@@ -1,5 +1,5 @@
 import { Sidebar } from "../../components/sidebar"
-import { AccountManagement } from "../../components/account-management"
+import { AccountManagement } from "../../components/AccountManagement"
 import { Box } from "@mui/material"
 
 export default function AccountManagementPage() {
