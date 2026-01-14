@@ -47,5 +47,5 @@ next-env.d.ts
 
 # Server-specific ignores
 
-server/index.js
 server/package-lock.json
+server/node_modules/
