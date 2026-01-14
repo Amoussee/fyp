@@ -4,7 +4,7 @@ import 'dotenv/config'; // Modern way to load environment variables in ES module
 
 const app = express();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors());
