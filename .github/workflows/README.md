@@ -14,6 +14,29 @@ npm run typecheck
 npm run build
 ```
 
+If `npm run format:check` fails, run Prettier in write mode to automatically fix formatting:
+
+```bash
+# Fix formatting for all supported files
+npm run format:write
+```
+
+If `format:write` is not available in this repo, you can run Prettier directly:
+
+```bash
+# Fix formatting across the project
+npx prettier --write .
+
+# Or fix a single file (example)
+npx prettier --write README.md
+```
+
+After fixing, re-run:
+
+```bash
+npm run format:check
+```
+
 ### Backend (`server`)
 
 ```bash
