@@ -39,7 +39,7 @@ type LoginResponse =
       refreshToken: string;
       tokenType: string;
       expiresIn: number;
-      user: { sub: string; email: string; role: "staff" | "parent"; status: "active" | "deactivated" };
+      user: { sub: string; email: string; role: "admin" | "parent"; status: "active" | "deactivated" };
     }
   | { code: string; message: string };
 
@@ -88,7 +88,7 @@ export default function LoginCard() {
 
       // Redirect by role
       if ("user" in data) {
-        if (data.user.role === "staff") router.push("/staff"); // adjust to your staff landing route
+        if (data.user.role === "admin") router.push("/admin"); // adjust to your staff landing route
         else router.push("/parent"); // adjust to your parent landing route
       }
     } catch {
@@ -146,7 +146,7 @@ export default function LoginCard() {
       <Box sx={{ my: 2 }}>
         <Divider>
           <Typography variant="caption" color="text.secondary">
-            Or use Email
+            OR
           </Typography>
         </Divider>
       </Box>
