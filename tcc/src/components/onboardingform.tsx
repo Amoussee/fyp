@@ -1,6 +1,6 @@
 // src/components/OnboardingForm.js
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Box, Grid, Typography } from '@mui/material';
 import GenericButton from './GenericButton';
 import Numberfield from './Numberfields';
@@ -20,10 +20,23 @@ const OnboardingForm = () => {
   const [numberChild, setNumberChild] = React.useState<number | null>(null);
   const [childDetails, setChildDetails] = React.useState<ChildDetail[]>([]);
   const [error, setError] = React.useState('');
+  const [schools, setSchools] = React.useState([]); // State for database schools
 
 //   const addChildDetail = () => {
 //     setChildDetails([...childDetails, { name: '', school: '' }]); // Add a new child detail entry
 //   };
+  useEffect(() => { // to get the list of schools from db
+      const fetchSchools = async () => {
+        try {
+          const response = await fetch('http://localhost:5001/api/schools');
+          const data = await response.json();
+          setSchools(data); // Stores the cleaned school list from DB
+        } catch (err) {
+          console.error("Failed to load schools:", err);
+        }
+      };
+      fetchSchools();
+    }, []);
 
   const updateChildDetail = (index: number, detail: { name: string; school: string }) => {
     const updatedDetails = [...childDetails];
@@ -134,17 +147,18 @@ const OnboardingForm = () => {
       </Grid>
 
       <Grid container spacing={2} column={2}>
-                {Array.from({ length: numberChild || 0 }, (_, index) => (
-                    <Grid item size={12} key={index}>
-                        <ChildDetail
-                            index={index}
-                            childDetail={childDetails[index] || { name: '', school: '' }}
-                            onUpdate={updateChildDetail}
-                        />
-                    <Divider></Divider>
-                    </Grid>
-                ))}
-            </Grid>
+        {Array.from({ length: numberChild || 0 }, (_, index) => (
+          <Grid item size={12} key={index}>
+              <ChildDetail
+                  index={index}
+                  childDetail={childDetails[index] || { name: '', school: '' }}
+                  onUpdate={updateChildDetail}
+                  schools={schools} // Pass the database list down as a prop
+              />
+            <Divider></Divider>
+          </Grid>
+        ))}
+        </Grid>
       <GenericButton buttonType='submit' buttonText='Submit' onClick={handleSubmit}> </GenericButton>
     </Box>
   );
