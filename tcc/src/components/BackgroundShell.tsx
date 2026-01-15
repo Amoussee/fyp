@@ -18,7 +18,7 @@ export default function BackgroundShell({ children }: { children: React.ReactNod
         sx={{
           position: "absolute",
           inset: 0,
-          height: "55vh",
+          height: "65vh",
           background:
             "linear-gradient(90deg, rgba(120,140,255,0.85), rgba(120,255,220,0.85), rgba(255,230,140,0.85))",
         }}
@@ -30,7 +30,7 @@ export default function BackgroundShell({ children }: { children: React.ReactNod
           position: "absolute",
           left: 0,
           right: 0,
-          top: "38vh",
+          top: "58vh",
           height: "40vh",
           bgcolor: "#fff",
           transform: "skewY(-6deg)",

@@ -1,16 +1,11 @@
 import type { ReactNode } from "react";
+import PublicAuthShell from "@/src/components/BackgroundShell";
+
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
-        padding: 24,
-      }}
-    >
+    <PublicAuthShell>
       <div style={{ width: "100%", maxWidth: 520 }}>{children}</div>
-    </div>
+    </PublicAuthShell>
   );
 }

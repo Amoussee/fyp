@@ -3,6 +3,7 @@ import * as React from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { decodeSession, SESSION_COOKIE_NAME } from "@/src/lib/mockAuth";
+import AppBarComponent from "@/src/components/appbar";
 
 function AppHeader({ role }: { role: string }) {
    return (
@@ -31,6 +32,7 @@ export default async function AuthedLayout({ children }: { children: React.React
 
    return (
       <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+         <AppBarComponent />
          <AppHeader role={session.role} />
          <main style={{ flex: 1 }}>{children}</main>
          <AppFooter />

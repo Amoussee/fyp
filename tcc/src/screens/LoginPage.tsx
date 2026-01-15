@@ -3,8 +3,8 @@ import LoginCard from "@/src/components/authentication/LoginCard";
 
 export default function LoginPage() {
   return (
-    <PublicAuthShell>
+    // <PublicAuthShell>
       <LoginCard />
-    </PublicAuthShell>
+    // </PublicAuthShell>
   );
 }
