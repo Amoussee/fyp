@@ -131,7 +131,7 @@ const OnboardingForm = () => {
 
         <Grid item size={10} xs={12} sm={6}>
           <Numberfield
-            label='Enter a number'
+            label='Number of Children'
             error={!!error} // Set error state
             value={numberChild}
             onValueChange={(_, value) => {
