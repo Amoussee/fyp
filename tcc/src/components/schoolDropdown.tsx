@@ -1,67 +1,28 @@
-import React, { useEffect, useState } from 'react';
+'use client';
+import React from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+// Define what a school object looks like from your DB
 interface SchoolOption {
-  id: string; // Unique identifier of the school
-  name: string; // Name of the school
+  school_id: number;
+  school_name: string;
 }
 
 interface SchoolSelectProps {
-  selectedSchool: string; // Current selected school
-  onChange: (school: string) => void; // Callback to notify parent of changes
+  schools: SchoolOption[]; // Received from Parent (OnboardingForm)
+  selectedSchool: string;  // The current value
+  onChange: (school: string) => void; 
 }
 
-const SchoolSelect: React.FC<SchoolSelectProps> = ({ selectedSchool, onChange }) => {
-  // Mock data for testing
-  const mockSchools: SchoolOption[] = [
-    { id: '1', name: 'Raffles Institution' },
-    { id: '2', name: 'Hwa Chong Institution' },
-    { id: '3', name: 'Anglo-Chinese School (Independent)' },
-    { id: '4', name: "St. Joseph's Institution" },
-    { id: '5', name: 'Victoria School' },
-    { id: '6', name: "Nanyang Girls' High School" },
-    { id: '7', name: 'Dunman High School' },
-    { id: '8', name: "Raffles Girls' School" },
-  ];
-
-
-  const [schools, setSchools] = useState<SchoolOption[]>(mockSchools); 
-  // const [selectedSchool, setSelectedSchool] = useState<string>(''); // State for selected school
-
-  // Handle change in the dropdown
+const SchoolSelect: React.FC<SchoolSelectProps> = ({ schools, selectedSchool, onChange }) => {
+  
   const handleChange = (event: SelectChangeEvent<string>) => {
-    const schoolName = event.target.value;
-    onChange(schoolName); // Call upwards to parents
+    onChange(event.target.value);
   };
-
-  // Fetch school data from the API (commented out for now, using mock data)
-  useEffect(() => {
-    // Uncomment this when your API is ready
-    /*
-    const fetchSchools = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/schools');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data: SchoolOption[] = await response.json();
-        setSchools(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        // Fallback to mock data if API fails
-        setSchools(mockSchools);
-      }
-    };
-    fetchSchools();
-    */
-
-    // Using mock data for now
-    setSchools(mockSchools);
-  }, []); // Run once on component mount
 
   return (
     <Box sx={{ minWidth: 120 }}>
@@ -73,10 +34,24 @@ const SchoolSelect: React.FC<SchoolSelectProps> = ({ selectedSchool, onChange })
           value={selectedSchool}
           label='Select School'
           onChange={handleChange}
+          // Adding a max-height to the dropdown menu so it doesn't cover the whole screen
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 300, 
+              },
+            },
+          }}
         >
-          {schools.map(school => (
-            <MenuItem key={school.id} value={school.name}>
-              {school.name} {/* Display school names */}
+          {/* Default empty option */}
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+
+          {/* Map through the actual database schools */}
+          {schools.map((school) => (
+            <MenuItem key={school.school_id} value={school.school_name}>
+              {school.school_name}
             </MenuItem>
           ))}
         </Select>
