@@ -15,6 +15,16 @@ export const getUsers = async (req, res) => {
 };
 
 // READ (all users - filter by deactivated)
+export const getActiveUsers = async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM users WHERE deactivated=false');
+        res.status(200).json(rows);
+    }
+    catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 // READ (Single User)
 export const getUserById = async (req, res) => {
