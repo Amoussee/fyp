@@ -7,9 +7,11 @@ interface ChildDetailProps {
     index: number;
     childDetail: { name: string; school: string }; // Structure for child detail
     onUpdate: (index: number, detail: { name: string; school: string }) => void; // Function to handle updates
+    schools: any[]; // Add this to receive the database list from OnboardingForm
 }
 
-const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate }) => {
+const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate, schools }) => {
+    
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // Update the name directly in the parent state
         onUpdate(index, { ...childDetail, name: e.target.value });
@@ -36,8 +38,9 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate 
                 </Grid>
                 <Grid item size={6}>
                     <SchoolSelect
-                        selectedSchool={childDetail.school} // Pass the school from childDetail
-                        onChange={handleSchoolChange} // Function to handle school selection
+                        schools={schools} 
+                        selectedSchool={childDetail.school}
+                        onChange={handleSchoolChange}
                     />
                 </Grid>
             </Grid>
