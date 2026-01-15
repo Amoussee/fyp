@@ -1,6 +1,7 @@
 import express from 'express';
 import {
-    getUsers, 
+    getUsers,
+    getActiveUsers,
     getUserById, 
     addUser, 
     updateUser, 
@@ -10,6 +11,7 @@ import {
 const router = express.Router();
 
 router.get('/', getUsers);   // GET /api/users
+router.get('/active', getActiveUsers) // GET /api/users/active
 // router.post('/', addUser);   // POST /api/users
 router.post('/onboard', addUser); // POST /onboard/api/users
 router.put('/:id', updateUser);           // Update
