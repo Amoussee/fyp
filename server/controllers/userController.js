@@ -1,23 +1,39 @@
 import pool from '../config/postgres.js';
 
 
-// READ (all users - without password)
+// READ (all users - with password)
 export const getUsers = async (req, res) => {
     try {
-        // TODO: need to change select columns
         const result = await pool.query('SELECT * FROM users');
         res.status(200).json(result.rows);
     }
     catch (error) {
         console.error('Database Error:', error);
-        res.status(500).json({ error:'Internal Server Error'});
+        res.status(500).json({ error:'Internal Server Error' });
     }
 };
+
+// READ (all users - without password)
+export const getUsersInfo = async (req, res) => {
+    try {
+        const result = await pool.query(
+            'SELECT user_id, email, name, organisation, role, deactivated, created_at FROM users'
+        );
+        res.status(200).json(result.rows);
+    }
+    catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 // READ (all users - filter by deactivated)
 export const getActiveUsers = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM users WHERE deactivated=false');
+        const result = await pool.query(
+            `SELECT user_id, email, name, organisation, role, deactivated, created_at 
+            FROM users WHERE deactivated=false`
+        );
         res.status(200).json(result.rows);
     }
     catch (error) {
@@ -120,7 +136,7 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await pool.query('DELETE FROM users WHERE user_id = $1', [id]);
+        const result = await pool.query('DELETE FROM users WHERE user_id = $1', [id]);
         
         if (result.rowCount === 0) {
             return res.status(404).json({ message: "User not found" });

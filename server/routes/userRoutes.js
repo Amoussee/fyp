@@ -1,22 +1,24 @@
 import express from 'express';
-import {
-    getUsers,
-    getActiveUsers,
-    getUserById, 
-    addUser, 
-    updateUser, 
-    deleteUser,
-    deactivateUser
-} from '../controllers/userController.js';
+import * as userController from '../controllers/userController.js';
 
 const router = express.Router();
 
-router.get('/', getUsers);   // GET /api/users
-router.get('/active', getActiveUsers) // GET /api/users/active
-// router.post('/', addUser);   // POST /api/users
-router.post('/onboard', addUser); // POST /onboard/api/users
-router.put('/:id', updateUser);           // Update
-router.delete('/:id', deleteUser);        // Hard Delete
-router.patch('/deactivate', deactivateUser); // Soft Delete
+// Routes for /api/users
+router.route('/')
+  .get(userController.getUsers)
+  .post(userController.addUser);
+
+// Special/Specific Filters
+router.get('/active', userController.getActiveUsers);
+router.get('/info', userController.getUsersInfo);
+
+// Routes for /api/users/:id
+router.route('/:id')
+  .get(userController.getUserById)
+  .put(userController.updateUser)
+  .delete(userController.deleteUser);
+
+// Specific Action
+router.patch('/deactivate', userController.deactivateUser);
 
 export default router;
