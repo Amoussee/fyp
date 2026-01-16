@@ -47,4 +47,3 @@ next-env.d.ts
 
 # Server-specific ignores
 
-server/node_modules/
