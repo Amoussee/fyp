@@ -24,7 +24,7 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate,
 
     return (
         <Box sx={{ mb: 2, padding:'6px 0', borderRadius:1}}>
-            <Typography variant="h6">Child {index + 1} Detail</Typography>
+            <Typography variant="h6" sx={{mb:2}}>Child {index + 1} Detail</Typography>
             <Grid container spacing={2}>
                 <Grid item size={6}>
                     <TextField
