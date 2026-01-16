@@ -6,13 +6,69 @@ TRUNCATE TABLE
   users
 RESTART IDENTITY CASCADE;
 
-INSERT INTO users (email, name, organisation, password_hash, role)
+INSERT INTO users (firstName, lastName, email, password_hash, phone_number, deactivated, organisation, role, numberChild,childDetails)
 VALUES
-('admin1@tcc.org', 'Alice Tan', 'TCC', 'hashed_pw_1', 'Admin'),
-('admin2@tcc.org', 'Ben Lim', 'TCC', 'hashed_pw_2', 'Admin'),
-('parent1@school.edu', 'Clara Ong', 'Greenfield Primary', 'hashed_pw_3', 'Parent'),
-('parent2@school.edu', 'Daniel Lee', 'Greenfield Primary', 'hashed_pw_4', 'Parent'),
-('parent3@school.edu', 'Evelyn Ng', 'Riverside Secondary', 'hashed_pw_5', 'Parent');
+(
+    'Alice',
+    'Tan',
+    'admin1@tcc.org',
+    'hashed_pw_1',
+    '+65 9999 9999',
+    FALSE,
+    'TCC',
+    'Admin',
+    0,
+    '[]'::jsonb
+),
+(
+    'Ben',
+    'Lim',
+    'admin2@tcc.org',
+    'hashed_pw_2',
+    '+65 8888 8888',
+    FALSE,
+    'TCC',
+    'Admin',
+    0,
+    '[]'::jsonb
+),
+(
+    'Clara',
+    'Ong',
+    'parent1@school.edu',
+    'hashed_pw_3',
+    '+65 9888 8888',
+    FALSE,
+    'Greenfield Primary',
+    'Parent',
+    1,
+    '[{"name":"Child A", "school":"Xing Hua Primary School"}]'::jsonb
+),
+(
+    'Daniel',
+    'Lee',
+    'parent2@school.edu',
+    'hashed_pw_4',
+    '+65 8989 9898',
+    FALSE,
+    'Greenfield Primary',
+    'Parent',
+    1,
+    '[{"name":"Child B","school":"Rosyth Primary School"}]'::jsonb
+),
+(
+    'Evelyn',
+    'Ng',
+    'parent3@school.edu',
+    'hashed_pw_5',
+    '_65 9898 8989',
+    FALSE,
+    'Riverside Secondary',
+    'Parent',
+    1,
+    '[{"name":"Child C","school":"Clementi Primary School"}]'::jsonb
+);
+
 
 INSERT INTO surveys (metadata, schema_json, created_by)
 VALUES
