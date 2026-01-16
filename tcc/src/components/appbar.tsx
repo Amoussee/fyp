@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -13,7 +13,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-
 
 const pages = ['Home', 'About us', 'What We Do', 'News', 'Contact Us'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -38,11 +37,11 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#FFFFFF" ,color:"#343434"}}>
+    <AppBar position="static" sx={{ backgroundColor: '#FFFFFF', color: '#343434' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              <img src="/logo.png" alt="logo" style={{ height: '80px', width: 'auto' }} /> 
+            <img src="/logo.png" alt="logo" style={{ height: '80px', width: 'auto' }} />
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -72,7 +71,7 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu} >
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -83,7 +82,7 @@ function ResponsiveAppBar() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'black', display: 'block' ,textTransform: 'none' }}
+                sx={{ my: 2, color: 'black', display: 'block', textTransform: 'none' }}
               >
                 {page}
               </Button>

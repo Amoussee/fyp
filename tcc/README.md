@@ -3,6 +3,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Getting Started
 
 ### Node.js Version Requirement
+
 This project requires Node.js version 20.9.0 or higher. If you are using NVM (Node Version Manager), you can easily install and switch to the appropriate version using the following commands:
 
 ```
