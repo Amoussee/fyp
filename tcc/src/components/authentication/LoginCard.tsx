@@ -16,6 +16,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useRouter } from "next/navigation";
+import { login } from "@/src/lib/api/auth";
 
 type LoginValues = { email: string; password: string };
 type LoginErrors = Partial<Record<keyof LoginValues, string>>;
@@ -31,17 +32,6 @@ function validate(values: LoginValues): LoginErrors {
 
   return errors;
 }
-
-type LoginResponse =
-  | {
-      accessToken: string;
-      idToken: string;
-      refreshToken: string;
-      tokenType: string;
-      expiresIn: number;
-      user: { sub: string; email: string; role: "admin" | "parent"; status: "active" | "deactivated" };
-    }
-  | { code: string; message: string };
 
 export default function LoginCard() {
   const router = useRouter();
@@ -70,29 +60,13 @@ export default function LoginCard() {
     setServerError(null);
 
     try {
-      const res = await fetch("/api/auth/dev-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-        }),
-      });
+      const data = await login(values.email, values.password);
 
-      const data = (await res.json()) as LoginResponse;
-
-      if (!res.ok) {
-        setServerError("message" in data ? data.message : "Login failed.");
-        return;
-      }
-
-      // Redirect by role
-      if ("user" in data) {
-        if (data.user.role === "admin") router.push("/admin"); // adjust to your staff landing route
-        else router.push("/parent"); // adjust to your parent landing route
-      }
-    } catch {
-      setServerError("Network error. Please try again.");
+      if (data.user.role === "admin") router.push("/admin");
+      else router.push("/parent");
+    } catch (err) {
+      const e = err as { message?: string };
+      setServerError(e?.message ?? "Network error. Please try again.");
     } finally {
       setSubmitting(false);
     }

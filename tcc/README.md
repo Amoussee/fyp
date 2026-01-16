@@ -135,9 +135,9 @@ This allows:
 
 ```txt
 src/app/api/
-├── dev-login/
+├── login/
 │   └── route.ts
-├── dev-logout/
+├── logout/
 │   └── route.ts
 └── health/
     └── route.ts
@@ -158,13 +158,29 @@ This folder is intentionally designed to be **temporary**.
 
 When AWS Cognito is introduced:
 
-- `dev-login` / `dev-logout` will be removed
+- `login` / `logout` will be removed
 - Authentication will be handled by:
   - Cognito Hosted UI or SDK
   - JWT/session cookies issued by Cognito
 
 - Middleware logic remains mostly unchanged
   - Only the session parsing/verification changes
+
+When BE is introduced:
+9 update next.config.ts to:
+```
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      { source: "/api/:path*", destination: "http://localhost:5001/api/:path*" },
+    ];
+  },
+};
+
+export default nextConfig;
+```
 
 This minimizes churn and avoids restructuring routes later.
 

@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useRouter } from "next/navigation";
+import { logout } from "@/src/lib/api/auth";
 
 
 const pages = ['Home', 'About us', 'What We Do', 'News', 'Contact Us'];
@@ -41,14 +42,14 @@ function ResponsiveAppBar() {
   const router = useRouter();
 
   const handleLogout = async () => {
-  try {
-    await fetch("/api/auth/logout", { method: "POST" }); // your mock endpoint
-  } finally {
-    setAnchorElUser(null);
-    router.push("/login");
-    router.refresh(); // optional: ensures server components re-check cookies
-  }
-};
+    try {
+      await logout();
+    } finally {
+      setAnchorElUser(null);
+      router.push("/login");
+      router.refresh();
+    }
+  };
 
 
   return (
