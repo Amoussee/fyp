@@ -6,6 +6,7 @@
 
 -- 3. Create your tables (Example: Users table)
 -- SAFE RESET (for development only)
+DROP TABLE IF EXISTS schools CASCADE;
 DROP TABLE IF EXISTS survey_responses CASCADE;
 DROP TABLE IF EXISTS dashboards CASCADE;
 DROP TABLE IF EXISTS surveys CASCADE;
@@ -65,3 +66,17 @@ CREATE TABLE IF NOT EXISTS dashboards (
         REFERENCES users(user_id)
         ON DELETE CASCADE
 );
+
+-- 5. SCHOOLS
+CREATE TABLE IF NOT EXISTS schools (
+    school_id SERIAL PRIMARY KEY,
+    school_name VARCHAR(255) NOT NULL,
+    address VARCHAR(255),
+    mrt_desc VARCHAR(255), -- Nearest MRT station information
+    dgp_code VARCHAR(100), -- Planning area code (YISHUN, BISHAN etc)
+    zone_code VARCHAR(50), -- Educational zone (North, South, etc.)
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- when importing, make sure to put column names as school_name,address,mrt_desc,dgp_code,zone_code
+-- FOR MAC USERS type \r in the "Lines terminated with" box instead of auto
