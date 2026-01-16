@@ -15,12 +15,16 @@ DROP TABLE IF EXISTS users CASCADE;
 -- 1. USERS
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
+    firstName VARCHAR(255) NOT NULL,
+    lastName VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    organisation VARCHAR(255),
     password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL,
+    phone_number VARCHAR(50) NOT NULL,
     deactivated BOOLEAN DEFAULT FALSE,
+    organisation VARCHAR(255),
+    role VARCHAR(50) NOT NULL,
+    numberChild INT NOT NULL,
+    childDetails JSONB NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
