@@ -1,12 +1,12 @@
-import db from '../config/db.js';
+import pool from '../config/postgres.js';
 
 
 // READ (all users - without password)
 export const getUsers = async (req, res) => {
     try {
         // TODO: need to change select columns
-        const [rows] = await db.query('SELECT * FROM users');
-        res.status(200).json(rows);
+        const result = await pool.query('SELECT * FROM users');
+        res.status(200).json(result.rows);
     }
     catch (error) {
         console.error('Database Error:', error);
@@ -17,8 +17,8 @@ export const getUsers = async (req, res) => {
 // READ (all users - filter by deactivated)
 export const getActiveUsers = async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM users WHERE deactivated=false');
-        res.status(200).json(rows);
+        const result = await pool.query('SELECT * FROM users WHERE deactivated=false');
+        res.status(200).json(result.rows);
     }
     catch (error) {
         console.error('Database Error:', error);
@@ -30,11 +30,11 @@ export const getActiveUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
-        const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
+        const result = await pool.query('SELECT * FROM users WHERE user_id = $1', [id]);
 
-        if (rows.length === 0) return res.status(404).json({ message: "User not found." });
+        if (result.rows.length === 0) return res.status(404).json({ message: "User not found." });
 
-        res.status(200).json(rows[0]);
+        res.status(200).json(result.rows[0]);
     }
     catch (error) {
         res.status(500).json({ error:'Internal Server Error'});
@@ -61,16 +61,20 @@ export const addUser = async (req, res) => {
             family: { numberChild, childDetails }
         });
 
-        const [result] = await db.query(
+        const result = await pool.query(
             // 'INSERT INTO users (email, name, organisation, password_hash, role, profile_data) VALUES (?, ?, ?, ?, ?, ?)', // this line has profile data so i commented it out for now
-            'INSERT INTO users (email, name, organisation, password_hash, role) VALUES (?, ?, ?, ?, ?)',
+            `
+            INSERT INTO users (email, name, organisation, password_hash, role) 
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING user_id
+            `,
 
             [email, streetName, buildingName || 'Individual', passwordHash, role, profileData]
         );
 
         res.status(201).json({
             message: 'User onboarded successfully',
-            userId: result.insertId
+            userId: result.rows[0].user_id
         });
     } catch (error) {
         console.error('Database Error:', error);
@@ -85,23 +89,23 @@ export const updateUser = async (req, res) => {
 
     try {
         // We use COALESCE so that if a field isn't provided in req.body, it keeps its old value
-        const query = `
+        const result = await pool.query(
+            `
             UPDATE users 
-            SET name = COALESCE(?, name), 
-                organisation = COALESCE(?, organisation), 
-                role = COALESCE(?, role),
-                profile_data = COALESCE(?, profile_data)
-            WHERE user_id = ?`;
+            SET name = COALESCE($1, name), 
+                organisation = COALESCE($2, organisation), 
+                role = COALESCE($3, role),
+                profile_data = COALESCE($4, profile_data)
+            WHERE user_id = $4`,
+            [
+                name ?? null, 
+                organisation ?? null, 
+                role ?? null, 
+                // profile_data ? JSON.stringify(profile_data) : null, 
+                id
+            ]);
 
-        const [result] = await db.query(query, [
-            name, 
-            organisation, 
-            role, 
-            profile_data ? JSON.stringify(profile_data) : null, 
-            id
-        ]);
-
-        if (result.affectedRows === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({ message: "User not found" });
         }
 
@@ -116,25 +120,40 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await db.query('DELETE FROM users WHERE user_id = ?', [id]);
+        const [result] = await pool.query('DELETE FROM users WHERE user_id = $1', [id]);
         
-        if (result.affectedRows === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({ message: "User not found" });
         }
 
         res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
+        console.error('Delete Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
 // DEACTIVATE User (Soft Delete - Recommended for FYP by my boy gemini)
 export const deactivateUser = async (req, res) => {
-    const { id } = req.params;
+    const { user_id } = req.body;
+
+    if (!user_id) {
+        return res.status(400).json({ message: "user_id is required" });
+    }
+
     try {
-        await db.query('UPDATE users SET deactivated = TRUE WHERE user_id = ?', [id]);
+        const result = await pool.query(
+            'UPDATE users SET deactivated = TRUE WHERE user_id = $1',
+            [user_id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         res.status(200).json({ message: "User deactivated" });
     } catch (error) {
+        console.error('Deactivate Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };

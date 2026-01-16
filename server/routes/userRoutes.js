@@ -5,7 +5,8 @@ import {
     getUserById, 
     addUser, 
     updateUser, 
-    deleteUser
+    deleteUser,
+    deactivateUser
 } from '../controllers/userController.js';
 
 const router = express.Router();
@@ -16,6 +17,6 @@ router.get('/active', getActiveUsers) // GET /api/users/active
 router.post('/onboard', addUser); // POST /onboard/api/users
 router.put('/:id', updateUser);           // Update
 router.delete('/:id', deleteUser);        // Hard Delete
-// router.patch('/:id/deactivate', deactivateUser); // Soft Delete
+router.patch('/deactivate', deactivateUser); // Soft Delete
 
 export default router;
