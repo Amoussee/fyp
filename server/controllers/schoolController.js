@@ -15,17 +15,37 @@ export const getAllSchools = async (req, res) => {
 
 // GET school by name
 export const getSchoolByName = async (req, res) => {
-    const { name } = req.params;
+    const { name } = req.body;
 
     try {
-        const result = await pool.query('SELECT * FROM schools WHERE school_name ILIKE $1', ['%${name}%']);
+        const result = await pool.query(
+            'SELECT * FROM schools WHERE school_name ILIKE $1', 
+            [`%${name}%`] 
+        );
 
         if (result.rows.length === 0) return res.status(404).json({ message: "School not found." });
 
+        // return the first object
         res.status(200).json(result.rows[0]);
     }
     catch (error) {
         res.status(500).json({ error:'Internal Server Error'});
+    }
+}
+
+// GET school by id
+export const getSchoolById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result =  pool.query('SELECT * FROM schools WHERE school_id = $1', [id])
+
+        if (result.rows.length === 0) return res.status(404).json({ message: "School not found." });
+
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
