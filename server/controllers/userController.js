@@ -95,7 +95,7 @@ export const addUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const { name, organisation, role } = req.body; // removing profile_data for now since unused!
-//   const { name, organisation, role, profile_data } = req.body;
+  //   const { name, organisation, role, profile_data } = req.body;
 
   try {
     // We use COALESCE so that if a field isn't provided in req.body, it keeps its old value
