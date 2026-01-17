@@ -3,22 +3,32 @@ import * as userController from '../controllers/userController.js';
 
 const router = express.Router();
 
-// Routes for /api/users
+// --- General User Routes ---
+// GET /api/users - Get all users
+// POST /api/users - Onboard a new user
 router.route('/')
-  .get(userController.getUsers)
-  .post(userController.addUser);
+    .get(userController.getUsers)
+    .post(userController.addUser);
 
-// Special/Specific Filters
+// --- Filtered Routes ---
+// GET /api/users/active - Get users where deactivated = false
 router.get('/active', userController.getActiveUsers);
+
+// GET /api/users/info - Get users without sensitive info (passwords)
 router.get('/info', userController.getUsersInfo);
 
-// Routes for /api/users/:id
+// --- Specific User Routes (:id) ---
+// GET /api/users/:id - Get specific user
+// PUT /api/users/:id - Update user details
+// DELETE /api/users/:id - Hard delete user
 router.route('/:id')
-  .get(userController.getUserById)
-  .put(userController.updateUser)
-  .delete(userController.deleteUser);
+    .get(userController.getUserById)
+    .put(userController.updateUser)
+    .delete(userController.deleteUser);
 
-// Specific Action
-router.patch('/deactivate', userController.deactivateUser);
+// --- Specific Actions ---
+// PATCH /api/users/:id/deactivate - Soft delete/Deactivate a user
+// Note: Changed to include :id in the path to match the controller logic
+router.patch('/:id/deactivate', userController.deactivateUser);
 
 export default router;
