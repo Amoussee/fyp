@@ -17,7 +17,6 @@ function SSRInitialFilled() {
 }
 SSRInitialFilled.muiName = 'Input';
 
-
 export default function NumberField({
   id: idProp,
   label,

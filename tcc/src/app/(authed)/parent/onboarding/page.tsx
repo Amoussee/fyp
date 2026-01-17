@@ -15,8 +15,8 @@ const OnboardingFormPage = () => {
           Let&apos;s get Started
         </Typography>
         <Typography gutterBottom sx={{ color: 'var(--dark-2)' }}>
-          Please provide the details of your child&apos;s school and its location. This information will
-          help us accurately assess your emissions.
+          Please provide the details of your child&apos;s school and its location. This information
+          will help us accurately assess your emissions.
         </Typography>
       </Box>
 

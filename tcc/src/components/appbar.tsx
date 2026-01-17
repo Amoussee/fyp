@@ -59,8 +59,8 @@ function ResponsiveAppBar() {
             <Image
               src="/logo.png"
               alt="logo"
-              width={160}   // required
-              height={80}   // required
+              width={160} // required
+              height={80} // required
               style={{ height: '80px', width: 'auto' }}
             />
           </Box>

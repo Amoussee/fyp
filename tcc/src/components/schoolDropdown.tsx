@@ -58,7 +58,6 @@ const SchoolSelect: React.FC<SchoolSelectProps> = ({ selectedSchool, onChange })
     };
     fetchSchools();
     */
-
     // Using mock data for now
     // setSchools(mockSchools);
   }, []); // Run once on component mount
