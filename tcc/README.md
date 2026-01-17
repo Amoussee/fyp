@@ -3,6 +3,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Getting Started
 
 ### Node.js Version Requirement
+
 This project requires Node.js version 20.9.0 or higher. If you are using NVM (Node Version Manager), you can easily install and switch to the appropriate version using the following commands:
 
 ```
@@ -92,11 +93,11 @@ src/app/(public)/
 ```txt
 src/app/(authed)/
 ├── layout.tsx
-├── parents/
+├── parent/
 │   ├── page.tsx
 │   └── onboarding/
 │       └── page.tsx
-└── staff/
+└── admin/
     └── page.tsx
 ```
 
@@ -108,7 +109,7 @@ src/app/(authed)/
 **Role-based access**
 
 - `/parents/*` → parents only
-- `/staff/*` → staff only
+- `/admin/*` → admin only
 - Enforced centrally via `middleware.ts`
 
 ---
@@ -120,7 +121,7 @@ Each subfolder under `(authed)` or `(public)` represents a **feature area** of t
 Examples:
 
 - `parents/onboarding` → parent onboarding flow
-- `staff` → staff-only dashboards or admin tools
+- `admin` → admin-only dashboards or admin tools
 - `carbon-simulator` → standalone public feature
 
 This allows:
@@ -135,9 +136,9 @@ This allows:
 
 ```txt
 src/app/api/
-├── dev-login/
+├── login/
 │   └── route.ts
-├── dev-logout/
+├── logout/
 │   └── route.ts
 └── health/
     └── route.ts
@@ -158,13 +159,30 @@ This folder is intentionally designed to be **temporary**.
 
 When AWS Cognito is introduced:
 
-- `dev-login` / `dev-logout` will be removed
+- `login` / `logout` will be removed
 - Authentication will be handled by:
   - Cognito Hosted UI or SDK
   - JWT/session cookies issued by Cognito
 
 - Middleware logic remains mostly unchanged
   - Only the session parsing/verification changes
+
+When BE is introduced:
+9 update next.config.ts to:
+
+```
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      { source: "/api/:path*", destination: "http://localhost:5001/api/:path*" },
+    ];
+  },
+};
+
+export default nextConfig;
+```
 
 This minimizes churn and avoids restructuring routes later.
 
