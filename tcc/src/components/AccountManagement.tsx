@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import {
   Box,
   Button,
@@ -26,8 +26,11 @@ import {
   CircularProgress,
   TextField,
   Alert,
+  TableSortLabel,
 } from "@mui/material"
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
+import { UniversalFilter, type FilterConfig, type FilterValues } from "./UniversalFilter"
+import type { Dayjs } from "dayjs"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"
 
@@ -56,6 +59,8 @@ interface UserApiResponse {
 }
 
 type TabType = "accounts" | "groups"
+type SortField = "firstname" | "email" | "tag" | "status"
+type SortOrder = "asc" | "desc"
 
 export function AccountManagement() {
   const [activeTab, setActiveTab] = useState<TabType>("accounts")
@@ -81,6 +86,56 @@ export function AccountManagement() {
 
   const [searchQuery, setSearchQuery] = useState("")
 
+  // Filter state
+  const [filterValues, setFilterValues] = useState<FilterValues>({
+    firstnameAlphabet: [],
+    emailAlphabet: [],
+    status: "",
+    tag: [],
+  })
+
+  // Sorting state
+  const [sortField, setSortField] = useState<SortField | null>(null)
+  const [sortOrder, setSortOrder] = useState<SortOrder>("asc")
+
+  // Filter configuration for Account Management
+  const filterConfig: FilterConfig[] = useMemo(
+    () => [
+      {
+        field: "firstnameAlphabet",
+        label: "First Name (Starts With)",
+        type: "alphabet",
+      },
+      {
+        field: "emailAlphabet",
+        label: "Email (Starts With)",
+        type: "alphabet",
+      },
+      {
+        field: "status",
+        label: "Account Status",
+        type: "radio",
+        options: [
+          { value: "", label: "All" },
+          { value: "active", label: "Active Only" },
+          { value: "deactivated", label: "Deactivated Only" },
+        ],
+      },
+      {
+        field: "tag",
+        label: "Tag",
+        type: "checkbox",
+        options: [
+          { value: "Student", label: "Student" },
+          { value: "Teacher", label: "Teacher" },
+          { value: "Parent", label: "Parent" },
+          { value: "Admin", label: "Admin" },
+        ],
+      },
+    ],
+    [],
+  )
+
   // Fetch accounts using GET /api/users
   const fetchAccounts = useCallback(async () => {
     try {
@@ -93,7 +148,7 @@ export function AccountManagement() {
       }
 
       const users: UserApiResponse[] = await response.json()
-      
+
       setAccounts(
         users.map((user) => ({
           id: String(user.user_id),
@@ -118,18 +173,77 @@ export function AccountManagement() {
 
   const itemsPerPage = 7
 
-  const filteredAccounts = accounts.filter((account) => {
-    if (!searchQuery) return true
-    const query = searchQuery.toLowerCase()
-    return (
-      account.firstname.toLowerCase().includes(query) ||
-      account.email.toLowerCase().includes(query) ||
-      account.tag.toLowerCase().includes(query)
-    )
-  })
+  // Apply filters and search
+  const filteredAccounts = useMemo(() => {
+    return accounts.filter((account) => {
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        const matchesSearch =
+          account.firstname.toLowerCase().includes(query) ||
+          account.email.toLowerCase().includes(query) ||
+          account.tag.toLowerCase().includes(query)
+        if (!matchesSearch) return false
+      }
 
-  const totalPages = Math.ceil(filteredAccounts.length / itemsPerPage)
-  const paginatedAccounts = filteredAccounts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+      // First name alphabet filter
+      const firstnameAlphabet = filterValues.firstnameAlphabet as string[]
+      if (firstnameAlphabet.length > 0) {
+        const firstLetter = account.firstname.charAt(0).toUpperCase()
+        if (!firstnameAlphabet.includes(firstLetter)) return false
+      }
+
+      // Email alphabet filter
+      const emailAlphabet = filterValues.emailAlphabet as string[]
+      if (emailAlphabet.length > 0) {
+        const firstLetter = account.email.charAt(0).toUpperCase()
+        if (!emailAlphabet.includes(firstLetter)) return false
+      }
+
+      // Status filter
+      if (filterValues.status && filterValues.status !== account.status) {
+        return false
+      }
+
+      // Tag filter
+      const tagFilter = filterValues.tag as string[]
+      if (tagFilter.length > 0 && !tagFilter.includes(account.tag)) {
+        return false
+      }
+
+      return true
+    })
+  }, [accounts, searchQuery, filterValues])
+
+  // Apply sorting
+  const sortedAccounts = useMemo(() => {
+    if (!sortField) return filteredAccounts
+
+    return [...filteredAccounts].sort((a, b) => {
+      let aValue: string | number = a[sortField]
+      let bValue: string | number = b[sortField]
+
+      // Convert to lowercase for string comparison
+      if (typeof aValue === "string") aValue = aValue.toLowerCase()
+      if (typeof bValue === "string") bValue = bValue.toLowerCase()
+
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1
+      return 0
+    })
+  }, [filteredAccounts, sortField, sortOrder])
+
+  const totalPages = Math.ceil(sortedAccounts.length / itemsPerPage)
+  const paginatedAccounts = sortedAccounts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+    } else {
+      setSortField(field)
+      setSortOrder("asc")
+    }
+  }
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, accountId: string) => {
     setAnchorEl(event.currentTarget)
@@ -185,7 +299,6 @@ export function AccountManagement() {
         throw new Error(`Failed to update user: ${response.status}`)
       }
 
-      // Refresh accounts to get updated data from server
       await fetchAccounts()
     } catch (err) {
       console.error("Failed to update account:", err)
@@ -209,10 +322,8 @@ export function AccountManagement() {
         throw new Error(`Failed to deactivate user: ${response.status}`)
       }
 
-      // Refresh accounts to get updated data from server
       await fetchAccounts()
 
-      // Update groups count (if you track this locally)
       setGroups((prevGroups) =>
         prevGroups.map((group) =>
           accountToDeactivate.groupIds.includes(group.id)
@@ -237,7 +348,6 @@ export function AccountManagement() {
     if (!account) return
 
     try {
-      // Use PUT to update the user's deactivated status back to false
       const response = await fetch(`${API_BASE_URL}/api/users/${selectedAccountId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -246,7 +356,7 @@ export function AccountManagement() {
           email: account.email,
           tag: account.tag,
           deactivated: false,
-          groupIds: ["group-1", "group-2"], // Restore to default groups or customize
+          groupIds: ["group-1", "group-2"],
         }),
       })
 
@@ -254,10 +364,8 @@ export function AccountManagement() {
         throw new Error(`Failed to reactivate user: ${response.status}`)
       }
 
-      // Refresh accounts to get updated data
       await fetchAccounts()
 
-      // Update groups count
       setGroups((prevGroups) =>
         prevGroups.map((group) => ({
           ...group,
@@ -275,6 +383,11 @@ export function AccountManagement() {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value)
     setCurrentPage(1)
+  }
+
+  const handleFilterChange = (newFilterValues: FilterValues) => {
+    setFilterValues(newFilterValues)
+    setCurrentPage(1) // Reset to first page when filters change
   }
 
   const currentSelectedAccount = accounts.find((acc) => acc.id === selectedAccountId)
@@ -324,20 +437,21 @@ export function AccountManagement() {
 
       {activeTab === "accounts" ? (
         <>
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ mb: 2, display: "flex", gap: 2, alignItems: "center" }}>
             <TextField
-              placeholder="Search"
+              placeholder="Search by name, email, or tag..."
               value={searchQuery}
               onChange={handleSearchChange}
               size="small"
               sx={{
-                width: "250px",
+                width: "300px",
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "8px",
                   backgroundColor: "white",
                 },
               }}
             />
+            <UniversalFilter filters={filterConfig} values={filterValues} onChange={handleFilterChange} />
           </Box>
 
           {error && (
@@ -359,10 +473,42 @@ export function AccountManagement() {
                 <Table>
                   <TableHead>
                     <TableRow sx={{ backgroundColor: "#f3f4f6" }}>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>First Name</TableCell>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>Email</TableCell>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>Tag</TableCell>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>Status</TableCell>
+                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>
+                        <TableSortLabel
+                          active={sortField === "firstname"}
+                          direction={sortField === "firstname" ? sortOrder : "asc"}
+                          onClick={() => handleSort("firstname")}
+                        >
+                          First Name
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>
+                        <TableSortLabel
+                          active={sortField === "email"}
+                          direction={sortField === "email" ? sortOrder : "asc"}
+                          onClick={() => handleSort("email")}
+                        >
+                          Email
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>
+                        <TableSortLabel
+                          active={sortField === "tag"}
+                          direction={sortField === "tag" ? sortOrder : "asc"}
+                          onClick={() => handleSort("tag")}
+                        >
+                          Tag
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>
+                        <TableSortLabel
+                          active={sortField === "status"}
+                          direction={sortField === "status" ? sortOrder : "asc"}
+                          onClick={() => handleSort("status")}
+                        >
+                          Status
+                        </TableSortLabel>
+                      </TableCell>
                       <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>Action</TableCell>
                     </TableRow>
                   </TableHead>
