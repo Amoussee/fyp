@@ -72,6 +72,10 @@ export function AccountManagement() {
     { id: "group-2", name: "Parent Group A", memberCount: 50 },
   ])
 
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [accountToEdit, setAccountToEdit] = useState<Account | null>(null)
+  const [editFormData, setEditFormData] = useState({ firstname: "", email: "", tag: "" })
+
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false)
   const [accountToDeactivate, setAccountToDeactivate] = useState<Account | null>(null)
 
@@ -137,6 +141,20 @@ export function AccountManagement() {
     setSelectedAccountId(null)
   }
 
+  const handleEditClick = () => {
+    const account = accounts.find((acc) => acc.id === selectedAccountId)
+    if (account) {
+      setAccountToEdit(account)
+      setEditFormData({
+        firstname: account.firstname,
+        email: account.email,
+        tag: account.tag,
+      })
+      setEditDialogOpen(true)
+    }
+    handleMenuClose()
+  }
+
   const handleDeactivateClick = () => {
     const account = accounts.find((acc) => acc.id === selectedAccountId)
     if (account) {
@@ -144,6 +162,38 @@ export function AccountManagement() {
       setDeactivateDialogOpen(true)
     }
     handleMenuClose()
+  }
+
+  // Update account using PUT /api/users/:id
+  const handleConfirmEdit = async () => {
+    if (!accountToEdit) return
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users/${accountToEdit.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstname: editFormData.firstname,
+          email: editFormData.email,
+          tag: editFormData.tag,
+          deactivated: accountToEdit.status === "deactivated",
+          groupIds: accountToEdit.groupIds,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to update user: ${response.status}`)
+      }
+
+      // Refresh accounts to get updated data from server
+      await fetchAccounts()
+    } catch (err) {
+      console.error("Failed to update account:", err)
+      setError(err instanceof Error ? err.message : "Failed to update account")
+    } finally {
+      setEditDialogOpen(false)
+      setAccountToEdit(null)
+    }
   }
 
   // Deactivate account using PATCH /api/users/:id/deactivate
@@ -389,7 +439,7 @@ export function AccountManagement() {
               </TableContainer>
 
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
+                <MenuItem onClick={handleEditClick}>Edit</MenuItem>
                 <MenuItem onClick={handleMenuClose}>View Details</MenuItem>
                 {currentSelectedAccount?.status === "active" ? (
                   <MenuItem onClick={handleDeactivateClick} sx={{ color: "#dc2626" }}>
@@ -435,6 +485,55 @@ export function AccountManagement() {
         </TableContainer>
       )}
 
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Account</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+            <TextField
+              label="First Name"
+              value={editFormData.firstname}
+              onChange={(e) => setEditFormData({ ...editFormData, firstname: e.target.value })}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Email"
+              type="email"
+              value={editFormData.email}
+              onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Tag"
+              value={editFormData.tag}
+              onChange={(e) => setEditFormData({ ...editFormData, tag: e.target.value })}
+              fullWidth
+              required
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)} sx={{ color: "#6b7280" }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmEdit}
+            disabled={!editFormData.firstname || !editFormData.email || !editFormData.tag}
+            sx={{
+              backgroundColor: "#15803d",
+              color: "white",
+              "&:hover": { backgroundColor: "#166534" },
+              "&:disabled": { backgroundColor: "#d1d5db", color: "#9ca3af" },
+            }}
+          >
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Deactivate Dialog */}
       <Dialog open={deactivateDialogOpen} onClose={() => setDeactivateDialogOpen(false)}>
         <DialogTitle>Confirm Deactivation</DialogTitle>
         <DialogContent>
