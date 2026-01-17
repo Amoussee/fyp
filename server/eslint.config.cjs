@@ -8,7 +8,7 @@ module.exports = [
     ignores: ['node_modules/**'],
     languageOptions: {
       ecmaVersion: 'latest',
-      sourceType: 'commonjs',
+      sourceType: 'module',  // Changed from 'commonjs' to 'module'
       globals: {
         ...globals.node,
       },
@@ -18,14 +18,4 @@ module.exports = [
       'no-unused-vars': 'warn',
     },
   },
-  {
-    "parserOptions": {
-      "ecmaVersion": "latest",
-      "sourceType": "module"
-    },
-    "env": {
-      "node": true,
-      "es2021": true
-    }
-  }
 ];
