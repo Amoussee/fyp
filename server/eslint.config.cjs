@@ -8,7 +8,7 @@ module.exports = [
     ignores: ['node_modules/**'],
     languageOptions: {
       ecmaVersion: 'latest',
-      sourceType: 'commonjs',
+      sourceType: 'module',  // Changed from 'commonjs' to 'module'
       globals: {
         ...globals.node,
       },

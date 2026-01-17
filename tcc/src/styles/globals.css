@@ -3,8 +3,8 @@
 :root {
   --main-color: #6aa84f;
   --main-darker: #517c3f;
-  --main-lighter: #8FD570;
-  --main-subtle: #B9ff9b;
+  --main-lighter: #8fd570;
+  --main-subtle: #b9ff9b;
 
   /* State Colors */
   --error: #ff3838;
