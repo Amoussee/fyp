@@ -13,6 +13,8 @@ services:
       - "5432:5432"
     volumes:
       - tcc_postgres_data:/var/lib/postgresql/data
+      - ./server/database_scripts/tcc_db.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./server/database_scripts/insert.sql:/docker-entrypoint-initdb.d/02_insert.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d tcc_db"]
       interval: 5s
