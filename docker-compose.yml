@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: tcc-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: tcc_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - tcc_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d tcc_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  tcc_postgres_data:
