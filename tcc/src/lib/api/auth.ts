@@ -1,6 +1,6 @@
 // src/lib/api/auth.ts
-export type Role = "admin" | "parent";
-export type Status = "active" | "deactivated";
+export type Role = 'admin' | 'parent';
+export type Status = 'active' | 'deactivated';
 
 export type AuthUser = {
   sub: string;
@@ -28,10 +28,10 @@ async function parseJson<T>(res: Response): Promise<T> {
 // For now you can keep this as "/api/auth/login"
 // Later change to "/api/auth/login" (or keep same if BE matches)
 export async function login(email: string, password: string): Promise<LoginOk> {
-  const res = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
+  const res = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ email, password }),
   });
 
@@ -41,14 +41,14 @@ export async function login(email: string, password: string): Promise<LoginOk> {
 }
 
 export async function logout(): Promise<void> {
-  await fetch("/api/auth/logout", {
-    method: "POST",
-    credentials: "include",
+  await fetch('/api/auth/logout', {
+    method: 'POST',
+    credentials: 'include',
   });
 }
 
 export async function me(): Promise<AuthUser> {
-  const res = await fetch("/api/auth/me", { credentials: "include" });
+  const res = await fetch('/api/auth/me', { credentials: 'include' });
   const data = await parseJson<{ user: AuthUser } | AuthErr>(res);
   if (!res.ok) throw data;
   return (data as { user: AuthUser }).user;

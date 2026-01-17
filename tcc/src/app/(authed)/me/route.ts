@@ -1,7 +1,7 @@
 // src/app/api/auth/me/route.ts
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { SESSION_COOKIE_NAME, decodeSession } from "@/src/lib/mockAuth";
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { SESSION_COOKIE_NAME, decodeSession } from '@/src/lib/mockAuth';
 
 export async function GET() {
   const cookie = cookies().get(SESSION_COOKIE_NAME)?.value;
@@ -9,7 +9,7 @@ export async function GET() {
 
   if (!session) {
     return NextResponse.json(
-      { code: "NotAuthorizedException", message: "No active session." },
+      { code: 'NotAuthorizedException', message: 'No active session.' },
       { status: 401 },
     );
   }

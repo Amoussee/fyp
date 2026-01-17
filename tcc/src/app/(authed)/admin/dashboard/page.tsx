@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, Stack, Chip } from "@mui/material";
+import { Box, Paper, Typography, Stack, Chip } from '@mui/material';
 
 export default function AdminSurveyDashboardPage() {
   return (
@@ -19,7 +19,7 @@ export default function AdminSurveyDashboardPage() {
         sx={{
           p: 2.5,
           borderRadius: 2,
-          bgcolor: "rgba(0,0,0,0.02)",
+          bgcolor: 'rgba(0,0,0,0.02)',
         }}
       >
         <Typography variant="h6" fontWeight={700} sx={{ mb: 1 }}>

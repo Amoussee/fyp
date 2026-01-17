@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   Alert,
   Box,
@@ -11,12 +11,12 @@ import {
   Typography,
   InputAdornment,
   IconButton,
-} from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import GoogleIcon from "@mui/icons-material/Google";
-import { useRouter } from "next/navigation";
-import { login } from "@/src/lib/api/auth";
+} from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import GoogleIcon from '@mui/icons-material/Google';
+import { useRouter } from 'next/navigation';
+import { login } from '@/src/lib/api/auth';
 
 type LoginValues = { email: string; password: string };
 type LoginErrors = Partial<Record<keyof LoginValues, string>>;
@@ -25,10 +25,10 @@ function validate(values: LoginValues): LoginErrors {
   const errors: LoginErrors = {};
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim());
 
-  if (!values.email.trim()) errors.email = "Email is required";
-  else if (!emailOk) errors.email = "Enter a valid email";
+  if (!values.email.trim()) errors.email = 'Email is required';
+  else if (!emailOk) errors.email = 'Enter a valid email';
 
-  if (!values.password) errors.password = "Password is required";
+  if (!values.password) errors.password = 'Password is required';
 
   return errors;
 }
@@ -36,19 +36,17 @@ function validate(values: LoginValues): LoginErrors {
 export default function LoginCard() {
   const router = useRouter();
 
-  const [values, setValues] = React.useState<LoginValues>({ email: "", password: "" });
+  const [values, setValues] = React.useState<LoginValues>({ email: '', password: '' });
   const [errors, setErrors] = React.useState<LoginErrors>({});
   const [showPassword, setShowPassword] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const [serverError, setServerError] = React.useState<string | null>(null);
 
-  const onChange =
-    (key: keyof LoginValues) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValues((v) => ({ ...v, [key]: e.target.value }));
-      if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
-      if (serverError) setServerError(null);
-    };
+  const onChange = (key: keyof LoginValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((v) => ({ ...v, [key]: e.target.value }));
+    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
+    if (serverError) setServerError(null);
+  };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,11 +60,11 @@ export default function LoginCard() {
     try {
       const data = await login(values.email, values.password);
 
-      if (data.user.role === "admin") router.push("/admin");
-      else router.push("/parent");
+      if (data.user.role === 'admin') router.push('/admin');
+      else router.push('/parent');
     } catch (err) {
       const e = err as { message?: string };
-      setServerError(e?.message ?? "Network error. Please try again.");
+      setServerError(e?.message ?? 'Network error. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -76,17 +74,17 @@ export default function LoginCard() {
     <Paper
       elevation={0}
       sx={{
-        width: "100%",
+        width: '100%',
         maxWidth: 520,
         borderRadius: 3,
-        border: "1px solid",
-        borderColor: "divider",
-        boxShadow: "0 18px 50px rgba(0,0,0,0.10)",
+        border: '1px solid',
+        borderColor: 'divider',
+        boxShadow: '0 18px 50px rgba(0,0,0,0.10)',
         p: { xs: 3, sm: 4 },
       }}
     >
-      <Box sx={{ textAlign: "center", mb: 2 }}>
-        <Typography variant="overline" sx={{ letterSpacing: 1.2, color: "text.secondary" }}>
+      <Box sx={{ textAlign: 'center', mb: 2 }}>
+        <Typography variant="overline" sx={{ letterSpacing: 1.2, color: 'text.secondary' }}>
           WELCOME BACK 👋
         </Typography>
         <Typography variant="h5" fontWeight={700} sx={{ mt: 0.5 }}>
@@ -106,13 +104,13 @@ export default function LoginCard() {
         disableElevation
         startIcon={<GoogleIcon />}
         sx={{
-          bgcolor: "#E9F5FF",
-          color: "text.primary",
+          bgcolor: '#E9F5FF',
+          color: 'text.primary',
           borderRadius: 999,
           py: 1.1,
-          "&:hover": { bgcolor: "#DDF0FF" },
+          '&:hover': { bgcolor: '#DDF0FF' },
         }}
-        onClick={() => setServerError("Google login is not implemented in the mock yet.")}
+        onClick={() => setServerError('Google login is not implemented in the mock yet.')}
       >
         Log in with Google
       </Button>
@@ -131,15 +129,15 @@ export default function LoginCard() {
           label="Email"
           margin="normal"
           value={values.email}
-          onChange={onChange("email")}
+          onChange={onChange('email')}
           error={Boolean(errors.email)}
           helperText={errors.email}
           variant="filled"
           InputProps={{ disableUnderline: true }}
           sx={{
-            "& .MuiFilledInput-root": {
+            '& .MuiFilledInput-root': {
               borderRadius: 2,
-              bgcolor: "rgba(0,0,0,0.04)",
+              bgcolor: 'rgba(0,0,0,0.04)',
             },
           }}
         />
@@ -148,9 +146,9 @@ export default function LoginCard() {
           fullWidth
           label="Password"
           margin="normal"
-          type={showPassword ? "text" : "password"}
+          type={showPassword ? 'text' : 'password'}
           value={values.password}
-          onChange={onChange("password")}
+          onChange={onChange('password')}
           error={Boolean(errors.password)}
           helperText={errors.password}
           variant="filled"
@@ -165,9 +163,9 @@ export default function LoginCard() {
             ),
           }}
           sx={{
-            "& .MuiFilledInput-root": {
+            '& .MuiFilledInput-root': {
               borderRadius: 2,
-              bgcolor: "rgba(0,0,0,0.04)",
+              bgcolor: 'rgba(0,0,0,0.04)',
             },
           }}
         />
@@ -182,17 +180,17 @@ export default function LoginCard() {
             mt: 2,
             borderRadius: 1.5,
             py: 1.2,
-            bgcolor: "#1F2937",
-            color: "common.white",
-            "&:hover": { bgcolor: "#111827" },
+            bgcolor: '#1F2937',
+            color: 'common.white',
+            '&:hover': { bgcolor: '#111827' },
           }}
         >
-          {submitting ? "Continuing..." : "CONTINUE"}
+          {submitting ? 'Continuing...' : 'CONTINUE'}
         </Button>
 
-        <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
-          Need an Account?{" "}
-          <Box component="span" sx={{ color: "primary.main", cursor: "pointer" }}>
+        <Typography variant="body2" sx={{ mt: 2, textAlign: 'center' }}>
+          Need an Account?{' '}
+          <Box component="span" sx={{ color: 'primary.main', cursor: 'pointer' }}>
             Sign Up
           </Box>
         </Typography>

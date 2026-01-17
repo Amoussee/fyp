@@ -1,21 +1,21 @@
 // src/app/(authed)/parent/page.tsx
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { decodeSession, SESSION_COOKIE_NAME } from "@/src/lib/mockAuth";
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { decodeSession, SESSION_COOKIE_NAME } from '@/src/lib/mockAuth';
 
 export default async function ParentHomePage() {
   const cookieStore = await cookies();
   const cookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   const session = cookie ? decodeSession(cookie) : null;
 
-  if (!session) redirect("/login");
-  if (session.status !== "active") redirect("/unauthorized");
-  if (session.role !== "parent") redirect("/unauthorized");
+  if (!session) redirect('/login');
+  if (session.status !== 'active') redirect('/unauthorized');
+  if (session.role !== 'parent') redirect('/unauthorized');
 
   // Mock: first time login check
-  const isFirstLogin = session.email.toLowerCase() === "parent@email.com";
+  const isFirstLogin = session.email.toLowerCase() === 'parent@email.com';
 
-  if (isFirstLogin) redirect("/parent/onboarding");
+  if (isFirstLogin) redirect('/parent/onboarding');
 
-  redirect("/parent/dashboard");
+  redirect('/parent/dashboard');
 }

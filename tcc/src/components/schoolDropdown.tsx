@@ -28,8 +28,7 @@ const SchoolSelect: React.FC<SchoolSelectProps> = ({ selectedSchool, onChange })
     { id: '8', name: "Raffles Girls' School" },
   ];
 
-
-  const [schools, setSchools] = useState<SchoolOption[]>(mockSchools); 
+  const [schools, setSchools] = useState<SchoolOption[]>(mockSchools);
   // const [selectedSchool, setSelectedSchool] = useState<string>(''); // State for selected school
 
   // Handle change in the dropdown
@@ -66,15 +65,15 @@ const SchoolSelect: React.FC<SchoolSelectProps> = ({ selectedSchool, onChange })
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id='school-select-label'>Select School</InputLabel>
+        <InputLabel id="school-select-label">Select School</InputLabel>
         <Select
-          labelId='school-select-label'
-          id='school-select'
+          labelId="school-select-label"
+          id="school-select"
           value={selectedSchool}
-          label='Select School'
+          label="Select School"
           onChange={handleChange}
         >
-          {schools.map(school => (
+          {schools.map((school) => (
             <MenuItem key={school.id} value={school.name}>
               {school.name} {/* Display school names */}
             </MenuItem>
