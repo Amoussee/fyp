@@ -31,7 +31,7 @@ const OnboardingForm = () => {
     setChildDetails(updatedDetails);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Child Detail', childDetails);
     setError('');
@@ -79,7 +79,7 @@ const OnboardingForm = () => {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Grid container spacing={2}>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label="Street Name"
@@ -89,7 +89,7 @@ const OnboardingForm = () => {
             sx={{ mb: 2 }} // Margin bottom
           />
         </Grid>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label="Postal Code"
@@ -100,7 +100,7 @@ const OnboardingForm = () => {
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label="Building Name (Optional) "
@@ -109,7 +109,7 @@ const OnboardingForm = () => {
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label="House/Unit No. (Optional)"
@@ -119,26 +119,22 @@ const OnboardingForm = () => {
           />
         </Grid>
 
-        <Grid item size={10} xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <Numberfield
             label="Enter a number"
             error={!!error} // Set error state
             value={numberChild}
-            onValueChange={(_, value) => {
-              if (typeof value === 'number') {
-                setNumberChild(value);
-              } else {
-                setNumberChild(null);
-              }
+            onValueChange={(value) => {
+              setNumberChild(typeof value === 'number' ? value : null);
             }} // Handle input change
           ></Numberfield>
           {error && <Typography color="error">{error}</Typography>} {/* Show error message */}
         </Grid>
       </Grid>
 
-      <Grid container spacing={2} column={2}>
+      <Grid container spacing={2} columns={2}>
         {Array.from({ length: numberChild || 0 }, (_, index) => (
-          <Grid item size={12} key={index}>
+          <Grid size={12} key={index}>
             <ChildDetail
               index={index}
               childDetail={childDetails[index] || { name: '', school: '' }}
@@ -148,9 +144,7 @@ const OnboardingForm = () => {
           </Grid>
         ))}
       </Grid>
-      <GenericButton buttonType="submit" buttonText="Submit" onClick={handleSubmit}>
-        {' '}
-      </GenericButton>
+      <GenericButton buttonType="submit" buttonText="Submit" />
     </Box>
   );
 };

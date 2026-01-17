@@ -28,7 +28,8 @@ const SchoolSelect: React.FC<SchoolSelectProps> = ({ selectedSchool, onChange })
     { id: '8', name: "Raffles Girls' School" },
   ];
 
-  const [schools, setSchools] = useState<SchoolOption[]>(mockSchools);
+  const [schools] = useState<SchoolOption[]>(mockSchools);
+  // const [schools, setSchools] = useState<SchoolOption[]>(mockSchools);
   // const [selectedSchool, setSelectedSchool] = useState<string>(''); // State for selected school
 
   // Handle change in the dropdown
@@ -59,7 +60,7 @@ const SchoolSelect: React.FC<SchoolSelectProps> = ({ selectedSchool, onChange })
     */
 
     // Using mock data for now
-    setSchools(mockSchools);
+    // setSchools(mockSchools);
   }, []); // Run once on component mount
 
   return (

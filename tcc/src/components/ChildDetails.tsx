@@ -24,7 +24,7 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate 
     <Box sx={{ mb: 2, padding: '6px 0', borderRadius: 1 }}>
       <Typography variant="h6">Child {index + 1} Detail</Typography>
       <Grid container spacing={2}>
-        <Grid item size={6}>
+        <Grid size={6}>
           <TextField
             fullWidth
             label="Child's name"
@@ -34,7 +34,7 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate 
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid item size={6}>
+        <Grid size={6}>
           <SchoolSelect
             selectedSchool={childDetail.school} // Pass the school from childDetail
             onChange={handleSchoolChange} // Function to handle school selection

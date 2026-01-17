@@ -93,6 +93,24 @@ export function AccountManagement() {
     setSelectedAccountId(null);
   };
 
+  const handleEdit = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
+  const handleDelete = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
+  const handleViewDetails = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
   return (
     <Box sx={{ flexGrow: 1, p: 4 }}>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 600, color: '#111827' }}>
@@ -202,9 +220,9 @@ export function AccountManagement() {
 
       {/* Dropdown Menu */}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-        <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
-        <MenuItem onClick={handleMenuClose}>View Details</MenuItem>
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
+        <MenuItem onClick={handleViewDetails}>View Details</MenuItem>
       </Menu>
 
       {/* Pagination */}

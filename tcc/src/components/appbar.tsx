@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -55,7 +56,13 @@ function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <img src="/logo.png" alt="logo" style={{ height: '80px', width: 'auto' }} />
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={160}   // required
+              height={80}   // required
+              style={{ height: '80px', width: 'auto' }}
+            />
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton

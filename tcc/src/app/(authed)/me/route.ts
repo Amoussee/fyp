@@ -4,7 +4,8 @@ import { cookies } from 'next/headers';
 import { SESSION_COOKIE_NAME, decodeSession } from '@/src/lib/mockAuth';
 
 export async function GET() {
-  const cookie = cookies().get(SESSION_COOKIE_NAME)?.value;
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   const session = cookie ? decodeSession(cookie) : null;
 
   if (!session) {
