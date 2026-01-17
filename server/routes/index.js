@@ -15,7 +15,7 @@ apiRouter.use(express.json()); // Allows the server to read req.body from your f
 // This matches your goal of having users/...
 apiRouter.use('/users', userRoutes);
 
-// ROute Group: /api/schools
+// Route Group: /api/schools
 apiRouter.use('/schools', schoolRoutes);
 
 // Future groups (e.g., /api/products, /api/auth)
