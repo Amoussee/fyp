@@ -5,6 +5,7 @@ import userRoutes from './userRoutes.js';
 import schoolRoutes from './schoolRoutes.js';
 
 const apiRouter = express.Router();
+apiRouter.use(express.json()); // <--- THIS MUST BE HERE
 const PORT = process.env.PORT || 5001;
 
 apiRouter.use(cors()); // Allows your Next.js frontend to talk to this server
