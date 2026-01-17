@@ -438,19 +438,6 @@ export function AccountManagement() {
       {activeTab === "accounts" ? (
         <>
           <Box sx={{ mb: 2, display: "flex", gap: 2, alignItems: "center" }}>
-            <TextField
-              placeholder="Search by name, email, or tag..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              size="small"
-              sx={{
-                width: "300px",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                  backgroundColor: "white",
-                },
-              }}
-            />
             <UniversalFilter filters={filterConfig} values={filterValues} onChange={handleFilterChange} />
           </Box>
 
