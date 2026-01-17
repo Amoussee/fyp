@@ -3,6 +3,21 @@ import * as schoolController from '../controllers/schoolController.js';
 
 const router = express.Router();
 
-// router.get('/', getAllSchools); // GET /api/schools
+// --- General School Routes ---
+// GET /api/schools - Get all schools information
+// POST /api/schools - Onboard a new school
+router.route('/')
+    .get(schoolController.getAllSchools)
+    .post(schoolController.addSchool);
+
+// --- Specific User Routes (:id) ---
+router.route('/:id')
+    .get(schoolController.getSchoolById)
+    .put(schoolController.updateSchool);
+
+
+// --- Filtered Routes ---
+router.get('/filterBySchoolName', schoolController.getSchoolByName);
+
 
 export default router;
