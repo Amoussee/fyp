@@ -125,13 +125,24 @@ export const updateUser = async (req, res) => {
 
 // 7. DELETE USER
 export const deleteUser = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; // This gets the ID from the URL
     try {
-        const result = await pool.query('DELETE FROM users WHERE user_id = $1', [id]);
-        if (result.rowCount === 0) return res.status(404).json({ message: "User not found" });
-        res.status(200).json({ message: "User deleted successfully" });
+        const result = await pool.query(
+            'DELETE FROM users WHERE user_id = $1 RETURNING *', 
+            [id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ 
+            message: `User with ID ${id} deleted successfully`,
+            deletedUser: result.rows[0] 
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error(error.message);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
