@@ -96,19 +96,21 @@ useEffect(() => {
       return;
     }
 
-    // Validate that a school is selected for each child
+    // Validate that a school is selected for each child (only if schools are available)
     const missingSchools = [];
-    for (let i = 0; i < numberChild; i++) {
-        const child = childDetails[i];
-        if (!child || !child.school) {
-            missingSchools.push(`Child ${i + 1}`);
+    if (schools.length > 0) {
+        for (let i = 0; i < numberChild; i++) {
+            const child = childDetails[i];
+            if (!child || !child.school) {
+                missingSchools.push(`Child ${i + 1}`);
+            }
         }
-    }
 
-    if (missingSchools.length > 0) {
-        setSubmitError(`Please select a school for: ${missingSchools.join(', ')}`);
-        setIsSubmitting(false);
-        return;
+        if (missingSchools.length > 0) {
+            setSubmitError(`Please select a school for: ${missingSchools.join(', ')}`);
+            setIsSubmitting(false);
+            return;
+        }
     }
 
     console.log(numberChildError);
