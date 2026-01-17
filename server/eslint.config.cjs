@@ -18,4 +18,14 @@ module.exports = [
       'no-unused-vars': 'warn',
     },
   },
+  {
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "env": {
+      "node": true,
+      "es2021": true
+    }
+  }
 ];
