@@ -12,6 +12,7 @@ router.route('/')
 
 // --- Filtered Routes ---
 router.get('/filterBySchoolName', schoolController.getSchoolByName);
+router.put('/updateSchoolStatus/:id', schoolController.updateSchoolStatus);
 
 // --- Specific User Routes (:id) ---
 router.route('/:id')
