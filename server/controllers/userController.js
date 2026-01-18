@@ -13,26 +13,26 @@ export const getUsers = async (req, res) => {
 
 // 2. GET USERS INFO (Public details)
 export const getUsersInfo = async (req, res) => {
-  try {
-    const result = await pool.query(
-      'SELECT user_id, "firstname", "lastName", email, organisation, role, is_active FROM users',
-    );
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error('Database Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    try {
+        const result = await pool.query(
+            'SELECT user_id, "firstName", "lastName", email, organisation, role, is_active FROM users'
+        );
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 };
 
 // 3. GET ACTIVE USERS
 export const getActiveUsers = async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM users WHERE is_active = true');
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error('Database Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE is_active = true');
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 };
 
 // 4. GET SINGLE USER
@@ -150,12 +150,12 @@ export const deleteUser = async (req, res) => {
 
 // 8. DEACTIVATE USER (Soft Delete)
 export const deactivateUser = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await pool.query('UPDATE users SET is_active = FALSE WHERE user_id = $1', [id]);
-    if (result.rowCount === 0) return res.status(404).json({ message: 'User not found' });
-    res.status(200).json({ message: 'User deactivated' });
-  } catch {
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    const { id } = req.params;
+    try {
+        const result = await pool.query('UPDATE users SET is_active = FALSE WHERE user_id = $1', [id]);
+        if (result.rowCount === 0) return res.status(404).json({ message: "User not found" });
+        res.status(200).json({ message: "User deactivated" });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 };
