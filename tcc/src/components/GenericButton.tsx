@@ -3,20 +3,12 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 
-interface GenericButtonProps {
-    buttonText?: string;
-    buttonType?: 'button' | 'submit' | 'reset';
-    onClick?: React.MouseEventHandler<HTMLButtonElement>;
-    disabled?: boolean;
-}
-
-const GenericButton = ({ buttonText = "Click Me", buttonType = "button", onClick, disabled }: GenericButtonProps) => {
+const GenericButton = ({ buttonText = "Click Me", buttonType = "button", onClick }) => {
     return (
         <Button
             type={buttonType} // Set type dynamically
             variant="contained"
             onClick={onClick} // Handle click event
-            disabled={disabled}
             sx={{
                 backgroundColor: 'var(--main-color)',
                 color: 'white',

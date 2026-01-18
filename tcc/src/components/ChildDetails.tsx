@@ -37,20 +37,11 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate,
                     />
                 </Grid>
                 <Grid item size={6}>
-                    {schools && schools.length > 0 ? (
-                        <SchoolSelect
-                            schools={schools}
-                            selectedSchool={childDetail.school}
-                            onChange={handleSchoolChange}
-                        />
-                    ) : (
-                        <TextField
-                            fullWidth
-                            label="School"
-                            value="No schools available"
-                            disabled
-                        />
-                    )}
+                    <SchoolSelect
+                        schools={schools} 
+                        selectedSchool={childDetail.school}
+                        onChange={handleSchoolChange}
+                    />
                 </Grid>
             </Grid>
         </Box>
