@@ -10,8 +10,8 @@ import PhoneNumber from './PhoneNumber';
 
 
 interface ChildDetail {
-    name: string;
-    school: string;
+    name: string; // Child's name
+    school: string; // Selected school
 }
 
 interface ExtractedData {
@@ -29,6 +29,18 @@ const validatePhoneNumber = (value: string) => {
   return /^\+?[0-9]{6,15}$/.test(valueWithoutSpaces);
 };
 
+// Mock output simulating the external component
+// TODO: When the real component is merged:
+// 1. Delete this MOCK_EXTERNAL_DATA constant.
+// 2. Update the OnboardingForm component to accept props (e.g., { initialData }).
+// 3. Remove the hardcoded values in the useEffect below and use the props instead.
+// const MOCK_EXTERNAL_DATA = {
+//     firstName: 'John',
+//     lastName: 'Doe',
+//     email: 'john.doe@example.com',
+//     password: 'password123'
+// };
+
 const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -41,7 +53,20 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
   const [numberChildError, setNumberChildError] = React.useState('');
   const [submitError, setSubmitError] = React.useState('');
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [schools, setSchools] = React.useState([]);
+
+  const [schools, setSchools] = React.useState([]); // State for database schools
+
+  // Prepopulate form with simulated data
+  // useEffect(() => {
+  //     setFirstName(MOCK_EXTERNAL_DATA.firstName);
+  //     setLastName(MOCK_EXTERNAL_DATA.lastName);
+  //     setEmail(MOCK_EXTERNAL_DATA.email);
+  //     setPassword(MOCK_EXTERNAL_DATA.password);
+  // }, []);
+
+//   const addChildDetail = () => {
+//     setChildDetails([...childDetails, { name: '', school: '' }]); // Add a new child detail entry
+//   };
 
 useEffect(() => {
   if (!initialData) return;
@@ -79,38 +104,10 @@ useEffect(() => {
     setSubmitError('');
     setIsSubmitting(true);
 
-    if (!firstName || !lastName || !email || !password || !phoneNumber) {
-      setSubmitError('Please fill in all required fields.');
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (phoneError) {
-      setIsSubmitting(false);
-      return;
-    }
-
     if (!numberChild) {
       setNumberChildError('Please enter a number.');
       setIsSubmitting(false);
       return;
-    }
-
-    // Validate that a school is selected for each child (only if schools are available)
-    const missingSchools = [];
-    if (schools.length > 0) {
-        for (let i = 0; i < numberChild; i++) {
-            const child = childDetails[i];
-            if (!child || !child.school) {
-                missingSchools.push(`Child ${i + 1}`);
-            }
-        }
-
-        if (missingSchools.length > 0) {
-            setSubmitError(`Please select a school for: ${missingSchools.join(', ')}`);
-            setIsSubmitting(false);
-            return;
-        }
     }
 
     console.log(numberChildError);
@@ -171,6 +168,7 @@ useEffect(() => {
             label='Last Name'
             value={lastName}
             onChange={e => setLastName(e.target.value)}
+            type='email'
             required
             sx={{ mb: 2 }}
           />
@@ -181,7 +179,6 @@ useEffect(() => {
             label='Email'
             value={email}
             required
-            type='email'
             onChange={e => setEmail(e.target.value)}
             sx={{ mb: 2 }}
           />
@@ -253,7 +250,7 @@ useEffect(() => {
                 {submitError}
             </Typography>
         )}
-      <GenericButton buttonType='submit' buttonText={isSubmitting ? 'Submitting...' : 'Submit'} disabled={isSubmitting} />
+      <GenericButton buttonType='submit' buttonText={isSubmitting ? 'Submitting...' : 'Submit'} disabled={isSubmitting} onClick={handleSubmit}> </GenericButton>
     </Box>
   );
 };
