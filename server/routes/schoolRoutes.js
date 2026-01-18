@@ -10,14 +10,16 @@ router.route('/')
     .get(schoolController.getAllSchools)
     .post(schoolController.addSchool);
 
+// --- Filtered Routes ---
+router.get('/filterBySchoolName', schoolController.getSchoolByName);
+
 // --- Specific User Routes (:id) ---
 router.route('/:id')
     .get(schoolController.getSchoolById)
-    .put(schoolController.updateSchool);
+    .put(schoolController.updateSchool)
+    .delete(schoolController.deleteSchool);
 
 
-// --- Filtered Routes ---
-router.get('/filterBySchoolName', schoolController.getSchoolByName);
 
 
 export default router;
