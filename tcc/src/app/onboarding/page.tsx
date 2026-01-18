@@ -1,9 +1,17 @@
+"use client";
 // /app/onboardingform/page.tsx
 import React from 'react';
 // import { useRouter } from 'next/navigation';
 import OnboardingForm from '../../components/onboardingform';
 import '../../styles/globals.css';
 import { Container, Box, Typography } from '@mui/material';
+
+const dummyRegistrationData = {
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john.doe@example.com',
+  password: 'password123',
+};
 
 const OnboardingFormPage = () => {
   return (
@@ -18,9 +26,9 @@ const OnboardingFormPage = () => {
         </Typography>
       </Box>
 
-      <Box>
-        <OnboardingForm></OnboardingForm>
-      </Box>
+        <Box >
+            <OnboardingForm initialData={dummyRegistrationData}></OnboardingForm>
+        </Box>
     </Container>
   );
 };
