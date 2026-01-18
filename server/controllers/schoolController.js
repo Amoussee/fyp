@@ -192,3 +192,31 @@ export const deleteSchool = async (req, res) => {
     }
 };
 
+// PATCH update school status
+export const updateSchoolStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body; // e.g., "Active", "Inactive", "Closed"
+
+    if (!status) {
+        return res.status(400).json({ error: 'Status is required' });
+    }
+
+    try {
+        const result = await pool.query(
+            `UPDATE schools SET status = $1 WHERE school_id = $2 RETURNING *`,
+            [status, id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'School not found' });
+        }
+
+        res.status(200).json({
+            message: `School status updated to ${status}`,
+            school: result.rows[0]
+        });
+    } catch (error) {
+        console.error('Update status error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
