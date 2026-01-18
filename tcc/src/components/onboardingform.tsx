@@ -47,7 +47,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
-  const [numberChild, setNumberChild] = React.useState<number | null>(null);
+  const [numberChild, setNumberChild] = React.useState<number | undefined>(undefined);
   const [childDetails, setChildDetails] = React.useState<ChildDetail[]>([]);
   const [phoneError, setPhoneError] = React.useState('');
   const [numberChildError, setNumberChildError] = React.useState('');
@@ -224,7 +224,7 @@ useEffect(() => {
               if (typeof value === 'number') {
                 setNumberChild(value);
               } else {
-                setNumberChild(null);
+                setNumberChild(undefined);
               }
             }} // Handle input change
           ></Numberfield>

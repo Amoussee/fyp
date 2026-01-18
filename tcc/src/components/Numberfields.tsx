@@ -52,7 +52,7 @@ export default function NumberField ({
 
   return (
     <BaseNumberField.Root
-      value={value ?? undefined}
+      value={value === undefined ? null : value}
       onValueChange={handleValueChange}
       min={1}
       max={10}
