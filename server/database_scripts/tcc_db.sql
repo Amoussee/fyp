@@ -32,13 +32,12 @@ CREATE TABLE IF NOT EXISTS schools (
 );
 
 -- 2. USERS
-CREATE TYPE user_role_enum AS ENUM ('admin', 'school_staff', 'parent', 'volunteer');
+CREATE TYPE user_role_enum AS ENUM ('admin', 'school_staff', 'parent', 'psg_volunteer');
 
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     school_id INT REFERENCES schools(school_id) ON DELETE SET NULL,
     cognito_sub VARCHAR(255) UNIQUE,
-    password_hash VARCHAR(255),
     email VARCHAR(255) UNIQUE NOT NULL,
     phone_number VARCHAR(50), 
     first_name VARCHAR(255),
@@ -47,6 +46,7 @@ CREATE TABLE IF NOT EXISTS users (
     role user_role_enum NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     organisation VARCHAR(255),
+    logo_url VARCHAR(255),
     number_child INT DEFAULT 0,
     child_details JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
