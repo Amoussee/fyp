@@ -49,51 +49,53 @@ export const getUserById = async (req, res) => {
 
 // 5. POST ADD USER (Strict Schema Match)
 export const addUser = async (req, res) => {
-    const { streetName, buildingName, numberChild, childDetails } = req.body;
+    // Destructure directly using the new snake_case names from req.body
+    const { 
+        first_name, 
+        last_name, 
+        email, 
+        phone_number, 
+        role, 
+        organisation, 
+        number_child, 
+        child_details 
+    } = req.body;
 
-    // Default values for NOT NULL columns
-    const firstname = streetName || "New"; // Changed to lowercase
-    const lastname = "User";               // Changed to lowercase
-    const email = `user_${Date.now()}@example.com`;
-    const password_hash = "temporary_hash";
-    const phone_number = "00000000"; 
-    const role = "parent";
-    const numberchild = numberChild || 0;  // Changed to lowercase
+    const password_hash = "temporary_hash"; // Usually handled by Auth logic later
 
     try {
         const result = await pool.query(
             `INSERT INTO users (
-                firstname, 
-                lastname, 
+                first_name, 
+                last_name, 
                 email, 
                 password_hash, 
                 phone_number, 
-                organisation, 
                 role, 
-                numberchild, 
-                childdetails
-            ) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+                organisation, 
+                number_child, 
+                child_details
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
             RETURNING user_id`,
             [
-                firstname,
-                lastname,
+                first_name,
+                last_name,
                 email,
                 password_hash,
                 phone_number,
-                buildingName || 'Individual',
-                role,
-                numberchild,
-                JSON.stringify(childDetails || []) // Postgres needs JSONB as a string
+                role, // MUST match your user_role_enum values exactly
+                organisation,
+                number_child || 0,
+                JSON.stringify(child_details || [])
             ]
         );
 
         res.status(201).json({
             message: 'User created successfully',
-            userId: result.rows[0].user_id
+            user_id: result.rows[0].user_id
         });
     } catch (error) {
-        console.error('Database Error:', error.message);
+        console.error('DB Error:', error.message);
         res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
 };
@@ -101,24 +103,29 @@ export const addUser = async (req, res) => {
 // 6. UPDATE USER
 export const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { firstName, lastName, organisation, role, childDetails } = req.body;
+    const { first_name, last_name, phone_number, is_active, number_child, child_details } = req.body;
 
     try {
         const result = await pool.query(
-            `UPDATE users SET 
-                "firstName" = COALESCE($1, "firstName"), 
-                "lastName" = COALESCE($2, "lastName"), 
-                organisation = COALESCE($3, organisation), 
-                role = COALESCE($4, role),
-                "childDetails" = COALESCE($5, "childDetails")
-            WHERE user_id = $6`,
-            [firstName, lastName, organisation, role, JSON.stringify(childDetails), id]
+            `UPDATE users 
+            SET first_name = COALESCE($1, first_name), 
+                last_name = COALESCE($2, last_name), 
+                phone_number = COALESCE($3, phone_number),
+                is_active = COALESCE($4, is_active),
+                number_child = COALESCE($5, number_child),
+                child_details = COALESCE($6, child_details)
+            WHERE user_id = $7 
+            RETURNING *`,
+            [first_name, last_name, phone_number, is_active, number_child, child_details, id]
         );
 
-        if (result.rowCount === 0) return res.status(404).json({ message: "User not found" });
-        res.status(200).json({ message: "User updated successfully" });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User updated successfully', user: result.rows[0] });
     } catch (error) {
-        console.error('Update Error:', error);
+        console.error('Error updating user:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
