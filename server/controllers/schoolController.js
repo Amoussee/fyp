@@ -3,7 +3,7 @@ import pool from '../config/postgres.js';
 export const getAllSchools = async (req, res) => {
     try {
         // Fetch only ID and Name to keep the payload light
-        const result = await pool.query('SELECT school_id, school_name FROM schools ORDER BY school_name ASC');
+        const result = await pool.query('SELECT * FROM schools ORDER BY school_name ASC');
         res.status(200).json(result.rows);
     } catch (error) {
         console.error("Error fetching schools:", error);
@@ -36,11 +36,11 @@ export const getSchoolById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result =  pool.query('SELECT * FROM schools WHERE school_id = $1', [id])
+        const result = await pool.query('SELECT * FROM schools WHERE school_id = $1', [id])
 
         if (result.rows.length === 0) return res.status(404).json({ message: "School not found." });
 
-        res.status(200).json(result);
+        res.status(200).json(result.rows);
     }
     catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
@@ -54,7 +54,10 @@ export const addSchool = async (req, res) => {
         address,
         mrt_desc,
         dgp_code,
-        zone_code
+        zone_code,
+        mainlevel_code,
+        nature_code,
+        type_code
     } = req.body;
 
     try {
@@ -65,12 +68,24 @@ export const addSchool = async (req, res) => {
                 address,
                 mrt_desc,
                 dgp_code,
-                zone_code
+                zone_code,
+                mainlevel_code,
+                nature_code,
+                type_code
             )
-            VALUES ($1, $2, $3, $4, $5)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING *
             `,
-            [school_name, address, mrt_desc, dgp_code, zone_code]
+            [
+                school_name, 
+                address, 
+                mrt_desc, 
+                dgp_code, 
+                zone_code, 
+                mainlevel_code, 
+                nature_code, 
+                type_code
+            ]
         );
 
         res.status(201).json({
@@ -91,7 +106,10 @@ export const updateSchool = async (req, res) => {
         address,
         mrt_desc,
         dgp_code,
-        zone_code
+        zone_code,
+        mainlevel_code,
+        nature_code,
+        type_code
     } = req.body;
 
     try {
@@ -99,12 +117,15 @@ export const updateSchool = async (req, res) => {
             `
             UPDATE schools
             SET
-                school_name = COALESCE($1, school_name),
-                address     = COALESCE($2, address),
-                mrt_desc    = COALESCE($3, mrt_desc),
-                dgp_code    = COALESCE($4, dgp_code),
-                zone_code   = COALESCE($5, zone_code)
-            WHERE school_id = $6
+                school_name    = COALESCE($1, school_name),
+                address        = COALESCE($2, address),
+                mrt_desc       = COALESCE($3, mrt_desc),
+                dgp_code       = COALESCE($4, dgp_code),
+                zone_code      = COALESCE($5, zone_code),
+                mainlevel_code = COALESCE($6, mainlevel_code),
+                nature_code    = COALESCE($7, nature_code),
+                type_code      = COALESCE($8, type_code)
+            WHERE school_id = $9
             RETURNING *
             `,
             [
@@ -113,6 +134,9 @@ export const updateSchool = async (req, res) => {
                 mrt_desc,
                 dgp_code,
                 zone_code,
+                mainlevel_code,
+                nature_code,
+                type_code,
                 id
             ]
         );
@@ -131,5 +155,27 @@ export const updateSchool = async (req, res) => {
     }
 };
 
+// DELETE delete school
+export const deleteSchool = async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        const result = await pool.query(
+            'DELETE FROM schools WHERE school_id = $1 RETURNING *',
+            [id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'School not found' });
+        }
+
+        res.status(200).json({
+            message: 'School deleted successfully',
+            deletedSchool: result.rows[0]
+        });
+    } catch (error) {
+        console.error('Delete school error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
