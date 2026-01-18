@@ -40,7 +40,7 @@ VALUES
  'admin2@tcc.org',
  'hashed_pw_2',
  '+65 8888 8888',
-    TRUE,
+    FALSE,
  'TCC',
  'admin',
     0,

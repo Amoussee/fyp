@@ -15,7 +15,7 @@ export const getUsers = async (req, res) => {
 export const getUsersInfo = async (req, res) => {
     try {
         const result = await pool.query(
-            'SELECT user_id, "firstName", "lastName", email, organisation, role, deactivated FROM users'
+            'SELECT user_id, "firstName", "lastName", email, organisation, role, is_active FROM users'
         );
         res.status(200).json(result.rows);
     } catch (error) {
@@ -27,7 +27,7 @@ export const getUsersInfo = async (req, res) => {
 // 3. GET ACTIVE USERS
 export const getActiveUsers = async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM users WHERE deactivated = false');
+        const result = await pool.query('SELECT * FROM users WHERE is_active = true');
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Database Error:', error);
@@ -157,7 +157,7 @@ export const deleteUser = async (req, res) => {
 export const deactivateUser = async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await pool.query('UPDATE users SET deactivated = TRUE WHERE user_id = $1', [id]);
+        const result = await pool.query('UPDATE users SET is_active = FALSE WHERE user_id = $1', [id]);
         if (result.rowCount === 0) return res.status(404).json({ message: "User not found" });
         res.status(200).json({ message: "User deactivated" });
     } catch (error) {
