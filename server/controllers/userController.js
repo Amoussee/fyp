@@ -147,22 +147,7 @@ export const deleteUser = async (req, res) => {
             message: `User with ID ${id} deleted successfully`,
             deletedUser: result.rows[0] 
         });
-        const result = await pool.query(
-            'DELETE FROM users WHERE user_id = $1 RETURNING *', 
-            [id]
-        );
-
-        if (result.rowCount === 0) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({ 
-            message: `User with ID ${id} deleted successfully`,
-            deletedUser: result.rows[0] 
-        });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: "Internal Server Error" });
         console.error(error.message);
         res.status(500).json({ error: "Internal Server Error" });
     }

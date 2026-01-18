@@ -1,18 +1,6 @@
 import pool from '../config/postgres.js';
 
 export const getAllSchools = async (req, res) => {
-<<<<<<< HEAD
-  try {
-    // Fetch only ID and Name to keep the payload light
-    const result = await pool.query(
-      'SELECT school_id, school_name FROM schools ORDER BY school_name ASC',
-    );
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error('Error fetching schools:', error);
-    res.status(500).json({ error: 'Failed to fetch schools' });
-  }
-=======
     try {
         // Fetch only ID and Name to keep the payload light
         const result = await pool.query('SELECT * FROM schools ORDER BY school_name ASC');
@@ -21,7 +9,6 @@ export const getAllSchools = async (req, res) => {
         console.error("Error fetching schools:", error);
         res.status(500).json({ error: "Failed to fetch schools" });
     }
->>>>>>> 141bed5 (tested schools api)
 };
 
 // GET school by name
