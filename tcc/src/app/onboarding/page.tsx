@@ -25,9 +25,9 @@ const OnboardingFormPage = () => {
         </Typography>
       </Box>
 
-        <Box >
-            <OnboardingForm initialData={dummyRegistrationData}></OnboardingForm>
-        </Box>
+      <Box>
+        <OnboardingForm initialData={dummyRegistrationData}></OnboardingForm>
+      </Box>
     </Container>
   );
 };

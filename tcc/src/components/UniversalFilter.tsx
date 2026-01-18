@@ -1,5 +1,5 @@
-import type React from "react"
-import { useState } from "react"
+import type React from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
@@ -16,85 +16,88 @@ import {
   Divider,
   Chip,
   TextField,
-} from "@mui/material"
-import FilterListIcon from "@mui/icons-material/FilterList"
-import CloseIcon from "@mui/icons-material/Close"
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers"
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import type { Dayjs } from "dayjs"
+} from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import CloseIcon from '@mui/icons-material/Close';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import type { Dayjs } from 'dayjs';
 
 export interface FilterConfig {
-  field: string
-  label: string
-  type: "radio" | "checkbox" | "alphabet" | "dateRange" | "text"
-  options?: Array<{ value: string; label: string }>
-  placeholder?: string
+  field: string;
+  label: string;
+  type: 'radio' | 'checkbox' | 'alphabet' | 'dateRange' | 'text';
+  options?: Array<{ value: string; label: string }>;
+  placeholder?: string;
 }
 
 export interface FilterValues {
-  [key: string]: string | string[] | { start: Dayjs | null; end: Dayjs | null }
+  [key: string]: string | string[] | { start: Dayjs | null; end: Dayjs | null };
 }
 
 interface UniversalFilterProps {
-  filters: FilterConfig[]
-  values: FilterValues
-  onChange: (values: FilterValues) => void
-  onClear?: () => void
+  filters: FilterConfig[];
+  values: FilterValues;
+  onChange: (values: FilterValues) => void;
+  onClear?: () => void;
 }
 
 export function UniversalFilter({ filters, values, onChange, onClear }: UniversalFilterProps) {
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleFilterChange = (field: string, value: string | string[] | { start: Dayjs | null; end: Dayjs | null }) => {
+  const handleFilterChange = (
+    field: string,
+    value: string | string[] | { start: Dayjs | null; end: Dayjs | null },
+  ) => {
     onChange({
       ...values,
       [field]: value,
-    })
-  }
+    });
+  };
 
   const handleAlphabetToggle = (field: string, letter: string) => {
-    const currentLetters = (values[field] as string[]) || []
+    const currentLetters = (values[field] as string[]) || [];
     const newLetters = currentLetters.includes(letter)
       ? currentLetters.filter((l) => l !== letter)
-      : [...currentLetters, letter]
-    handleFilterChange(field, newLetters)
-  }
+      : [...currentLetters, letter];
+    handleFilterChange(field, newLetters);
+  };
 
   const handleClearAll = () => {
-    const clearedValues: FilterValues = {}
+    const clearedValues: FilterValues = {};
     filters.forEach((filter) => {
-      if (filter.type === "alphabet" || filter.type === "checkbox") {
-        clearedValues[filter.field] = []
-      } else if (filter.type === "dateRange") {
-        clearedValues[filter.field] = { start: null, end: null }
+      if (filter.type === 'alphabet' || filter.type === 'checkbox') {
+        clearedValues[filter.field] = [];
+      } else if (filter.type === 'dateRange') {
+        clearedValues[filter.field] = { start: null, end: null };
       } else {
-        clearedValues[filter.field] = ""
+        clearedValues[filter.field] = '';
       }
-    })
-    onChange(clearedValues)
-    if (onClear) onClear()
-  }
+    });
+    onChange(clearedValues);
+    if (onClear) onClear();
+  };
 
   const getActiveFilterCount = () => {
-    let count = 0
+    let count = 0;
     filters.forEach((filter) => {
-      const value = values[filter.field]
-      if (filter.type === "alphabet" || filter.type === "checkbox") {
-        if ((value as string[])?.length > 0) count++
-      } else if (filter.type === "dateRange") {
-        const dateValue = value as { start: Dayjs | null; end: Dayjs | null }
-        if (dateValue?.start || dateValue?.end) count++
-      } else if (filter.type === "text") {
-        if (value && (value as string).trim()) count++
+      const value = values[filter.field];
+      if (filter.type === 'alphabet' || filter.type === 'checkbox') {
+        if ((value as string[])?.length > 0) count++;
+      } else if (filter.type === 'dateRange') {
+        const dateValue = value as { start: Dayjs | null; end: Dayjs | null };
+        if (dateValue?.start || dateValue?.end) count++;
+      } else if (filter.type === 'text') {
+        if (value && (value as string).trim()) count++;
       } else {
-        if (value) count++
+        if (value) count++;
       }
-    })
-    return count
-  }
+    });
+    return count;
+  };
 
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
-  const activeFilterCount = getActiveFilterCount()
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const activeFilterCount = getActiveFilterCount();
 
   return (
     <>
@@ -103,13 +106,13 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
         startIcon={<FilterListIcon />}
         onClick={() => setDrawerOpen(true)}
         sx={{
-          borderRadius: "8px",
-          borderColor: "#d1d5db",
-          color: "#374151",
-          textTransform: "none",
-          "&:hover": {
-            borderColor: "#9ca3af",
-            backgroundColor: "#f9fafb",
+          borderRadius: '8px',
+          borderColor: '#d1d5db',
+          color: '#374151',
+          textTransform: 'none',
+          '&:hover': {
+            borderColor: '#9ca3af',
+            backgroundColor: '#f9fafb',
           },
         }}
       >
@@ -120,18 +123,20 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
             size="small"
             sx={{
               ml: 1,
-              height: "20px",
-              backgroundColor: "#15803d",
-              color: "white",
-              fontSize: "0.7rem",
+              height: '20px',
+              backgroundColor: '#15803d',
+              color: 'white',
+              fontSize: '0.7rem',
             }}
           />
         )}
       </Button>
 
       <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <Box sx={{ width: 350, p: 3, height: "100%", display: "flex", flexDirection: "column" }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Box sx={{ width: 350, p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Box
+            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}
+          >
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
               Filters
             </Typography>
@@ -140,7 +145,7 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
             </IconButton>
           </Box>
 
-          <Box sx={{ flexGrow: 1, overflowY: "auto", pr: 1 }}>
+          <Box sx={{ flexGrow: 1, overflowY: 'auto', pr: 1 }}>
             {filters.map((filter, index) => (
               <Box key={filter.field}>
                 {index > 0 && <Divider sx={{ my: 2 }} />}
@@ -148,15 +153,15 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                 <FormControl component="fieldset" fullWidth>
                   <FormLabel
                     component="legend"
-                    sx={{ fontWeight: 600, color: "#111827", mb: 1.5, fontSize: "0.9rem" }}
+                    sx={{ fontWeight: 600, color: '#111827', mb: 1.5, fontSize: '0.9rem' }}
                   >
                     {filter.label}
                   </FormLabel>
 
                   {/* Radio Button Filter */}
-                  {filter.type === "radio" && filter.options && (
+                  {filter.type === 'radio' && filter.options && (
                     <RadioGroup
-                      value={values[filter.field] || ""}
+                      value={values[filter.field] || ''}
                       onChange={(e) => handleFilterChange(filter.field, e.target.value)}
                     >
                       {filter.options.map((option) => (
@@ -164,17 +169,20 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                           key={option.value}
                           value={option.value}
                           control={
-                            <Radio size="small" sx={{ color: "#15803d", "&.Mui-checked": { color: "#15803d" } }} />
+                            <Radio
+                              size="small"
+                              sx={{ color: '#15803d', '&.Mui-checked': { color: '#15803d' } }}
+                            />
                           }
                           label={option.label}
-                          sx={{ "& .MuiFormControlLabel-label": { fontSize: "0.875rem" } }}
+                          sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
                         />
                       ))}
                     </RadioGroup>
                   )}
 
                   {/* Checkbox Filter */}
-                  {filter.type === "checkbox" && filter.options && (
+                  {filter.type === 'checkbox' && filter.options && (
                     <FormGroup>
                       {filter.options.map((option) => (
                         <FormControlLabel
@@ -182,52 +190,62 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                           control={
                             <Checkbox
                               size="small"
-                              checked={((values[filter.field] as string[]) || []).includes(option.value)}
+                              checked={((values[filter.field] as string[]) || []).includes(
+                                option.value,
+                              )}
                               onChange={(e) => {
-                                const currentValues = (values[filter.field] as string[]) || []
+                                const currentValues = (values[filter.field] as string[]) || [];
                                 const newValues = e.target.checked
                                   ? [...currentValues, option.value]
-                                  : currentValues.filter((v) => v !== option.value)
-                                handleFilterChange(filter.field, newValues)
+                                  : currentValues.filter((v) => v !== option.value);
+                                handleFilterChange(filter.field, newValues);
                               }}
-                              sx={{ color: "#15803d", "&.Mui-checked": { color: "#15803d" } }}
+                              sx={{ color: '#15803d', '&.Mui-checked': { color: '#15803d' } }}
                             />
                           }
                           label={option.label}
-                          sx={{ "& .MuiFormControlLabel-label": { fontSize: "0.875rem" } }}
+                          sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
                         />
                       ))}
                     </FormGroup>
                   )}
 
                   {/* Alphabet Filter */}
-                  {filter.type === "alphabet" && (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {filter.type === 'alphabet' && (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {alphabet.map((letter) => (
                         <Button
                           key={letter}
                           size="small"
                           variant={
-                            ((values[filter.field] as string[]) || []).includes(letter) ? "contained" : "outlined"
+                            ((values[filter.field] as string[]) || []).includes(letter)
+                              ? 'contained'
+                              : 'outlined'
                           }
                           onClick={() => handleAlphabetToggle(filter.field, letter)}
                           sx={{
-                            minWidth: "32px",
-                            width: "32px",
-                            height: "32px",
+                            minWidth: '32px',
+                            width: '32px',
+                            height: '32px',
                             p: 0,
-                            fontSize: "0.75rem",
-                            borderRadius: "6px",
-                            backgroundColor: ((values[filter.field] as string[]) || []).includes(letter)
-                              ? "#15803d"
-                              : "transparent",
-                            color: ((values[filter.field] as string[]) || []).includes(letter) ? "white" : "#6b7280",
-                            borderColor: "#d1d5db",
-                            "&:hover": {
-                              backgroundColor: ((values[filter.field] as string[]) || []).includes(letter)
-                                ? "#166534"
-                                : "#f3f4f6",
-                              borderColor: "#9ca3af",
+                            fontSize: '0.75rem',
+                            borderRadius: '6px',
+                            backgroundColor: ((values[filter.field] as string[]) || []).includes(
+                              letter,
+                            )
+                              ? '#15803d'
+                              : 'transparent',
+                            color: ((values[filter.field] as string[]) || []).includes(letter)
+                              ? 'white'
+                              : '#6b7280',
+                            borderColor: '#d1d5db',
+                            '&:hover': {
+                              backgroundColor: ((values[filter.field] as string[]) || []).includes(
+                                letter,
+                              )
+                                ? '#166534'
+                                : '#f3f4f6',
+                              borderColor: '#9ca3af',
                             },
                           }}
                         >
@@ -238,58 +256,62 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                   )}
 
                   {/* Text Input Filter */}
-                  {filter.type === "text" && (
+                  {filter.type === 'text' && (
                     <TextField
                       fullWidth
                       size="small"
-                      placeholder={filter.placeholder || "Enter text..."}
-                      value={(values[filter.field] as string) || ""}
+                      placeholder={filter.placeholder || 'Enter text...'}
+                      value={(values[filter.field] as string) || ''}
                       onChange={(e) => handleFilterChange(filter.field, e.target.value)}
                       sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "8px",
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: '8px',
                         },
                       }}
                     />
                   )}
 
                   {/* Date Range Filter */}
-                  {filter.type === "dateRange" && (
+                  {filter.type === 'dateRange' && (
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <DatePicker
                           label="Start Date"
                           value={
-                            (values[filter.field] as { start: Dayjs | null; end: Dayjs | null })?.start || null
+                            (values[filter.field] as { start: Dayjs | null; end: Dayjs | null })
+                              ?.start || null
                           }
                           onChange={(newValue) => {
                             const currentRange = (values[filter.field] as {
-                              start: Dayjs | null
-                              end: Dayjs | null
-                            }) || { start: null, end: null }
-                            handleFilterChange(filter.field, { ...currentRange, start: newValue })
+                              start: Dayjs | null;
+                              end: Dayjs | null;
+                            }) || { start: null, end: null };
+                            handleFilterChange(filter.field, { ...currentRange, start: newValue });
                           }}
                           slotProps={{
                             textField: {
-                              size: "small",
-                              sx: { "& .MuiOutlinedInput-root": { borderRadius: "8px" } },
+                              size: 'small',
+                              sx: { '& .MuiOutlinedInput-root': { borderRadius: '8px' } },
                             },
                           }}
                         />
                         <DatePicker
                           label="End Date"
-                          value={(values[filter.field] as { start: Dayjs | null; end: Dayjs | null })?.end || null}
+                          value={
+                            (values[filter.field] as { start: Dayjs | null; end: Dayjs | null })
+                              ?.end || null
+                          }
                           onChange={(newValue) => {
                             const currentRange = (values[filter.field] as {
-                              start: Dayjs | null
-                              end: Dayjs | null
-                            }) || { start: null, end: null }
-                            handleFilterChange(filter.field, { ...currentRange, end: newValue })
+                              start: Dayjs | null;
+                              end: Dayjs | null;
+                            }) || { start: null, end: null };
+                            handleFilterChange(filter.field, { ...currentRange, end: newValue });
                           }}
                           slotProps={{
                             textField: {
-                              size: "small",
-                              sx: { "& .MuiOutlinedInput-root": { borderRadius: "8px" } },
+                              size: 'small',
+                              sx: { '& .MuiOutlinedInput-root': { borderRadius: '8px' } },
                             },
                           }}
                         />
@@ -301,19 +323,19 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
             ))}
           </Box>
 
-          <Box sx={{ mt: 3, display: "flex", gap: 1, pt: 2, borderTop: "1px solid #e5e7eb" }}>
+          <Box sx={{ mt: 3, display: 'flex', gap: 1, pt: 2, borderTop: '1px solid #e5e7eb' }}>
             <Button
               fullWidth
               variant="outlined"
               onClick={handleClearAll}
               sx={{
-                borderRadius: "8px",
-                textTransform: "none",
-                color: "#6b7280",
-                borderColor: "#d1d5db",
-                "&:hover": {
-                  borderColor: "#9ca3af",
-                  backgroundColor: "#f9fafb",
+                borderRadius: '8px',
+                textTransform: 'none',
+                color: '#6b7280',
+                borderColor: '#d1d5db',
+                '&:hover': {
+                  borderColor: '#9ca3af',
+                  backgroundColor: '#f9fafb',
                 },
               }}
             >
@@ -324,11 +346,11 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
               variant="contained"
               onClick={() => setDrawerOpen(false)}
               sx={{
-                borderRadius: "8px",
-                textTransform: "none",
-                backgroundColor: "#15803d",
-                "&:hover": {
-                  backgroundColor: "#166534",
+                borderRadius: '8px',
+                textTransform: 'none',
+                backgroundColor: '#15803d',
+                '&:hover': {
+                  backgroundColor: '#166534',
                 },
               }}
             >
@@ -338,5 +360,5 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
         </Box>
       </Drawer>
     </>
-  )
+  );
 }
