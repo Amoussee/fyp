@@ -142,7 +142,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
       }
 
       console.log('Success:', data);
-    } catch (err) {
+    } catch {
       // Network / server down
       setSubmitError('Unable to connect. Please try again later.');
     } finally {
