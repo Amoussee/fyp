@@ -1,6 +1,6 @@
-import React from 'react';
-import { MuiTelInput } from 'mui-tel-input';
-import { SxProps, Theme } from '@mui/material';
+import React from 'react'
+import { MuiTelInput } from 'mui-tel-input'
+import { SxProps, Theme } from '@mui/material'; 
 
 interface PhoneNumberProps {
   value: string;
@@ -12,15 +12,7 @@ interface PhoneNumberProps {
   sx?: SxProps<Theme>; // Optionally add sx prop to allow external styling
 }
 
-const PhoneNumber = ({
-  value,
-  onChange,
-  error,
-  helperText,
-  label,
-  required,
-  sx,
-}: PhoneNumberProps) => {
+const PhoneNumber = ({ value, onChange, error, helperText, label,required,sx }: PhoneNumberProps) => {
   return (
     <MuiTelInput
       value={value}
@@ -32,7 +24,7 @@ const PhoneNumber = ({
       required={required}
       sx={sx} // Use passed sx prop or default
     />
-  );
-};
+  )
+}
 
-export default PhoneNumber;
+export default PhoneNumber

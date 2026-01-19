@@ -1,5 +1,4 @@
 # CI Pipelines
-
 ## Option 1: Run the CI steps locally (recommended)
 
 From your repo root (the folder that contains `tcc/` and `server/`):

@@ -46,7 +46,6 @@ next-env.d.ts
 .idea/
 
 # Server-specific ignores
-server/package-lock.json
 
 #package-lock
 

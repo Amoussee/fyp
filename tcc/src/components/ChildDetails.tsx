@@ -3,11 +3,6 @@ import React from 'react';
 import { TextField, Box, Grid, Typography } from '@mui/material';
 import SchoolSelect from './schoolDropdown'; // Assuming this is your dropdown component
 
-interface SchoolOption {
-  school_id: number;
-  school_name: string;
-}
-
 interface ChildDetailProps {
     index: number;
     childDetail: { name: string; school: string }; // Structure for child detail

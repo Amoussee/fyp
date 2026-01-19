@@ -10,7 +10,7 @@ module.exports = [
     ignores: ['node_modules/**', '.next/**'],
     languageOptions: {
       ecmaVersion: 'latest',
-      sourceType: 'module', // Changed from 'commonjs' to 'module'
+      sourceType: 'module',  // Changed from 'commonjs' to 'module'
       globals: {
         ...globals.node,
       },

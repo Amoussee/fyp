@@ -14,11 +14,12 @@ interface SchoolOption {
 
 interface SchoolSelectProps {
   schools: SchoolOption[]; // Received from Parent (OnboardingForm)
-  selectedSchool: string; // The current value
-  onChange: (school: string) => void;
+  selectedSchool: string;  // The current value
+  onChange: (school: string) => void; 
 }
 
 const SchoolSelect: React.FC<SchoolSelectProps> = ({ schools, selectedSchool, onChange }) => {
+  
   const handleChange = (event: SelectChangeEvent<string>) => {
     onChange(event.target.value);
   };
@@ -37,7 +38,7 @@ const SchoolSelect: React.FC<SchoolSelectProps> = ({ schools, selectedSchool, on
           MenuProps={{
             PaperProps: {
               style: {
-                maxHeight: 300,
+                maxHeight: 300, 
               },
             },
           }}
