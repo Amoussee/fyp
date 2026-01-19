@@ -1,29 +1,72 @@
 // src/components/OnboardingForm.js
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TextField, Box, Grid, Typography } from '@mui/material';
 import GenericButton from './GenericButton';
 import Numberfield from './Numberfields';
 import ChildDetail from './ChildDetails';
 import Divider from '@mui/material/Divider';
+import PhoneNumber from './PhoneNumber';
 
 interface ChildDetail {
-  name: string; // Child's name
-  school: string; // Selected school
+  name: string;
+  school: string;
 }
 
-const OnboardingForm = () => {
-  const [streetName, setStreetName] = React.useState('');
-  const [postalCode, setPostalCode] = React.useState('');
-  const [buildingName, setBuildingName] = React.useState('');
-  const [unitNumber, setUnitNo] = React.useState('');
-  const [numberChild, setNumberChild] = React.useState<number | null>(null);
-  const [childDetails, setChildDetails] = React.useState<ChildDetail[]>([]);
-  const [error, setError] = React.useState('');
+interface ExtractedData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+}
+interface OnboardingFormProps {
+  initialData?: ExtractedData; // Optional prop
+}
 
-  //   const addChildDetail = () => {
-  //     setChildDetails([...childDetails, { name: '', school: '' }]); // Add a new child detail entry
-  //   };
+const validatePhoneNumber = (value: string) => {
+  const valueWithoutSpaces = value.replace(/\s/g, '');
+  return /^\+?[0-9]{6,15}$/.test(valueWithoutSpaces);
+};
+
+const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [numberChild, setNumberChild] = React.useState<number | undefined>(undefined);
+  const [childDetails, setChildDetails] = React.useState<ChildDetail[]>([]);
+  const [phoneError, setPhoneError] = React.useState('');
+  const [numberChildError, setNumberChildError] = React.useState('');
+  const [submitError, setSubmitError] = React.useState('');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [schools, setSchools] = React.useState([]);
+
+  useEffect(() => {
+    if (!initialData) return;
+
+    setFirstName(initialData.firstName ?? '');
+    setLastName(initialData.lastName ?? '');
+    setEmail(initialData.email ?? '');
+
+    if (initialData.password) {
+      setPassword(initialData.password);
+    }
+  }, [initialData]);
+
+  useEffect(() => {
+    // to get the list of schools from db
+    const fetchSchools = async () => {
+      try {
+        const response = await fetch('http://localhost:5001/api/schools');
+        const data = await response.json();
+        setSchools(data); // Stores the cleaned school list from DB
+      } catch (err) {
+        console.error('Failed to load schools:', err);
+      }
+    };
+    fetchSchools();
+  }, []);
 
   const updateChildDetail = (index: number, detail: { name: string; school: string }) => {
     const updatedDetails = [...childDetails];
@@ -31,25 +74,51 @@ const OnboardingForm = () => {
     setChildDetails(updatedDetails);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Child Detail', childDetails);
-    setError('');
+    setSubmitError('');
+    setIsSubmitting(true);
 
-    if (!numberChild) {
-      setError('Please enter a number.');
-      console.log(numberChild);
-      console.log(error);
+    if (!firstName || !lastName || !email || !password || !phoneNumber) {
+      setSubmitError('Please fill in all required fields.');
+      setIsSubmitting(false);
       return;
     }
 
-    console.log(error);
+    if (phoneError) {
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!numberChild) {
+      setNumberChildError('Please enter a number.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate that a school is selected for each child (only if schools are available)
+    const missingSchools = [];
+    if (schools.length > 0) {
+      for (let i = 0; i < numberChild; i++) {
+        const child = childDetails[i];
+        if (!child || !child.school) {
+          missingSchools.push(`Child ${i + 1}`);
+        }
+      }
+
+      if (missingSchools.length > 0) {
+        setSubmitError(`Please select a school for: ${missingSchools.join(', ')}`);
+        setIsSubmitting(false);
+        return;
+      }
+    }
 
     const formData = {
-      streetName,
-      postalCode,
-      buildingName,
-      unitNumber,
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
       numberChild: numberChild?.toString() || '',
       childDetails,
     };
@@ -57,22 +126,27 @@ const OnboardingForm = () => {
     console.log(formData);
 
     try {
-      const response = await fetch('/api/submit', {
-        // Change URL to your actual endpoint
+      const response = await fetch('http://localhost:5001/api/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+
       if (!response.ok) {
-        // Handle error response
-        throw new Error('Network response was not ok');
+        // User-facing error from backend
+        setSubmitError(data.error || 'Something went wrong. Please try again.');
+        setIsSubmitting(false);
+        return;
       }
-      const data = await response.json(); // Parse the response if needed
-      console.log('Success:', data); // Log the response from the server
-    } catch (error) {
-      console.error('Error submitting form:', error);
+
+      console.log('Success:', data);
+    } catch {
+      // Network / server down
+      setSubmitError('Unable to connect. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -82,9 +156,9 @@ const OnboardingForm = () => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
-            label="Street Name"
-            value={streetName}
-            onChange={(e) => setStreetName(e.target.value)}
+            label="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             required
             sx={{ mb: 2 }} // Margin bottom
           />
@@ -92,10 +166,9 @@ const OnboardingForm = () => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
-            label="Postal Code"
-            value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
-            type="email"
+            label="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             required
             sx={{ mb: 2 }}
           />
@@ -103,32 +176,62 @@ const OnboardingForm = () => {
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
-            label="Building Name (Optional) "
-            value={buildingName}
-            onChange={(e) => setBuildingName(e.target.value)}
+            label="Email"
+            value={email}
+            required
+            type="email"
+            onChange={(e) => setEmail(e.target.value)}
             sx={{ mb: 2 }}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
-            label="House/Unit No. (Optional)"
-            value={unitNumber}
-            onChange={(e) => setUnitNo(e.target.value)}
+            label="Password"
+            value={password}
+            type="password"
+            required
+            onChange={(e) => setPassword(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <PhoneNumber
+            value={phoneNumber}
+            onChange={(newValue) => {
+              setPhoneNumber(newValue);
+
+              if (!newValue) {
+                setPhoneError('Phone number is required');
+              } else if (!validatePhoneNumber(newValue)) {
+                setPhoneError('Enter a valid phone number');
+              } else {
+                setPhoneError('');
+              }
+            }}
+            error={!!phoneError}
+            helperText={phoneError}
+            label="Phone Number"
+            required
             sx={{ mb: 2 }}
           />
         </Grid>
 
         <Grid size={{ xs: 12, sm: 6 }}>
           <Numberfield
-            label="Enter a number"
-            error={!!error} // Set error state
+            label="Number of Children"
+            error={!!numberChildError} // Set error state
             value={numberChild}
-            onValueChange={(value) => {
-              setNumberChild(typeof value === 'number' ? value : null);
+            onValueChange={(_, value) => {
+              if (typeof value === 'number') {
+                setNumberChild(value);
+              } else {
+                setNumberChild(undefined);
+              }
             }} // Handle input change
           ></Numberfield>
-          {error && <Typography color="error">{error}</Typography>} {/* Show error message */}
+          {numberChildError && <Typography color="error">{numberChildError}</Typography>}{' '}
+          {/* Show error message */}
         </Grid>
       </Grid>
 
@@ -139,12 +242,22 @@ const OnboardingForm = () => {
               index={index}
               childDetail={childDetails[index] || { name: '', school: '' }}
               onUpdate={updateChildDetail}
+              schools={schools} // Pass the database list down as a prop
             />
             <Divider></Divider>
           </Grid>
         ))}
       </Grid>
-      <GenericButton buttonType="submit" buttonText="Submit" />
+      {submitError && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          {submitError}
+        </Typography>
+      )}
+      <GenericButton
+        buttonType="submit"
+        buttonText={isSubmitting ? 'Submitting...' : 'Submit'}
+        disabled={isSubmitting}
+      />
     </Box>
   );
 };

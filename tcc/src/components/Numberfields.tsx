@@ -30,7 +30,7 @@ export default function NumberField({
   size?: 'small' | 'medium';
   error?: boolean;
   value?: number | null;
-  onValueChange?: (value: number | null) => void;
+  onValueChange?: (event: Event, value: number | null) => void;
 }) {
   let id = React.useId();
   if (idProp) {
@@ -40,13 +40,19 @@ export default function NumberField({
   // Wrapper to ensure onValueChange is called correctly
   // Base UI NumberField's onValueChange signature is (value, eventDetails), not (event, value)
   const handleValueChange = React.useCallback(
-    (newValue: number | null) => onValueChange?.(newValue),
+    (newValue: number | null) => {
+      if (onValueChange) {
+        // Create a synthetic event for compatibility with our callback signature
+        const syntheticEvent = new Event('change');
+        onValueChange(syntheticEvent, newValue);
+      }
+    },
     [onValueChange],
   );
 
   return (
     <BaseNumberField.Root
-      value={value ?? undefined}
+      value={value ?? null}
       onValueChange={handleValueChange}
       min={1}
       max={10}

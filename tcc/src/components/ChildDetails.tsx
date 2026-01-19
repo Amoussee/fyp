@@ -3,13 +3,19 @@ import React from 'react';
 import { TextField, Box, Grid, Typography } from '@mui/material';
 import SchoolSelect from './schoolDropdown'; // Assuming this is your dropdown component
 
+interface SchoolOption {
+  school_id: number;
+  school_name: string;
+}
+
 interface ChildDetailProps {
   index: number;
   childDetail: { name: string; school: string }; // Structure for child detail
   onUpdate: (index: number, detail: { name: string; school: string }) => void; // Function to handle updates
+  schools: SchoolOption[]; // Add this to receive the database list from OnboardingForm
 }
 
-const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate }) => {
+const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate, schools }) => {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Update the name directly in the parent state
     onUpdate(index, { ...childDetail, name: e.target.value });
@@ -22,7 +28,9 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate 
 
   return (
     <Box sx={{ mb: 2, padding: '6px 0', borderRadius: 1 }}>
-      <Typography variant="h6">Child {index + 1} Detail</Typography>
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        Child {index + 1} Detail
+      </Typography>
       <Grid container spacing={2}>
         <Grid size={6}>
           <TextField
@@ -35,10 +43,15 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate 
           />
         </Grid>
         <Grid size={6}>
-          <SchoolSelect
-            selectedSchool={childDetail.school} // Pass the school from childDetail
-            onChange={handleSchoolChange} // Function to handle school selection
-          />
+          {schools && schools.length > 0 ? (
+            <SchoolSelect
+              schools={schools}
+              selectedSchool={childDetail.school}
+              onChange={handleSchoolChange}
+            />
+          ) : (
+            <TextField fullWidth label="School" value="No schools available" disabled />
+          )}
         </Grid>
       </Grid>
     </Box>
