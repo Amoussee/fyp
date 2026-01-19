@@ -72,7 +72,7 @@ VALUES
  'Ng',
  'Evelyn Ng',
  'parent3@school.edu',
- '_65 9898 8989',
+ '+65 9898 8989',
     TRUE,
  'Riverside Secondary',
  'parent',
