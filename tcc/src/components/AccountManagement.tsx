@@ -411,7 +411,7 @@ export function AccountManagement() {
   const currentSelectedAccount = accounts.find((acc) => acc.id === selectedAccountId)
 
   return (
-    <Box sx={{ flexGrow: 1, p: 4 }}>
+    <Box sx={{ flexGrow: 1, px: 4, py: 2 }}>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 600, color: '#111827' }}>
         Account Management
       </Typography>

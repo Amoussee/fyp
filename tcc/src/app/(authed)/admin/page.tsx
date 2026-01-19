@@ -12,5 +12,5 @@ export default async function ParentHomePage() {
   if (session.status !== 'active') redirect('/unauthorized');
   if (session.role !== 'admin') redirect('/unauthorized');
 
-  redirect('/admin/dashboard');
+  redirect('/admin/account-management');
 }

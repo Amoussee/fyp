@@ -4,6 +4,9 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { decodeSession, SESSION_COOKIE_NAME } from '@/src/lib/mockAuth';
 
+import { Sidebar } from '@/src/components/sidebar';
+import { Box } from '@mui/material';
+
 export default async function ParentLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const cookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
@@ -13,5 +16,12 @@ export default async function ParentLayout({ children }: { children: React.React
   if (session.status !== 'active') redirect('/unauthorized');
   if (session.role !== 'admin') redirect('/unauthorized');
 
-  return <>{children}</>;
+  return (
+    <Box sx={{ flex: 1, display: 'flex', backgroundColor: '#f9fafb' }}>
+      <Sidebar />
+      <Box component="main" sx={{ flex: 1, minWidth: 0 }}>
+        {children}
+      </Box>
+    </Box>
+  );
 }

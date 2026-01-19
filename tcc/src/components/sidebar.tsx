@@ -50,10 +50,7 @@ export function Sidebar() {
   return (
     <Box
       sx={{
-        position: 'fixed',
-        left: 0,
-        top: '64px',
-        height: 'calc(100vh - 64px)',
+        // position: 'fixed',
         width: '192px',
         background: 'linear-gradient(to bottom, #fef08a, #86efac, #60a5fa)',
       }}
