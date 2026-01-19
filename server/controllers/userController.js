@@ -61,15 +61,14 @@ export const addUser = async (req, res) => {
         child_details 
     } = req.body;
 
-    const password_hash = "temporary_hash"; // Usually handled by Auth logic later
+    // const password_hash = "temporary_hash"; // Usually handled by Auth logic later
 
     try {
         const result = await pool.query(
             `INSERT INTO users (
                 first_name, 
                 last_name, 
-                email, 
-                password_hash, 
+                email,  
                 phone_number, 
                 role, 
                 organisation, 
@@ -81,7 +80,6 @@ export const addUser = async (req, res) => {
                 first_name,
                 last_name,
                 email,
-                password_hash,
                 phone_number,
                 role, // MUST match your user_role_enum values exactly
                 organisation,
