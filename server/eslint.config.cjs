@@ -3,12 +3,14 @@ const prettier = require('eslint-config-prettier');
 
 module.exports = [
   prettier,
+
+  // Default for .js and .mjs: ESM (matches "type": "module")
   {
-    files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
-    ignores: ['node_modules/**'],
+    files: ['**/*.js', '**/*.mjs'],
+    ignores: ['node_modules/**', '.next/**'],
     languageOptions: {
       ecmaVersion: 'latest',
-      sourceType: 'commonjs',
+      sourceType: 'module',  // Changed from 'commonjs' to 'module'
       globals: {
         ...globals.node,
       },
@@ -16,6 +18,19 @@ module.exports = [
     rules: {
       'no-undef': 'error',
       'no-unused-vars': 'warn',
+    },
+  },
+
+  // Only .cjs is CommonJS
+  {
+    files: ['**/*.cjs'],
+    ignores: ['node_modules/**', '.next/**'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'commonjs',
+      globals: {
+        ...globals.node,
+      },
     },
   },
 ];

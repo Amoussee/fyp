@@ -2,13 +2,13 @@ import pool from '../config/postgres.js';
 
 // 1. GET ALL USERS
 export const getUsers = async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM users');
-        res.status(200).json(result.rows);
-    } catch (error) {
-        console.error('Database Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+  try {
+    const result = await pool.query('SELECT * FROM users');
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error retrieving all users:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 // 2. GET USERS INFO (Public details)
