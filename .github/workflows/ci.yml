@@ -2,7 +2,7 @@ name: CI (lint, format, security)
 
 on:
   pull_request:
-    branches: ["staging"]
+    branches: ['staging']
 
 permissions:
   contents: read
@@ -21,9 +21,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
-          cache-dependency-path: tcc/package-lock.json
+          cache-dependency-path: |
+            tcc/package-lock.json
+            tcc/package.json
 
       - name: Install dependencies
         run: npm ci
@@ -53,7 +55,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
           cache-dependency-path: server/package-lock.json
 
@@ -83,4 +85,4 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: HIGH,CRITICAL
-          exit-code: "1"
+          exit-code: '1'
