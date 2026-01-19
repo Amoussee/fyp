@@ -15,7 +15,7 @@ export const getUsers = async (req, res) => {
 export const getUsersInfo = async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT user_id, "firstName", "lastName", email, organisation, role, is_active FROM users'
+      'SELECT user_id, "firstName", "lastName", email, organisation, role, is_active FROM users',
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -40,7 +40,7 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query('SELECT * FROM users WHERE user_id = $1', [id]);
-    if (result.rows.length === 0) return res.status(404).json({ message: "User not found." });
+    if (result.rows.length === 0) return res.status(404).json({ message: 'User not found.' });
     res.status(200).json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -58,7 +58,7 @@ export const addUser = async (req, res) => {
     role,
     organisation,
     number_child,
-    child_details
+    child_details,
   } = req.body;
 
   // const password_hash = "temporary_hash"; // Usually handled by Auth logic later
@@ -84,13 +84,13 @@ export const addUser = async (req, res) => {
         role, // MUST match your user_role_enum values exactly
         organisation,
         number_child || 0,
-        JSON.stringify(child_details || [])
-      ]
+        JSON.stringify(child_details || []),
+      ],
     );
 
     res.status(201).json({
       message: 'User created successfully',
-      user_id: result.rows[0].user_id
+      user_id: result.rows[0].user_id,
     });
   } catch (error) {
     console.error('DB Error:', error.message);
@@ -114,7 +114,7 @@ export const updateUser = async (req, res) => {
                 child_details = COALESCE($6, child_details)
             WHERE user_id = $7 
             RETURNING *`,
-      [first_name, last_name, phone_number, is_active, number_child, child_details, id]
+      [first_name, last_name, phone_number, is_active, number_child, child_details, id],
     );
 
     if (result.rows.length === 0) {
@@ -126,30 +126,25 @@ export const updateUser = async (req, res) => {
     console.error('Error updating user:', error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-
-
 };
 
 // 7. DELETE USER
 export const deleteUser = async (req, res) => {
   const { id } = req.params; // This gets the ID from the URL
   try {
-    const result = await pool.query(
-      'DELETE FROM users WHERE user_id = $1 RETURNING *',
-      [id]
-    );
+    const result = await pool.query('DELETE FROM users WHERE user_id = $1 RETURNING *', [id]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     res.status(200).json({
       message: `User with ID ${id} deleted successfully`,
-      deletedUser: result.rows[0]
+      deletedUser: result.rows[0],
     });
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -158,11 +153,9 @@ export const deactivateUser = async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query('UPDATE users SET is_active = FALSE WHERE user_id = $1', [id]);
-    if (result.rowCount === 0) return res.status(404).json({ message: "User not found" });
-    res.status(200).json({ message: "User deactivated" });
+    if (result.rowCount === 0) return res.status(404).json({ message: 'User not found' });
+    res.status(200).json({ message: 'User deactivated' });
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
-
-
 };
