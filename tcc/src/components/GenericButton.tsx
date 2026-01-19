@@ -7,18 +7,21 @@ type GenericButtonProps = {
   buttonText?: string;
   buttonType?: 'button' | 'submit' | 'reset';
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
 };
 
 const GenericButton: React.FC<GenericButtonProps> = ({
   buttonText = 'Click Me',
   buttonType = 'button',
   onClick,
+  disabled,
 }) => {
   return (
     <Button
       type={buttonType}
       variant="contained"
       onClick={onClick}
+      disabled={disabled}
       sx={{
         backgroundColor: 'var(--main-color)',
         color: 'white',
