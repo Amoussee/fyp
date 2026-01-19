@@ -61,13 +61,14 @@ export const addUser = async (req, res) => {
     child_details,
   } = req.body;
 
-  // const password_hash = "temporary_hash"; // Usually handled by Auth logic later
+    // const password_hash = "temporary_hash"; // Usually handled by Auth logic later
 
   try {
     const result = await pool.query(
       `INSERT INTO users (
                 first_name, 
                 last_name, 
+                email,  
                 email,  
                 phone_number, 
                 role, 
@@ -76,17 +77,17 @@ export const addUser = async (req, res) => {
                 child_details
             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
             RETURNING user_id`,
-      [
-        first_name,
-        last_name,
-        email,
-        phone_number,
-        role, // MUST match your user_role_enum values exactly
-        organisation,
-        number_child || 0,
-        JSON.stringify(child_details || []),
-      ],
-    );
+            [
+                first_name,
+                last_name,
+                email,
+                phone_number,
+                role, // MUST match your user_role_enum values exactly
+                organisation,
+                number_child || 0,
+                JSON.stringify(child_details || [])
+            ]
+        );
 
     res.status(201).json({
       message: 'User created successfully',

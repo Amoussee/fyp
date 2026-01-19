@@ -8,14 +8,24 @@ TRUNCATE TABLE
   schools
 RESTART IDENTITY CASCADE;
 
-INSERT INTO users (firstName, lastName, email, password_hash, phone_number, deactivated, organisation, role, numberChild,childDetails)
+INSERT INTO users (
+    first_name, 
+    last_name, 
+    full_name, 
+    email, 
+    phone_number, 
+    is_active,       -- changed from 'deactivated'
+    organisation, 
+    role, 
+    number_child, 
+    child_details
+)
 VALUES
 (
  'Alice',
  'Tan',
  'Alice Tan',     -- Manually combined for full_name
  'admin1@tcc.org',
- 'hashed_pw_1',
  '+65 9999 9999',
     TRUE,            -- deactivated=FALSE means is_active=TRUE
  'TCC',
@@ -28,7 +38,6 @@ VALUES
  'Lim',
  'Ben Lim',
  'admin2@tcc.org',
- 'hashed_pw_2',
  '+65 8888 8888',
     FALSE,
  'TCC',
@@ -41,7 +50,6 @@ VALUES
  'Ong',
  'Clara Ong',
  'parent1@school.edu',
- 'hashed_pw_3',
  '+65 9888 8888',
     TRUE,
  'Greenfield Primary',
@@ -54,7 +62,6 @@ VALUES
  'Lee',
  'Daniel Lee',
  'parent2@school.edu',
- 'hashed_pw_4',
  '+65 8989 9898',
     TRUE,
  'Greenfield Primary',
@@ -67,8 +74,7 @@ VALUES
  'Ng',
  'Evelyn Ng',
  'parent3@school.edu',
- 'hashed_pw_5',
- '_65 9898 8989',
+ '+65 9898 8989',
     TRUE,
  'Riverside Secondary',
  'parent',
