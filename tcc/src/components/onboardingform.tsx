@@ -189,6 +189,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
             fullWidth
             label="Password"
             value={password}
+            type="password"
             required
             onChange={(e) => setPassword(e.target.value)}
             sx={{ mb: 2 }}

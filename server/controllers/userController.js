@@ -126,6 +126,12 @@ export const updateUser = async (req, res) => {
         console.error('Error updating user:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+
+    res.status(200).json({ message: 'User updated successfully' });
+  } catch (error) {
+    console.error('Update Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 // 7. DELETE USER
@@ -161,4 +167,10 @@ export const deactivateUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
+
+    res.status(200).json({ message: 'User deactivated' });
+  } catch (error) {
+    console.error('Deactivate Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };

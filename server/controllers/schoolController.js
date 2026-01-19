@@ -21,7 +21,7 @@ export const getSchoolByName = async (req, res) => {
             [`%${name}%`] 
         );
 
-        if (result.rows.length === 0) return res.status(404).json({ message: "School not found." });
+    if (result.rows.length === 0) return res.status(404).json({ message: 'School not found.' });
 
         // return the first object
         res.status(200).json(result.rows[0]);
@@ -60,9 +60,9 @@ export const addSchool = async (req, res) => {
         type_code
     } = req.body;
 
-    try {
-        const result = await pool.query(
-            `
+  try {
+    const result = await pool.query(
+      `
             INSERT INTO schools (
                 school_name,
                 address,
@@ -88,14 +88,14 @@ export const addSchool = async (req, res) => {
             ]
         );
 
-        res.status(201).json({
-            message: 'School added successfully',
-            school: result.rows[0]
-        });
-    } catch (error) {
-        console.error('Add school error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+    res.status(201).json({
+      message: 'School added successfully',
+      school: result.rows[0],
+    });
+  } catch (error) {
+    console.error('Add school error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 // PUT update school
@@ -112,9 +112,9 @@ export const updateSchool = async (req, res) => {
         type_code
     } = req.body;
 
-    try {
-        const result = await pool.query(
-            `
+  try {
+    const result = await pool.query(
+      `
             UPDATE schools
             SET
                 school_name    = COALESCE($1, school_name),
@@ -141,18 +141,18 @@ export const updateSchool = async (req, res) => {
             ]
         );
 
-        if (result.rowCount === 0) {
-            return res.status(404).json({ message: 'School not found' });
-        }
-
-        res.status(200).json({
-            message: 'School updated successfully',
-            school: result.rows[0]
-        });
-    } catch (error) {
-        console.error('Update school error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'School not found' });
     }
+
+    res.status(200).json({
+      message: 'School updated successfully',
+      school: result.rows[0],
+    });
+  } catch (error) {
+    console.error('Update school error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 // DELETE delete school

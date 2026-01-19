@@ -31,7 +31,6 @@ import {
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { UniversalFilter, type FilterConfig, type FilterValues } from './UniversalFilter';
 
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 interface Account {
@@ -83,8 +82,6 @@ export function AccountManagement() {
 
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
   const [accountToDeactivate, setAccountToDeactivate] = useState<Account | null>(null);
-
-
 
   // Filter state
   const [filterValues, setFilterValues] = useState<FilterValues>({
@@ -176,8 +173,6 @@ export function AccountManagement() {
   // Apply filters and search
   const filteredAccounts = useMemo(() => {
     return accounts.filter((account) => {
-
-
       // First name alphabet filter
       const firstnameAlphabet = filterValues.firstnameAlphabet as string[];
       if (firstnameAlphabet.length > 0) {
@@ -249,12 +244,6 @@ export function AccountManagement() {
     setAnchorEl(null);
     setSelectedAccountId(null);
   };
-
-
-
-
-
-
 
   const handleEditClick = () => {
     const account = accounts.find((acc) => acc.id === selectedAccountId);
@@ -383,8 +372,6 @@ export function AccountManagement() {
       handleMenuClose();
     }
   };
-
-
 
   const handleFilterChange = (newFilterValues: FilterValues) => {
     setFilterValues(newFilterValues);
