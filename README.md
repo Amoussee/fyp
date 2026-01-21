@@ -1,6 +1,6 @@
 # Greener Routes - Release 0.0.0
 ## Frontend
-### Login/Logouthttps://github.com/Amoussee/fyp/blob/main/README.md
+### Login/Logout
 * Allows users to login as a parent or admin, values are mocked to ease AWS Cognito integration later on
 * Checks if a user is deactivated, preventing login if user's account is deactivated
 
