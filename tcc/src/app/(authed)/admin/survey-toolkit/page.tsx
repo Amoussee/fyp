@@ -18,10 +18,10 @@ export default function SurveyToolkitPage() {
           </Typography>
         </CardContent>
         <CardActions sx={{ px: 2, pb: 2 }}>
-          <Link href="/admin/survey-toolkit/survey-creation" style={{ textDecoration: "none" }}>
+          <Link href="/admin/survey-toolkit/survey-creation" style={{ textDecoration: 'none' }}>
             <Button
               variant="contained"
-              sx={{ borderRadius: 999, textTransform: "none", boxShadow: "none" }}
+              sx={{ borderRadius: 999, textTransform: 'none', boxShadow: 'none' }}
             >
               Create New Survey
             </Button>
