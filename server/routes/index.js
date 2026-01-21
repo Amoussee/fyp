@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import userRoutes from './userRoutes.js'; 
+import userRoutes from './userRoutes.js';
 import schoolRoutes from './schoolRoutes.js';
 
 const apiRouter = express.Router();
