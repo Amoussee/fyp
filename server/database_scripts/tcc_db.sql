@@ -1,11 +1,5 @@
--- -- 1. Create the database if it doesn't exist
--- CREATE DATABASE IF NOT EXISTS tcc_db;
-
--- -- 2. Switch to using that database
--- USE tcc_db;
-
--- 3. Create your tables (Example: Users table)
 -- SAFE RESET (for development only)
+DROP TABLE IF EXISTS survey_templates CASCADE;
 DROP TABLE IF EXISTS survey_responses CASCADE;
 DROP TABLE IF EXISTS dashboards CASCADE;
 DROP TABLE IF EXISTS surveys CASCADE;
@@ -13,6 +7,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS schools CASCADE;
 
 DROP TYPE IF EXISTS user_role_enum CASCADE;
+DROP TYPE IF EXISTS survey_scope CASCADE;
 
 -- 1. Schools
 CREATE TABLE IF NOT EXISTS schools (
@@ -21,13 +16,11 @@ CREATE TABLE IF NOT EXISTS schools (
     address VARCHAR(255),
     mrt_desc VARCHAR(255),       -- e.g., "Bishan MRT"
     dgp_code VARCHAR(100),       -- e.g., "BISHAN", "YISHUN"
-
     mainlevel_code VARCHAR(50),  -- e.g., "PRIMARY", "SECONDARY"
     nature_code VARCHAR(50),     -- e.g., Code for Co-ed/Single sex
     type_code VARCHAR(50),       -- e.g., Code for Govt/Aided/Independent
     zone_code VARCHAR(50),       -- e.g., "NORTH", "EAST"
     status VARCHAR(50),          -- e.g., "Closed", "Merging"
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -54,16 +47,27 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- 3. SURVEYS (QUESTIONS)
+CREATE TYPE survey_scope AS ENUM ('PUBLIC', 'AUTHENTICATED');
+
 CREATE TABLE IF NOT EXISTS surveys (
     form_id SERIAL PRIMARY KEY,
-    metadata JSONB NOT NULL,
+    title VARCHAR(255) NOT NULL, -- added title 
+    description TEXT,            -- added optional description
+    source_template_id INT,      -- added source_template_id to reference survey_templates
+    survey_type survey_scope NOT NULL DEFAULT 'AUTHENTICATED', -- added to distinguish between public and private surveys
+    metadata JSONB NOT NULL DEFAULT '{}',
     schema_json JSONB NOT NULL,
     created_by INT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
+
     CONSTRAINT fk_surveys_created_by
         FOREIGN KEY (created_by)
         REFERENCES users(user_id)
         ON DELETE CASCADE
+    CONSTRAINT fk_surveys_template
+        FOREIGN KEY (source_template_id)
+        REFERENCES survey_templates(template_id)
+        ON DELETE SET NULL
 );
 
 -- 4. SURVEY RESPONSES
@@ -71,25 +75,45 @@ CREATE TABLE IF NOT EXISTS survey_responses (
     response_id SERIAL PRIMARY KEY,
     form_id INT NOT NULL,
     responses JSONB NOT NULL,
-    created_by INT NOT NULL,
+    user_id INT, -- renamed from created_by to user_id and removed 'NOT NULL' so that public users can submit
     created_at TIMESTAMP DEFAULT NOW(),
+
     CONSTRAINT fk_responses_form
         FOREIGN KEY (form_id)
         REFERENCES surveys(form_id)
         ON DELETE CASCADE,
     CONSTRAINT fk_responses_user
-        FOREIGN KEY (created_by)
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE SET NULL
+);
+
+-- 5. SURVEY TEMPLATES
+CREATE TABLE IF NOT EXISTS survey_templates (
+    template_id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    -- core data needed to recreate a survey
+    schema_json JSONB NOT NULL,
+    metadata JSONB DEFAULT '{}',
+    
+    owner_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+
+    CONSTRAINT fk_templates_owner
+        FOREIGN KEY (owner_id)
         REFERENCES users(user_id)
         ON DELETE CASCADE
 );
 
--- 5. DASHBOARDS
+-- 6. DASHBOARDS
 CREATE TABLE IF NOT EXISTS dashboards (
     dashboard_id SERIAL PRIMARY KEY,
     owner_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     config JSONB NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
+
     CONSTRAINT fk_dashboard_owner
         FOREIGN KEY (owner_id)
         REFERENCES users(user_id)
@@ -97,18 +121,6 @@ CREATE TABLE IF NOT EXISTS dashboards (
 );
 
 -- 5. SCHOOLS
--- CREATE TABLE IF NOT EXISTS schools (
---     school_id SERIAL PRIMARY KEY,
---     school_name VARCHAR(255) NOT NULL,
---     address VARCHAR(255),
---     mrt_desc VARCHAR(255), -- Nearest MRT station information
---     dgp_code VARCHAR(100), -- Planning area code (YISHUN, BISHAN etc)
---     zone_code VARCHAR(50), -- Educational zone (North, South, etc.)
---     created_at TIMESTAMP DEFAULT NOW()
--- );
-
-
-
 -- CREATE TABLE IF NOT EXISTS schools (
 --     school_id SERIAL PRIMARY KEY,
 --     school_name VARCHAR(255) NOT NULL,
@@ -129,22 +141,5 @@ CREATE TABLE IF NOT EXISTS dashboards (
 --     zone_code VARCHAR(50),
 
 --     -- Timestamp (Yours)
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
-
--- when importing, make sure to put column names as school_name,address,mrt_desc,dgp_code,zone_code
--- FOR MAC USERS type \r in the "Lines terminated with" box instead of auto
-
--- CREATE TABLE IF NOT EXISTS schools (
---     school_id SERIAL PRIMARY KEY,
---     school_name VARCHAR(255) NOT NULL,
---     address VARCHAR(255),
---     mrt_desc VARCHAR(255),     
---     dgp_code VARCHAR(100),       
---     mainlevel_code VARCHAR(50),  
---     nature_code VARCHAR(50),             
---     type_code VARCHAR(50),  
---     zone_code VARCHAR(50),             
---     status VARCHAR(50),         
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 -- );
