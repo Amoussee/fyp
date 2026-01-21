@@ -25,10 +25,10 @@ const sidebarItems: SidebarItem[] = [
     href: '/account-management',
   },
   {
-    id: 'personalisation',
-    label: 'Personalisation',
+    id: 'survey',
+    label: 'Survey',
     icon: <EditIcon sx={{ fontSize: 20 }} />,
-    href: '/account-management/personalisation',
+    href: '/admin/survey-toolkit/surveys',
   },
   {
     id: 'notifications',
