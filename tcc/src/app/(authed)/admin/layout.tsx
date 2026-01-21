@@ -18,7 +18,7 @@ export default async function ParentLayout({ children }: { children: React.React
 
   return (
     <Box sx={{ flex: 1, display: 'flex', backgroundColor: '#f9fafb' }}>
-      <Sidebar />
+      
       <Box component="main" sx={{ flex: 1, minWidth: 0 }}>
         {children}
       </Box>
