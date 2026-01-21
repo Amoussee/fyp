@@ -40,7 +40,7 @@ export default function NumberField({
   // Wrapper to ensure onValueChange is called correctly
   // Base UI NumberField's onValueChange signature is (value, eventDetails), not (event, value)
   const handleValueChange = React.useCallback(
-    (newValue: number | null, eventDetails?: any) => {
+    (newValue: number | null, eventDetails?: unknown) => {
       if (onValueChange) {
         // Create a synthetic event for compatibility with our callback signature
         const syntheticEvent = new Event('change');
