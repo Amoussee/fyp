@@ -17,10 +17,18 @@ import MenuItem from '@mui/material/MenuItem';
 import { useRouter } from 'next/navigation';
 import { logout } from '@/src/lib/api/auth';
 
-const pages = ['Home', 'About us', 'What We Do', 'News', 'Contact Us'];
+const pageRoutes: Record<string, string> = {
+  'Account Management': '/admin/account-management',
+  'Survey Toolkit': '/admin/survey-toolkit', // or /admin/survey-toolkit/surveys
+  '[Temporary] New Survey': '/admin/survey-toolkit/survey-creation',
+};
+
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
+  const router = useRouter();
+  const pages = React.useMemo(() => Object.keys(pageRoutes), []);
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -39,7 +47,13 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  const router = useRouter();
+  const handleNavClick = (page: string) => {
+    const path = pageRoutes[page];
+    if (!path) return; // safety
+
+    handleCloseNavMenu(); // closes mobile menu if open
+    router.push(path);
+  };
 
   const handleLogout = async () => {
     try {
@@ -92,7 +106,7 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => handleNavClick(page)}>
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -102,7 +116,7 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleNavClick(page)}
                 sx={{ my: 2, color: 'black', display: 'block', textTransform: 'none' }}
               >
                 {page}
