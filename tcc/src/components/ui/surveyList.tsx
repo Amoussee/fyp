@@ -4,18 +4,18 @@ import React, { useState } from 'react'
 import {
   LayoutDashboard,
   Edit,
-  Trash2
+  Trash2,
+  Search,
+  FileText,
+  ChevronDown,
 } from 'lucide-react'
 
-// Types
 interface Survey {
   id: string
   name: string
   createdDate: string
-  labels: string[]
   completedUsers: number
   totalUsers: number
-  type: 'Public - Parent' | 'Public - Student' | 'Parent'
   status: 'Pending' | 'Ready' | 'Closed'
 }
 
@@ -23,117 +23,115 @@ export function SurveyList() {
   const [surveys, setSurveys] = useState<Survey[]>([
     {
       id: '1',
-      name: 'Parent Feedback Survey',
-      createdDate: '2024-01-10',
-      labels: ['Feedback', 'Parents'],
-      completedUsers: 45,
-      totalUsers: 100,
-      type: 'Public - Parent',
+      name: 'Poi Ching School',
+      createdDate: 'Dec 12 2025',
+      completedUsers: 145,
+      totalUsers: 200,
       status: 'Ready',
     },
     {
       id: '2',
-      name: 'Student Wellbeing Survey',
-      createdDate: '2024-01-15',
-      labels: ['Wellbeing'],
-      completedUsers: 30,
-      totalUsers: 80,
-      type: 'Public - Student',
-      status: 'Pending',
+      name: 'Poi Ching School',
+      createdDate: 'Dec 12 2025',
+      completedUsers: 145,
+      totalUsers: 200,
+      status: 'Ready',
     },
   ])
 
-  const onDashboard = (id: string) => {
-    console.log('Go to dashboard:', id)
-    // later: router.push(`/surveys/${id}/dashboard`)
-  }
-
-  const onEdit = (id: string) => {
-    console.log('Edit survey:', id)
-  }
-
-  const onDelete = (id: string) => {
-    setSurveys((prev) => prev.filter((s) => s.id !== id))
-  }
-
-  const getStatusStyles = (status: Survey['status']) => {
-    switch (status) {
-      case 'Ready':
-        return 'bg-green-100 text-green-800'
-      case 'Pending':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'Closed':
-        return 'bg-red-100 text-red-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
+  const statusColor = (status: Survey['status']) => {
+    if (status === 'Ready') return 'text-green-600'
+    if (status === 'Pending') return 'text-yellow-600'
+    return 'text-red-600'
   }
 
   return (
-    <div className="overflow-x-auto border border-gray-200 rounded-lg">
-      <table className="w-full">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Survey Name</th>
-            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Created Date</th>
-            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Labels</th>
-            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Completed</th>
-            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Type</th>
-            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Status</th>
-            <th className="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Actions</th>
-          </tr>
-        </thead>
+    <div className="max-w-4xl mx-auto bg-white border rounded-xl p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-semibold text-gray-900">
+          Survey List
+        </h2>
 
-        <tbody className="bg-white divide-y divide-gray-200">
-          {surveys.map((survey) => (
-            <tr key={survey.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 text-sm text-gray-900">{survey.name}</td>
-              <td className="px-6 py-4 text-sm text-gray-600">{survey.createdDate}</td>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              placeholder="Search"
+              className="pl-9 pr-3 py-2 border rounded-md text-sm focus:outline-none"
+            />
+          </div>
 
-              <td className="px-6 py-4">
-                <div className="flex gap-1 flex-wrap">
-                  {survey.labels.map((label, idx) => (
-                    <span
-                      key={idx}
-                      className="px-2.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800"
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-              </td>
+          <button className="flex items-center gap-1 px-4 py-2 bg-gray-100 rounded-md text-sm">
+            New Survey
+            <ChevronDown size={16} />
+          </button>
+        </div>
+      </div>
 
-              <td className="px-6 py-4 text-sm text-gray-600">
-                {survey.completedUsers} / {survey.totalUsers}
-              </td>
+      {/* Survey list */}
+      <div className="space-y-3">
+        {surveys.map((survey) => (
+          <div
+            key={survey.id}
+            className="flex items-center justify-between bg-gray-50 rounded-lg px-5 py-4"
+          >
+            {/* Left */}
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-green-100 rounded-md flex items-center justify-center">
+                <FileText size={18} className="text-green-700" />
+              </div>
 
-              <td className="px-6 py-4 text-sm text-gray-600">{survey.type}</td>
+              <div>
+                <p className="text-sm font-medium text-gray-900">
+                  {survey.name}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {survey.createdDate}
+                </p>
+              </div>
+            </div>
 
-              <td className="px-6 py-4">
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs ${getStatusStyles(survey.status)}`}
+            {/* Right */}
+            <div className="flex items-center gap-6">
+              <div className="text-right">
+                <p className="text-sm text-gray-700">
+                  {survey.completedUsers} responses
+                </p>
+                <p
+                  className={`text-xs font-medium ${statusColor(
+                    survey.status
+                  )}`}
                 >
-                  {survey.status}
-                </span>
-              </td>
+                  Complete
+                </p>
+              </div>
 
-              <td className="px-6 py-4">
-                <div className="flex justify-center gap-2">
-                  <button onClick={() => onDashboard(survey.id)}>
-                    <LayoutDashboard size={18} />
-                  </button>
-                  <button onClick={() => onEdit(survey.id)}>
-                    <Edit size={18} />
-                  </button>
-                  <button onClick={() => onDelete(survey.id)}>
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              <div className="flex gap-2">
+                <button className="p-2 hover:bg-gray-200 rounded">
+                  <LayoutDashboard size={16} />
+                </button>
+                <button className="p-2 hover:bg-gray-200 rounded">
+                  <Edit size={16} />
+                </button>
+                <button
+                  onClick={() =>
+                    setSurveys((prev) =>
+                      prev.filter((s) => s.id !== survey.id)
+                    )
+                  }
+                  className="p-2 hover:bg-red-100 rounded text-red-600"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
