@@ -35,9 +35,7 @@ type NavSection = { heading: string; items: NavItem[] };
 const navSections: NavSection[] = [
   {
     heading: 'Overview',
-    items: [
-      { label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> },
-    ],
+    items: [{ label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> }],
   },
   {
     heading: 'Toolkit',
@@ -202,9 +200,7 @@ export function Sidebar() {
                         justifyContent: collapsed ? 'center' : 'flex-start',
                         color: active ? BRAND.text : BRAND.muted,
                         bgcolor: active ? BRAND.greenSoft : 'transparent',
-                        border: active
-                          ? `1px solid rgba(34,197,94,0.30)`
-                          : `1px solid transparent`,
+                        border: active ? `1px solid rgba(34,197,94,0.30)` : `1px solid transparent`,
                         '&:hover': {
                           bgcolor: active ? BRAND.greenSoft : BRAND.greenHover,
                         },
@@ -253,9 +249,7 @@ export function Sidebar() {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, overflow: 'hidden' }}>
-            {!collapsed && (
-              <Avatar sx={{ width: 36, height: 36 }}>U</Avatar>
-            )}
+            {!collapsed && <Avatar sx={{ width: 36, height: 36 }}>U</Avatar>}
             {!collapsed && (
               <Box sx={{ minWidth: 0 }}>
                 <Typography sx={{ fontSize: 13, fontWeight: 600, color: BRAND.text }} noWrap>

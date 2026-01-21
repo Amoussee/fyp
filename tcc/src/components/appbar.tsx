@@ -114,9 +114,9 @@ export default function AppBarComponent() {
                 elevation: 0,
                 sx: {
                   mt: 1,
-                  width: 260,              // similar feel to sidebar items
-                  p: 1,                    // padding around list
-                  borderRadius: 3,         // rounded container
+                  width: 260, // similar feel to sidebar items
+                  p: 1, // padding around list
+                  borderRadius: 3, // rounded container
                   border: `1px solid ${BRAND.border}`,
                   bgcolor: BRAND.bg,
                   overflow: 'hidden',
@@ -134,7 +134,14 @@ export default function AppBarComponent() {
             >
               {/* Optional: small header like sidebar vibe */}
               <Box sx={{ px: 1, pt: 0.75, pb: 0.5 }}>
-                <Typography sx={{ fontSize: 12, fontWeight: 600, color: BRAND.muted, letterSpacing: '0.08em' }}>
+                <Typography
+                  sx={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: BRAND.muted,
+                    letterSpacing: '0.08em',
+                  }}
+                >
                   PROFILE
                 </Typography>
               </Box>
@@ -186,9 +193,7 @@ export default function AppBarComponent() {
                       {settingIcon[setting]}
                     </ListItemIcon>
 
-                    <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                      {setting}
-                    </Typography>
+                    <Typography sx={{ fontSize: 14, fontWeight: 500 }}>{setting}</Typography>
                   </MenuItem>
                 );
               })}
