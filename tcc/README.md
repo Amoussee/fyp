@@ -2,6 +2,17 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Node.js Version Requirement
+
+This project requires Node.js version 20.9.0 or higher. If you are using NVM (Node Version Manager), you can easily install and switch to the appropriate version using the following commands:
+
+```
+nvm install 20.9.0
+nvm use 20.9.0
+```
+
+Please ensure that you are running the correct version before starting the development server or building the project.
+
 First, run the development server:
 
 ```bash
@@ -16,313 +27,257 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Project Structure & Architecture
 
-## Learn More
+This project uses **Next.js App Router** with a folder structure designed to support **role-based access control** and a **future migration to AWS Cognito** with minimal refactoring.
 
-To learn more about Next.js, take a look at the following resources:
+The key idea is to **separate routing, authentication boundaries, and feature code clearly**, while keeping UI and business logic reusable.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## `src/` Overview
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-# Repo Structure
-
-```
+```txt
 src/
-  pages/
-  components/
-    ui/
-  services/
-  hooks/
-  types/
-  lib/
-  styles/
+├── app/          # Next.js routing layer (App Router)
+├── components/   # Reusable UI components
+├── hooks/        # Custom React hooks
+├── lib/          # Shared utilities / helpers
+├── screens/      # Page-level UI components (non-routing)
+├── services/     # API / business logic layer
+└── types/        # Shared TypeScript types
 ```
 
-# `pages/`
+---
 
-Think of `pages/` as the **route-level screens** of your app. Each file here represents a full page the user navigates to (e.g., `/login`, `/dashboard`, `/survey/:id`).
+## `src/app/` – Routing & Access Control (App Router)
 
-### Typical contents:
+The `app/` folder defines **URL routes, layouts, and access boundaries**.
+This layer is intentionally kept thin — it wires routes together and delegates UI to components/screens.
 
-#### Route screens
+### Route Groups: `(public)` vs `(authed)`
 
-- top-level UI for a specific route
-- composes multiple components together (layout + feature components)
-- usually minimal business logic (calls hooks/services instead)
+This project uses **route groups**, which:
 
-Example files:
+- Do **not** appear in the URL
+- Allow different layouts and auth rules per group
 
-- `pages/LandingPage.tsx`
-- `pages/LoginPage.tsx`
-- `pages/DashboardPage.tsx`
-- `pages/SurveyFillPage.tsx`
+### `(public)` – Pre-login pages
 
-#### Page-specific layout and guards
+```txt
+src/app/(public)/
+├── login/
+│   └── page.tsx
+├── carbon-simulator/
+│   └── page.tsx
+└── unauthorized/
+    └── page.tsx
+```
 
-- page wrappers (e.g., authenticated pages only)
-- redirects or route protection logic (often using a `ProtectedRoute` component)
+**Purpose**
 
-Example:
+- Pages accessible **without authentication**
+- Examples: login, marketing pages, simulators, error states
 
-- `pages/ProtectedRoute.tsx` (if you keep it here; some teams put it in `components/`)
+**Notes**
+
+- No AppBar is rendered here
+- Middleware allows unauthenticated access
 
 ---
 
-# `components/`
+### `(authed)` – Post-login pages
 
-Think of `components/` as **reusable UI building blocks** used across multiple pages. Components are typically “dumb” (presentational) or lightly stateful, and can be shared across features.
+```txt
+src/app/(authed)/
+├── layout.tsx
+├── parent/
+│   ├── page.tsx
+│   └── onboarding/
+│       └── page.tsx
+└── admin/
+    └── page.tsx
+```
 
-### Typical contents:
+**Purpose**
 
-#### Shared layout components
+- Pages that require the user to be logged in
+- AppBar and other authenticated UI are applied via `(authed)/layout.tsx`
 
-- navbar, sidebar, app shell
-- consistent page structure across routes
+**Role-based access**
 
-Example files:
-
-- `components/Sidebar.tsx`
-- `components/TopNav.tsx`
-- `components/AppShell.tsx`
-
-#### Feature UI components
-
-- reusable widgets used inside a page (but not the entire page)
-- can be feature-specific but still “UI-first”
-
-Example files:
-
-- `components/SurveyCard.tsx`
-- `components/QuestionEditor.tsx`
-- `components/ResultsTable.tsx`
+- `/parents/*` → parents only
+- `/admin/*` → admin only
+- Enforced centrally via `middleware.ts`
 
 ---
 
-# `components/ui/`
+### Feature-based subfolders
 
-Think of `components/ui/` as your **design system primitives**, usually generated by shadcn/ui (or hand-rolled equivalents). These are low-level building blocks that higher-level components compose.
+Each subfolder under `(authed)` or `(public)` represents a **feature area** of the application.
 
-### Typical contents:
+Examples:
 
-#### shadcn/ui primitives
+- `parents/onboarding` → parent onboarding flow
+- `admin` → admin-only dashboards or admin tools
+- `carbon-simulator` → standalone public feature
 
-- Button, Card, Dialog, Tabs, Table, Dropdown, etc.
-- minimal app-specific logic
-- consistent styling and accessibility
+This allows:
 
-Example files:
-
-- `components/ui/button.tsx`
-- `components/ui/card.tsx`
-- `components/ui/dialog.tsx`
-- `components/ui/table.tsx`
+- Clear ownership of features
+- Easy extension as the app grows
+- Clean mapping between URLs and features
 
 ---
 
-# `services/`
+## `src/app/api/` – Mock Authentication Layer (Temporary)
 
-Think of `services/` as the **integration layer** that talks to external systems (your backend API, Cognito, S3 upload endpoints, etc.). This folder is responsible for “how to call the world.”
+```txt
+src/app/api/
+├── login/
+│   └── route.ts
+├── logout/
+│   └── route.ts
+└── health/
+    └── route.ts
+```
 
-### Typical contents:
+### Current purpose
 
-#### API service modules (by domain)
+- Provides a **mock login/logout API**
+- Sets a lightweight session cookie (e.g. email + role)
+- Enables development of:
+  - Role-based routing
+  - Middleware enforcement
+  - Authenticated layouts
 
-- functions that call backend endpoints
-- returns typed data (or throws errors)
-- no UI code
+### Future: AWS Cognito integration
 
-Example files:
+This folder is intentionally designed to be **temporary**.
 
-- `services/surveyService.ts`
-- `services/userService.ts`
-- `services/carbonService.ts`
+When AWS Cognito is introduced:
 
-#### Auth integration utilities
+- `login` / `logout` will be removed
+- Authentication will be handled by:
+  - Cognito Hosted UI or SDK
+  - JWT/session cookies issued by Cognito
 
-- login/logout functions
-- token exchange / refresh logic (depending on your auth design)
+- Middleware logic remains mostly unchanged
+  - Only the session parsing/verification changes
 
-Example:
+When BE is introduced:
+9 update next.config.ts to:
 
-- `services/authService.ts`
+```
+import type { NextConfig } from "next";
 
----
+const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      { source: "/api/:path*", destination: "http://localhost:5001/api/:path*" },
+    ];
+  },
+};
 
-# `hooks/`
+export default nextConfig;
+```
 
-Think of `hooks/` as your **reusable logic layer** for React — hooks wrap stateful behavior, data fetching, caching, and side-effects in a clean interface for pages/components.
-
-### Typical contents:
-
-#### Data fetching hooks
-
-- wraps service calls
-- handles loading/error states
-- often uses React Query (TanStack Query) or SWR
-
-Example files:
-
-- `hooks/useSurveys.ts`
-- `hooks/useSurveyResults.ts`
-- `hooks/useUser.ts`
-
-#### UI / state hooks
-
-- reusable UI state patterns (debounce, toggles, local storage, etc.)
-
-Example files:
-
-- `hooks/useDebounce.ts`
-- `hooks/useLocalStorage.ts`
+This minimizes churn and avoids restructuring routes later.
 
 ---
 
-# `types/`
+## `src/app/layout.tsx` – Global Root Layout
 
-Think of `types/` as a **shared TypeScript contract layer**. It centralizes interfaces/types so they can be reused across pages, services, and hooks.
+```txt
+src/app/layout.tsx
+```
 
-### Typical contents:
+**Responsibilities**
 
-#### Domain model types
+- Global fonts
+- Global styles (`globals.css`)
+- App-wide providers (MUI Theme, context providers)
 
-- Survey, Question, Response, User, Role, etc.
+**Important**
 
-Example files:
-
-- `types/survey.ts`
-- `types/user.ts`
-- `types/inventory.ts`
-
-#### API DTOs (request/response shapes)
-
-- types that match backend payloads
-- helps keep frontend/backed aligned
-
-Example:
-
-- `types/api.ts` or `types/survey.dto.ts`
+- Does **not** render AppBar
+- Auth-specific UI lives in `(authed)/layout.tsx`
 
 ---
 
-# `lib/`
+## `components/` – Reusable UI Components
 
-Think of `lib/` as your **shared toolbox**: reusable helper code that isn’t a React component and isn’t tied to any single feature. It usually contains low-level utilities, configuration helpers, and wrappers that many parts of the app rely on.
+```txt
+src/components/
+├── appbar.tsx
+├── ui/
+└── ...
+```
 
-### Typical contents:
-
-#### API / networking helpers
-
-- a centralized `fetch`/`axios` wrapper for making HTTP requests
-- automatically attach auth tokens (JWT) to requests
-- common error handling (401/403 redirect, retry logic)
-- base URL handling, timeouts, request/response typing
-
-Example files:
-
-- `lib/api/http.ts` (HTTP client wrapper)
-- `lib/api/endpoints.ts` (API route constants)
-- `lib/api/errors.ts` (standardized error types / mappers)
+- Stateless or minimally stateful UI pieces
+- Used across multiple routes and features
+- Not tied to routing logic
 
 ---
 
-#### Environment config
+## `screens/` – Page-Level UI (Non-routing)
 
-- a single place to read and validate environment variables
-- prevents `undefined` configs scattered across code
-- keeps production/staging/dev configuration consistent
+```txt
+src/screens/
+├── LoginPage.tsx
+└── ...
+```
 
-Example files:
+**Purpose**
 
-- `lib/config/env.ts` (reads `import.meta.env`, validates required vars)
-- `lib/config/constants.ts` (shared app constants)
+- Contains full-page UI components
+- Imported by `app/**/page.tsx` route files
 
----
+This separation:
 
-#### Auth utilities (shared, not UI)
-
-- helper functions for token storage/retrieval
-- parsing JWT claims (roles/groups)
-- checking login status (e.g., `isAuthenticated()`)
-- building auth headers
-
-Example files:
-
-- `lib/auth/tokenStorage.ts`
-- `lib/auth/jwt.ts`
-- `lib/auth/headers.ts`
+- Keeps routing files minimal
+- Avoids coupling UI to Next.js conventions
+- Makes future refactors easier
 
 ---
 
-#### Generic utilities
+## `services/` – Business Logic & API Layer
 
-- shared helper functions used across pages/components
-- formatting and conversions (dates, numbers, units)
-- common functional utilities (debounce, sleep, deep clone if needed)
+```txt
+src/services/
+├── auth/
+└── ...
+```
 
-Example files:
-
-- `lib/date.ts`
-- `lib/format.ts`
-- `lib/math.ts`
-- `lib/string.ts`
-
----
-
-#### Styling utilities (shared helpers)
-
-- helpers that support UI composition, but are not components
-- common className merging utilities (especially with Tailwind + shadcn)
-
-Example files:
-
-- `lib/utils.ts` (e.g., `cn()` helper for Tailwind class merging)
+- Handles API calls, auth helpers, domain logic
+- Cognito SDK integration will live here in future
+- Keeps UI components clean and declarative
 
 ---
 
-#### Validation helpers (optional)
+## `types/` – Shared Type Definitions
 
-- shared validation schemas and helpers (if you use zod/yup)
-- reusable validators (email format, required fields, etc.)
+```txt
+src/types/
+```
 
-Example files:
-
-- `lib/validation/schemas.ts`
-- `lib/validation/rules.ts`
+- Central place for shared interfaces and enums
+- Includes auth/session/role types
+- Helps keep middleware, services, and UI consistent
 
 ---
 
-# `styles/`
+## Why this structure works well with AWS Cognito
 
-Think of `styles/` as your **global styling configuration**. It contains Tailwind entry files, app-wide CSS rules, and theme tokens that apply across the whole app.
+- Auth boundaries are **route-based**, not component-based
+- Middleware already enforces roles centrally
+- UI doesn’t depend on how auth is implemented
+- Replacing mock auth with Cognito is mostly a **drop-in change**
 
-### Typical contents:
+This allows the team to:
 
-#### Tailwind entry + globals
-
-- Tailwind directives and global resets
-- base font and body styles
-
-Example files:
-
-- `styles/globals.css`
-
-#### Theme variables (optional)
-
-- CSS variables for colors, spacing, radius
-- light/dark theme tokens (especially common with shadcn)
-
-Example files:
-
-- `styles/theme.css`
-- `styles/tokens.css`
+- Develop features now
+- Add real authentication later
+- Avoid large-scale refactors
