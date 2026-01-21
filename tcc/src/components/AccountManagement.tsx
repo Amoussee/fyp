@@ -1,7 +1,7 @@
 'use client';
 
-import type React from "react"
-import { useState, useEffect, useCallback, useMemo } from "react"
+import type React from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -27,127 +27,127 @@ import {
   TextField,
   Alert,
   TableSortLabel,
-} from "@mui/material"
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
-import { UniversalFilter, type FilterConfig, type FilterValues } from "./UniversalFilter"
-import type { Dayjs } from "dayjs"
+} from '@mui/material';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { UniversalFilter, type FilterConfig, type FilterValues } from './UniversalFilter';
+import type { Dayjs } from 'dayjs';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 interface Account {
-  id: string
-  firstname: string
-  email: string
-  tag: string
-  status: "active" | "deactivated"
-  groupIds: string[]
+  id: string;
+  firstname: string;
+  email: string;
+  tag: string;
+  status: 'active' | 'deactivated';
+  groupIds: string[];
 }
 
 interface Group {
-  id: string
-  name: string
-  memberCount: number
+  id: string;
+  name: string;
+  memberCount: number;
 }
 
 interface UserApiResponse {
-  user_id: number
-  firstname: string
-  email: string
-  tag: string
-  deactivated: boolean
-  groupIds?: string[]
+  user_id: number;
+  firstname: string;
+  email: string;
+  tag: string;
+  deactivated: boolean;
+  groupIds?: string[];
 }
 
-type TabType = "accounts" | "groups"
-type SortField = "firstname" | "email" | "tag" | "status"
-type SortOrder = "asc" | "desc"
+type TabType = 'accounts' | 'groups';
+type SortField = 'firstname' | 'email' | 'tag' | 'status';
+type SortOrder = 'asc' | 'desc';
 
 export function AccountManagement() {
-  const [activeTab, setActiveTab] = useState<TabType>("accounts")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<TabType>('accounts');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
 
-  const [accounts, setAccounts] = useState<Account[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [groups, setGroups] = useState<Group[]>([
-    { id: "group-1", name: "Hwa Chong Grp 4", memberCount: 50 },
-    { id: "group-2", name: "Parent Group A", memberCount: 50 },
-  ])
+    { id: 'group-1', name: 'Hwa Chong Grp 4', memberCount: 50 },
+    { id: 'group-2', name: 'Parent Group A', memberCount: 50 },
+  ]);
 
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [accountToEdit, setAccountToEdit] = useState<Account | null>(null)
-  const [editFormData, setEditFormData] = useState({ firstname: "", email: "", tag: "" })
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
+  const [editFormData, setEditFormData] = useState({ firstname: '', email: '', tag: '' });
 
-  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false)
-  const [accountToDeactivate, setAccountToDeactivate] = useState<Account | null>(null)
+  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
+  const [accountToDeactivate, setAccountToDeactivate] = useState<Account | null>(null);
 
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Filter state
   const [filterValues, setFilterValues] = useState<FilterValues>({
     firstnameAlphabet: [],
     emailAlphabet: [],
-    status: "",
+    status: '',
     tag: [],
-  })
+  });
 
   // Sorting state
-  const [sortField, setSortField] = useState<SortField | null>(null)
-  const [sortOrder, setSortOrder] = useState<SortOrder>("asc")
+  const [sortField, setSortField] = useState<SortField | null>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   // Filter configuration for Account Management
   const filterConfig: FilterConfig[] = useMemo(
     () => [
       {
-        field: "firstnameAlphabet",
-        label: "First Name (Starts With)",
-        type: "alphabet",
+        field: 'firstnameAlphabet',
+        label: 'First Name (Starts With)',
+        type: 'alphabet',
       },
       {
-        field: "emailAlphabet",
-        label: "Email (Starts With)",
-        type: "alphabet",
+        field: 'emailAlphabet',
+        label: 'Email (Starts With)',
+        type: 'alphabet',
       },
       {
-        field: "status",
-        label: "Account Status",
-        type: "radio",
+        field: 'status',
+        label: 'Account Status',
+        type: 'radio',
         options: [
-          { value: "", label: "All" },
-          { value: "active", label: "Active Only" },
-          { value: "deactivated", label: "Deactivated Only" },
+          { value: '', label: 'All' },
+          { value: 'active', label: 'Active Only' },
+          { value: 'deactivated', label: 'Deactivated Only' },
         ],
       },
       {
-        field: "tag",
-        label: "Tag",
-        type: "checkbox",
+        field: 'tag',
+        label: 'Tag',
+        type: 'checkbox',
         options: [
-          { value: "Student", label: "Student" },
-          { value: "Teacher", label: "Teacher" },
-          { value: "Parent", label: "Parent" },
-          { value: "Admin", label: "Admin" },
+          { value: 'Student', label: 'Student' },
+          { value: 'Teacher', label: 'Teacher' },
+          { value: 'Parent', label: 'Parent' },
+          { value: 'Admin', label: 'Admin' },
         ],
       },
     ],
     [],
-  )
+  );
 
   // Fetch accounts using GET /api/users
   const fetchAccounts = useCallback(async () => {
     try {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
-      const response = await fetch(`${API_BASE_URL}/api/users`)
+      const response = await fetch(`${API_BASE_URL}/api/users`);
       if (!response.ok) {
-        throw new Error(`Failed to fetch users: ${response.status}`)
+        throw new Error(`Failed to fetch users: ${response.status}`);
       }
 
-      const users: UserApiResponse[] = await response.json()
+      const users: UserApiResponse[] = await response.json();
 
       setAccounts(
         users.map((user) => ({
@@ -155,93 +155,96 @@ export function AccountManagement() {
           firstname: user.firstname,
           email: user.email,
           tag: user.tag,
-          status: user.deactivated ? "deactivated" : "active",
+          status: user.deactivated ? 'deactivated' : 'active',
           groupIds: user.groupIds || [],
         })),
-      )
+      );
     } catch (err) {
-      console.error("Error fetching accounts:", err)
-      setError(err instanceof Error ? err.message : "Failed to load accounts")
+      console.error('Error fetching accounts:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load accounts');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchAccounts()
-  }, [fetchAccounts])
+    fetchAccounts();
+  }, [fetchAccounts]);
 
-  const itemsPerPage = 7
+  const itemsPerPage = 7;
 
   // Apply filters and search
   const filteredAccounts = useMemo(() => {
     return accounts.filter((account) => {
       // Search filter
       if (searchQuery) {
-        const query = searchQuery.toLowerCase()
+        const query = searchQuery.toLowerCase();
         const matchesSearch =
           account.firstname.toLowerCase().includes(query) ||
           account.email.toLowerCase().includes(query) ||
-          account.tag.toLowerCase().includes(query)
-        if (!matchesSearch) return false
+          account.tag.toLowerCase().includes(query);
+        if (!matchesSearch) return false;
       }
 
       // First name alphabet filter
-      const firstnameAlphabet = filterValues.firstnameAlphabet as string[]
+      const firstnameAlphabet = filterValues.firstnameAlphabet as string[];
       if (firstnameAlphabet.length > 0) {
-        const firstLetter = account.firstname.charAt(0).toUpperCase()
-        if (!firstnameAlphabet.includes(firstLetter)) return false
+        const firstLetter = account.firstname.charAt(0).toUpperCase();
+        if (!firstnameAlphabet.includes(firstLetter)) return false;
       }
 
       // Email alphabet filter
-      const emailAlphabet = filterValues.emailAlphabet as string[]
+      const emailAlphabet = filterValues.emailAlphabet as string[];
       if (emailAlphabet.length > 0) {
-        const firstLetter = account.email.charAt(0).toUpperCase()
-        if (!emailAlphabet.includes(firstLetter)) return false
+        const firstLetter = account.email.charAt(0).toUpperCase();
+        if (!emailAlphabet.includes(firstLetter)) return false;
       }
 
       // Status filter
       if (filterValues.status && filterValues.status !== account.status) {
-        return false
+        return false;
       }
 
       // Tag filter
-      const tagFilter = filterValues.tag as string[]
+      const tagFilter = filterValues.tag as string[];
       if (tagFilter.length > 0 && !tagFilter.includes(account.tag)) {
-        return false
+        return false;
       }
 
-      return true
-    })
-  }, [accounts, searchQuery, filterValues])
+      return true;
+    });
+  }, [accounts, searchQuery, filterValues]);
 
   // Apply sorting
   const sortedAccounts = useMemo(() => {
-    if (!sortField) return filteredAccounts
+    if (!sortField) return filteredAccounts;
 
     return [...filteredAccounts].sort((a, b) => {
-      let aValue: string | number = a[sortField]
-      let bValue: string | number = b[sortField]
+      let aValue: string | number = a[sortField];
+      let bValue: string | number = b[sortField];
 
       // Convert to lowercase for string comparison
-      if (typeof aValue === "string") aValue = aValue.toLowerCase()
-      if (typeof bValue === "string") bValue = bValue.toLowerCase()
+      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
+      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
 
-      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1
-      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1
-      return 0
-    })
-  }, [filteredAccounts, sortField, sortOrder])
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [filteredAccounts, sortField, sortOrder]);
 
-  const totalPages = Math.ceil(sortedAccounts.length / itemsPerPage)
-  const paginatedAccounts = sortedAccounts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const totalPages = Math.ceil(sortedAccounts.length / itemsPerPage);
+  const paginatedAccounts = sortedAccounts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortField(field)
-      setSortOrder("asc")
+      setSortField(field);
+      setSortOrder('asc');
     }
   };
 
@@ -274,73 +277,76 @@ export function AccountManagement() {
   };
 
   const handleEditClick = () => {
-    const account = accounts.find((acc) => acc.id === selectedAccountId)
+    const account = accounts.find((acc) => acc.id === selectedAccountId);
     if (account) {
-      setAccountToEdit(account)
+      setAccountToEdit(account);
       setEditFormData({
         firstname: account.firstname,
         email: account.email,
         tag: account.tag,
-      })
-      setEditDialogOpen(true)
+      });
+      setEditDialogOpen(true);
     }
-    handleMenuClose()
-  }
+    handleMenuClose();
+  };
 
   const handleDeactivateClick = () => {
-    const account = accounts.find((acc) => acc.id === selectedAccountId)
+    const account = accounts.find((acc) => acc.id === selectedAccountId);
     if (account) {
-      setAccountToDeactivate(account)
-      setDeactivateDialogOpen(true)
+      setAccountToDeactivate(account);
+      setDeactivateDialogOpen(true);
     }
-    handleMenuClose()
-  }
+    handleMenuClose();
+  };
 
   // Update account using PUT /api/users/:id
   const handleConfirmEdit = async () => {
-    if (!accountToEdit) return
+    if (!accountToEdit) return;
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/users/${accountToEdit.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstname: editFormData.firstname,
           email: editFormData.email,
           tag: editFormData.tag,
-          deactivated: accountToEdit.status === "deactivated",
+          deactivated: accountToEdit.status === 'deactivated',
           groupIds: accountToEdit.groupIds,
         }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error(`Failed to update user: ${response.status}`)
+        throw new Error(`Failed to update user: ${response.status}`);
       }
 
-      await fetchAccounts()
+      await fetchAccounts();
     } catch (err) {
-      console.error("Failed to update account:", err)
-      setError(err instanceof Error ? err.message : "Failed to update account")
+      console.error('Failed to update account:', err);
+      setError(err instanceof Error ? err.message : 'Failed to update account');
     } finally {
-      setEditDialogOpen(false)
-      setAccountToEdit(null)
+      setEditDialogOpen(false);
+      setAccountToEdit(null);
     }
-  }
+  };
 
   // Deactivate account using PATCH /api/users/:id/deactivate
   const handleConfirmDeactivate = async () => {
-    if (!accountToDeactivate) return
+    if (!accountToDeactivate) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/users/${accountToDeactivate.id}/deactivate`, {
-        method: "PATCH",
-      })
+      const response = await fetch(
+        `${API_BASE_URL}/api/users/${accountToDeactivate.id}/deactivate`,
+        {
+          method: 'PATCH',
+        },
+      );
 
       if (!response.ok) {
-        throw new Error(`Failed to deactivate user: ${response.status}`)
+        throw new Error(`Failed to deactivate user: ${response.status}`);
       }
 
-      await fetchAccounts()
+      await fetchAccounts();
 
       setGroups((prevGroups) =>
         prevGroups.map((group) =>
@@ -348,67 +354,67 @@ export function AccountManagement() {
             ? { ...group, memberCount: Math.max(0, group.memberCount - 1) }
             : group,
         ),
-      )
+      );
     } catch (err) {
-      console.error("Failed to deactivate account:", err)
-      setError(err instanceof Error ? err.message : "Failed to deactivate account")
+      console.error('Failed to deactivate account:', err);
+      setError(err instanceof Error ? err.message : 'Failed to deactivate account');
     } finally {
-      setDeactivateDialogOpen(false)
-      setAccountToDeactivate(null)
+      setDeactivateDialogOpen(false);
+      setAccountToDeactivate(null);
     }
-  }
+  };
 
   // Reactivate account using PUT /api/users/:id
   const handleReactivateClick = async () => {
-    if (!selectedAccountId) return
+    if (!selectedAccountId) return;
 
-    const account = accounts.find((acc) => acc.id === selectedAccountId)
-    if (!account) return
+    const account = accounts.find((acc) => acc.id === selectedAccountId);
+    if (!account) return;
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/users/${selectedAccountId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstname: account.firstname,
           email: account.email,
           tag: account.tag,
           deactivated: false,
-          groupIds: ["group-1", "group-2"],
+          groupIds: ['group-1', 'group-2'],
         }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error(`Failed to reactivate user: ${response.status}`)
+        throw new Error(`Failed to reactivate user: ${response.status}`);
       }
 
-      await fetchAccounts()
+      await fetchAccounts();
 
       setGroups((prevGroups) =>
         prevGroups.map((group) => ({
           ...group,
           memberCount: group.memberCount + 1,
         })),
-      )
+      );
     } catch (err) {
-      console.error("Failed to reactivate account:", err)
-      setError(err instanceof Error ? err.message : "Failed to reactivate account")
+      console.error('Failed to reactivate account:', err);
+      setError(err instanceof Error ? err.message : 'Failed to reactivate account');
     } finally {
-      handleMenuClose()
+      handleMenuClose();
     }
-  }
+  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value)
-    setCurrentPage(1)
-  }
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
 
   const handleFilterChange = (newFilterValues: FilterValues) => {
-    setFilterValues(newFilterValues)
-    setCurrentPage(1) // Reset to first page when filters change
-  }
+    setFilterValues(newFilterValues);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
 
-  const currentSelectedAccount = accounts.find((acc) => acc.id === selectedAccountId)
+  const currentSelectedAccount = accounts.find((acc) => acc.id === selectedAccountId);
 
   return (
     <Box sx={{ flexGrow: 1, px: 4, py: 2 }}>
@@ -416,7 +422,7 @@ export function AccountManagement() {
         Account Management
       </Typography>
 
-      <Box sx={{ mb: 3, display: "flex", gap: 1 }}>
+      <Box sx={{ mb: 3, display: 'flex', gap: 1 }}>
         <Button
           onClick={() => setActiveTab('accounts')}
           sx={{
@@ -453,10 +459,14 @@ export function AccountManagement() {
         </Button>
       </Box>
 
-      {activeTab === "accounts" ? (
+      {activeTab === 'accounts' ? (
         <>
-          <Box sx={{ mb: 2, display: "flex", gap: 2, alignItems: "center" }}>
-            <UniversalFilter filters={filterConfig} values={filterValues} onChange={handleFilterChange} />
+          <Box sx={{ mb: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+            <UniversalFilter
+              filters={filterConfig}
+              values={filterValues}
+              onChange={handleFilterChange}
+            />
           </Box>
 
           {error && (
@@ -466,61 +476,61 @@ export function AccountManagement() {
           )}
 
           {loading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-              <CircularProgress sx={{ color: "#15803d" }} />
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress sx={{ color: '#15803d' }} />
             </Box>
           ) : (
             <>
               <TableContainer
                 component={Paper}
-                sx={{ borderRadius: "8px", border: "1px solid #e5e7eb", boxShadow: "none" }}
+                sx={{ borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: 'none' }}
               >
                 <Table>
                   <TableHead>
-                    <TableRow sx={{ backgroundColor: "#f3f4f6" }}>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>
+                    <TableRow sx={{ backgroundColor: '#f3f4f6' }}>
+                      <TableCell sx={{ color: '#6b7280', fontWeight: 500 }}>
                         <TableSortLabel
-                          active={sortField === "firstname"}
-                          direction={sortField === "firstname" ? sortOrder : "asc"}
-                          onClick={() => handleSort("firstname")}
+                          active={sortField === 'firstname'}
+                          direction={sortField === 'firstname' ? sortOrder : 'asc'}
+                          onClick={() => handleSort('firstname')}
                         >
                           First Name
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>
+                      <TableCell sx={{ color: '#6b7280', fontWeight: 500 }}>
                         <TableSortLabel
-                          active={sortField === "email"}
-                          direction={sortField === "email" ? sortOrder : "asc"}
-                          onClick={() => handleSort("email")}
+                          active={sortField === 'email'}
+                          direction={sortField === 'email' ? sortOrder : 'asc'}
+                          onClick={() => handleSort('email')}
                         >
                           Email
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>
+                      <TableCell sx={{ color: '#6b7280', fontWeight: 500 }}>
                         <TableSortLabel
-                          active={sortField === "tag"}
-                          direction={sortField === "tag" ? sortOrder : "asc"}
-                          onClick={() => handleSort("tag")}
+                          active={sortField === 'tag'}
+                          direction={sortField === 'tag' ? sortOrder : 'asc'}
+                          onClick={() => handleSort('tag')}
                         >
                           Tag
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>
+                      <TableCell sx={{ color: '#6b7280', fontWeight: 500 }}>
                         <TableSortLabel
-                          active={sortField === "status"}
-                          direction={sortField === "status" ? sortOrder : "asc"}
-                          onClick={() => handleSort("status")}
+                          active={sortField === 'status'}
+                          direction={sortField === 'status' ? sortOrder : 'asc'}
+                          onClick={() => handleSort('status')}
                         >
                           Status
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>Action</TableCell>
+                      <TableCell sx={{ color: '#6b7280', fontWeight: 500 }}>Action</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {paginatedAccounts.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={5} align="center" sx={{ py: 4, color: "#6b7280" }}>
+                        <TableCell colSpan={5} align="center" sx={{ py: 4, color: '#6b7280' }}>
                           No accounts found
                         </TableCell>
                       </TableRow>
@@ -529,15 +539,20 @@ export function AccountManagement() {
                         <TableRow
                           key={account.id}
                           sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                            opacity: account.status === "deactivated" ? 0.5 : 1,
-                            backgroundColor: account.status === "deactivated" ? "#f9fafb" : "inherit",
+                            '&:last-child td, &:last-child th': { border: 0 },
+                            opacity: account.status === 'deactivated' ? 0.5 : 1,
+                            backgroundColor:
+                              account.status === 'deactivated' ? '#f9fafb' : 'inherit',
                           }}
                         >
-                          <TableCell sx={{ color: account.status === "deactivated" ? "#9ca3af" : "#374151" }}>
+                          <TableCell
+                            sx={{ color: account.status === 'deactivated' ? '#9ca3af' : '#374151' }}
+                          >
                             {account.firstname}
                           </TableCell>
-                          <TableCell sx={{ color: account.status === "deactivated" ? "#9ca3af" : "#6b7280" }}>
+                          <TableCell
+                            sx={{ color: account.status === 'deactivated' ? '#9ca3af' : '#6b7280' }}
+                          >
                             {account.email}
                           </TableCell>
                           <TableCell>
@@ -545,23 +560,23 @@ export function AccountManagement() {
                               label={account.tag}
                               size="small"
                               sx={{
-                                backgroundColor: "#e5e7eb",
-                                color: account.status === "deactivated" ? "#9ca3af" : "#374151",
+                                backgroundColor: '#e5e7eb',
+                                color: account.status === 'deactivated' ? '#9ca3af' : '#374151',
                                 fontWeight: 500,
-                                fontSize: "0.75rem",
+                                fontSize: '0.75rem',
                               }}
                             />
                           </TableCell>
                           <TableCell>
-                            {account.status === "deactivated" ? (
+                            {account.status === 'deactivated' ? (
                               <Chip
                                 label="Deactivated"
                                 size="small"
                                 sx={{
-                                  backgroundColor: "#fee2e2",
-                                  color: "#dc2626",
+                                  backgroundColor: '#fee2e2',
+                                  color: '#dc2626',
                                   fontWeight: 500,
-                                  fontSize: "0.75rem",
+                                  fontSize: '0.75rem',
                                 }}
                               />
                             ) : (
@@ -569,10 +584,10 @@ export function AccountManagement() {
                                 label="Active"
                                 size="small"
                                 sx={{
-                                  backgroundColor: "#dcfce7",
-                                  color: "#15803d",
+                                  backgroundColor: '#dcfce7',
+                                  color: '#15803d',
                                   fontWeight: 500,
-                                  fontSize: "0.75rem",
+                                  fontSize: '0.75rem',
                                 }}
                               />
                             )}
@@ -592,18 +607,18 @@ export function AccountManagement() {
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 <MenuItem onClick={handleEditClick}>Edit</MenuItem>
                 <MenuItem onClick={handleMenuClose}>View Details</MenuItem>
-                {currentSelectedAccount?.status === "active" ? (
-                  <MenuItem onClick={handleDeactivateClick} sx={{ color: "#dc2626" }}>
+                {currentSelectedAccount?.status === 'active' ? (
+                  <MenuItem onClick={handleDeactivateClick} sx={{ color: '#dc2626' }}>
                     Deactivate
                   </MenuItem>
                 ) : (
-                  <MenuItem onClick={handleReactivateClick} sx={{ color: "#15803d" }}>
+                  <MenuItem onClick={handleReactivateClick} sx={{ color: '#15803d' }}>
                     Reactivate
                   </MenuItem>
                 )}
               </Menu>
 
-              <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+              <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
                 <Pagination
                   count={totalPages}
                   page={currentPage}
@@ -616,19 +631,22 @@ export function AccountManagement() {
           )}
         </>
       ) : (
-        <TableContainer component={Paper} sx={{ borderRadius: "8px", border: "1px solid #e5e7eb", boxShadow: "none" }}>
+        <TableContainer
+          component={Paper}
+          sx={{ borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: 'none' }}
+        >
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f3f4f6" }}>
-                <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>Group Name</TableCell>
-                <TableCell sx={{ color: "#6b7280", fontWeight: 500 }}>Member Count</TableCell>
+              <TableRow sx={{ backgroundColor: '#f3f4f6' }}>
+                <TableCell sx={{ color: '#6b7280', fontWeight: 500 }}>Group Name</TableCell>
+                <TableCell sx={{ color: '#6b7280', fontWeight: 500 }}>Member Count</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {groups.map((group) => (
                 <TableRow key={group.id}>
-                  <TableCell sx={{ color: "#374151" }}>{group.name}</TableCell>
-                  <TableCell sx={{ color: "#6b7280" }}>{group.memberCount}</TableCell>
+                  <TableCell sx={{ color: '#374151' }}>{group.name}</TableCell>
+                  <TableCell sx={{ color: '#6b7280' }}>{group.memberCount}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -637,10 +655,15 @@ export function AccountManagement() {
       )}
 
       {/* Edit Dialog */}
-      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Edit Account</DialogTitle>
         <DialogContent>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField
               label="First Name"
               value={editFormData.firstname}
@@ -666,17 +689,17 @@ export function AccountManagement() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)} sx={{ color: "#6b7280" }}>
+          <Button onClick={() => setEditDialogOpen(false)} sx={{ color: '#6b7280' }}>
             Cancel
           </Button>
           <Button
             onClick={handleConfirmEdit}
             disabled={!editFormData.firstname || !editFormData.email || !editFormData.tag}
             sx={{
-              backgroundColor: "#15803d",
-              color: "white",
-              "&:hover": { backgroundColor: "#166534" },
-              "&:disabled": { backgroundColor: "#d1d5db", color: "#9ca3af" },
+              backgroundColor: '#15803d',
+              color: 'white',
+              '&:hover': { backgroundColor: '#166534' },
+              '&:disabled': { backgroundColor: '#d1d5db', color: '#9ca3af' },
             }}
           >
             Save Changes
@@ -689,12 +712,12 @@ export function AccountManagement() {
         <DialogTitle>Confirm Deactivation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to deactivate the account for <strong>{accountToDeactivate?.firstname}</strong> (
-            {accountToDeactivate?.email})?
+            Are you sure you want to deactivate the account for{' '}
+            <strong>{accountToDeactivate?.firstname}</strong> ({accountToDeactivate?.email})?
             <br />
             <br />
             This will:
-            <ul style={{ marginTop: "8px", paddingLeft: "20px" }}>
+            <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
               <li>Prevent the user from logging in</li>
               <li>Remove them from all associated groups</li>
               <li>Keep their record visible but marked as deactivated</li>
@@ -702,15 +725,15 @@ export function AccountManagement() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeactivateDialogOpen(false)} sx={{ color: "#6b7280" }}>
+          <Button onClick={() => setDeactivateDialogOpen(false)} sx={{ color: '#6b7280' }}>
             Cancel
           </Button>
           <Button
             onClick={handleConfirmDeactivate}
             sx={{
-              backgroundColor: "#dc2626",
-              color: "white",
-              "&:hover": { backgroundColor: "#b91c1c" },
+              backgroundColor: '#dc2626',
+              color: 'white',
+              '&:hover': { backgroundColor: '#b91c1c' },
             }}
           >
             Deactivate
@@ -718,5 +741,5 @@ export function AccountManagement() {
         </DialogActions>
       </Dialog>
     </Box>
-  )
+  );
 }

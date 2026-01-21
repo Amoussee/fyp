@@ -8,10 +8,9 @@ import ChildDetail from './ChildDetails';
 import Divider from '@mui/material/Divider';
 import PhoneNumber from './PhoneNumber';
 
-
 interface ChildDetail {
-    name: string;
-    school: string;
+  name: string;
+  school: string;
 }
 
 interface ExtractedData {
@@ -43,30 +42,31 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [schools, setSchools] = React.useState([]);
 
-useEffect(() => {
-  if (!initialData) return;
+  useEffect(() => {
+    if (!initialData) return;
 
-  setFirstName(initialData.firstName ?? '');
-  setLastName(initialData.lastName ?? '');
-  setEmail(initialData.email ?? '');
+    setFirstName(initialData.firstName ?? '');
+    setLastName(initialData.lastName ?? '');
+    setEmail(initialData.email ?? '');
 
-  if (initialData.password) {
-    setPassword(initialData.password);
-  }
-}, [initialData]);
+    if (initialData.password) {
+      setPassword(initialData.password);
+    }
+  }, [initialData]);
 
-  useEffect(() => { // to get the list of schools from db
-      const fetchSchools = async () => {
-        try {
-          const response = await fetch('http://localhost:5001/api/schools');
-          const data = await response.json();
-          setSchools(data); // Stores the cleaned school list from DB
-        } catch (err) {
-          console.error("Failed to load schools:", err);
-        }
-      };
-      fetchSchools();
-    }, []);
+  useEffect(() => {
+    // to get the list of schools from db
+    const fetchSchools = async () => {
+      try {
+        const response = await fetch('http://localhost:5001/api/schools');
+        const data = await response.json();
+        setSchools(data); // Stores the cleaned school list from DB
+      } catch (err) {
+        console.error('Failed to load schools:', err);
+      }
+    };
+    fetchSchools();
+  }, []);
 
   const updateChildDetail = (index: number, detail: { name: string; school: string }) => {
     const updatedDetails = [...childDetails];
@@ -99,18 +99,18 @@ useEffect(() => {
     // Validate that a school is selected for each child (only if schools are available)
     const missingSchools = [];
     if (schools.length > 0) {
-        for (let i = 0; i < numberChild; i++) {
-            const child = childDetails[i];
-            if (!child || !child.school) {
-                missingSchools.push(`Child ${i + 1}`);
-            }
+      for (let i = 0; i < numberChild; i++) {
+        const child = childDetails[i];
+        if (!child || !child.school) {
+          missingSchools.push(`Child ${i + 1}`);
         }
+      }
 
-        if (missingSchools.length > 0) {
-            setSubmitError(`Please select a school for: ${missingSchools.join(', ')}`);
-            setIsSubmitting(false);
-            return;
-        }
+      if (missingSchools.length > 0) {
+        setSubmitError(`Please select a school for: ${missingSchools.join(', ')}`);
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     console.log(numberChildError);
@@ -122,45 +122,45 @@ useEffect(() => {
       password,
       phoneNumber,
       numberChild: numberChild?.toString() || '',
-      childDetails
+      childDetails,
     };
 
     console.log(formData);
 
-  try {
-    const response = await fetch('http://localhost:5001/api/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch('http://localhost:5001/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      // User-facing error from backend
-      setSubmitError(data.error || 'Something went wrong. Please try again.');
+      if (!response.ok) {
+        // User-facing error from backend
+        setSubmitError(data.error || 'Something went wrong. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      console.log('Success:', data);
+    } catch (err) {
+      // Network / server down
+      setSubmitError('Unable to connect. Please try again later.');
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-
-    console.log('Success:', data);
-  } catch (err) {
-    // Network / server down
-    setSubmitError('Unable to connect. Please try again later.');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   return (
-    <Box component='form' onSubmit={handleSubmit} sx={{ mt: 2 }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Grid container spacing={2}>
         <Grid size={6} item xs={12} sm={6}>
           <TextField
             fullWidth
-            label='First Name'
+            label="First Name"
             value={firstName}
-            onChange={e => setFirstName(e.target.value)}
+            onChange={(e) => setFirstName(e.target.value)}
             required
             sx={{ mb: 2 }} // Margin bottom
           />
@@ -168,9 +168,9 @@ useEffect(() => {
         <Grid size={6} item xs={12} sm={6}>
           <TextField
             fullWidth
-            label='Last Name'
+            label="Last Name"
             value={lastName}
-            onChange={e => setLastName(e.target.value)}
+            onChange={(e) => setLastName(e.target.value)}
             required
             sx={{ mb: 2 }}
           />
@@ -178,21 +178,21 @@ useEffect(() => {
         <Grid size={6} item xs={12} sm={6}>
           <TextField
             fullWidth
-            label='Email'
+            label="Email"
             value={email}
             required
-            type='email'
-            onChange={e => setEmail(e.target.value)}
+            type="email"
+            onChange={(e) => setEmail(e.target.value)}
             sx={{ mb: 2 }}
           />
         </Grid>
         <Grid size={6} item xs={12} sm={6}>
           <TextField
             fullWidth
-            label='Password'
+            label="Password"
             value={password}
             required
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             sx={{ mb: 2 }}
           />
         </Grid>
@@ -212,7 +212,7 @@ useEffect(() => {
             }}
             error={!!phoneError}
             helperText={phoneError}
-            label='Phone Number'
+            label="Phone Number"
             required
             sx={{ mb: 2 }}
           />
@@ -220,7 +220,7 @@ useEffect(() => {
 
         <Grid item size={10} xs={12} sm={6}>
           <Numberfield
-            label='Number of Children'
+            label="Number of Children"
             error={!!numberChildError} // Set error state
             value={numberChild}
             onValueChange={(_, value) => {
@@ -231,29 +231,34 @@ useEffect(() => {
               }
             }} // Handle input change
           ></Numberfield>
-          {numberChildError && <Typography color='error'>{numberChildError}</Typography>} {/* Show error message */}
+          {numberChildError && <Typography color="error">{numberChildError}</Typography>}{' '}
+          {/* Show error message */}
         </Grid>
       </Grid>
 
       <Grid container spacing={2} column={2}>
         {Array.from({ length: numberChild || 0 }, (_, index) => (
           <Grid item size={12} key={index}>
-              <ChildDetail
-                  index={index}
-                  childDetail={childDetails[index] || { name: '', school: '' }}
-                  onUpdate={updateChildDetail}
-                  schools={schools} // Pass the database list down as a prop
-              />
+            <ChildDetail
+              index={index}
+              childDetail={childDetails[index] || { name: '', school: '' }}
+              onUpdate={updateChildDetail}
+              schools={schools} // Pass the database list down as a prop
+            />
             <Divider></Divider>
           </Grid>
         ))}
-        </Grid>
-        {submitError && (
-            <Typography color="error" sx={{ mt: 2 }}>
-                {submitError}
-            </Typography>
-        )}
-      <GenericButton buttonType='submit' buttonText={isSubmitting ? 'Submitting...' : 'Submit'} disabled={isSubmitting} />
+      </Grid>
+      {submitError && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          {submitError}
+        </Typography>
+      )}
+      <GenericButton
+        buttonType="submit"
+        buttonText={isSubmitting ? 'Submitting...' : 'Submit'}
+        disabled={isSubmitting}
+      />
     </Box>
   );
 };

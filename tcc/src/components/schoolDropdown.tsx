@@ -14,12 +14,11 @@ interface SchoolOption {
 
 interface SchoolSelectProps {
   schools: SchoolOption[]; // Received from Parent (OnboardingForm)
-  selectedSchool: string;  // The current value
-  onChange: (school: string) => void; 
+  selectedSchool: string; // The current value
+  onChange: (school: string) => void;
 }
 
 const SchoolSelect: React.FC<SchoolSelectProps> = ({ schools, selectedSchool, onChange }) => {
-  
   const handleChange = (event: SelectChangeEvent<string>) => {
     onChange(event.target.value);
   };
@@ -27,18 +26,18 @@ const SchoolSelect: React.FC<SchoolSelectProps> = ({ schools, selectedSchool, on
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id='school-select-label'>Select School</InputLabel>
+        <InputLabel id="school-select-label">Select School</InputLabel>
         <Select
-          labelId='school-select-label'
-          id='school-select'
+          labelId="school-select-label"
+          id="school-select"
           value={selectedSchool}
-          label='Select School'
+          label="Select School"
           onChange={handleChange}
           // Adding a max-height to the dropdown menu so it doesn't cover the whole screen
           MenuProps={{
             PaperProps: {
               style: {
-                maxHeight: 300, 
+                maxHeight: 300,
               },
             },
           }}

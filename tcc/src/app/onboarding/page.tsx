@@ -1,4 +1,4 @@
-"use client";
+'use client';
 // /app/onboardingform/page.tsx
 import React from 'react';
 // import { useRouter } from 'next/navigation';
@@ -26,9 +26,9 @@ const OnboardingFormPage = () => {
         </Typography>
       </Box>
 
-        <Box >
-            <OnboardingForm initialData={dummyRegistrationData}></OnboardingForm>
-        </Box>
+      <Box>
+        <OnboardingForm initialData={dummyRegistrationData}></OnboardingForm>
+      </Box>
     </Container>
   );
 };
