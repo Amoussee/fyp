@@ -15,7 +15,7 @@ export const getUsers = async (req, res) => {
 export const getUsersInfo = async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT user_id, "firstName", "lastName", email, organisation, role, is_active FROM users',
+      'SELECT user_id, "firstname", "lastName", email, organisation, role, is_active FROM users',
     );
     res.status(200).json(result.rows);
   } catch (error) {

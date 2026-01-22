@@ -51,7 +51,7 @@ interface Group {
 
 interface UserApiResponse {
   user_id: number;
-  first_name: string;
+  firstname: string;
   email: string;
   role: string;
   deactivated: boolean;
@@ -152,7 +152,7 @@ export function AccountManagement() {
       setAccounts(
         users.map((user) => ({
           id: String(user.user_id),
-          firstname: user.first_name,
+          firstname: user.firstname,
           email: user.email,
           tag: user.role,
           status: user.deactivated ? 'deactivated' : 'active',
