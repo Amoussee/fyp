@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS schools (
     type_code VARCHAR(50),       -- e.g., Code for Govt/Aided/Independent
     zone_code VARCHAR(50),       -- e.g., "NORTH", "EAST"
     status VARCHAR(50),          -- e.g., "Closed", "Merging"
+    is_cooperating boolean DEFAULT FALSE, -- whether the school is cooperating with tcc         
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -96,7 +97,7 @@ CREATE TABLE IF NOT EXISTS survey_templates (
     -- core data needed to recreate a survey
     schema_json JSONB NOT NULL,
     metadata JSONB DEFAULT '{}',
-    
+
     owner_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
 
