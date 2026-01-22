@@ -1,6 +1,42 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { SurveyList, type Survey } from "../../../../../components/ui/surveyList";
+import {
+  UniversalFilter,
+  type FilterConfig,
+  type FilterValues,
+} from "../../../../../components/UniversalFilter";
+
+const surveyFilters: FilterConfig[] = [
+  {
+    field: "name",
+    label: "School Name",
+    type: "text",
+    placeholder: "Search by school name",
+  },
+  {
+    field: "status",
+    label: "Status",
+    type: "radio",
+    options: [
+      { value: "pending", label: "Pending" },
+      { value: "ready", label: "Ready" },
+      { value: "closed", label: "Closed" },
+    ],
+  },
+  {
+    field: "type",
+    label: "Survey Type",
+    type: "checkbox",
+    options: [
+      { value: "Public - Parent", label: "Public - Parent" },
+      { value: "Public - Student", label: "Public - Student" },
+      { value: "Parent", label: "Parent" },
+      { value: "Student", label: "Student" },
+    ],
+  },
+];
 
 const mockSurveys: Survey[] = [
   {
@@ -23,90 +59,65 @@ const mockSurveys: Survey[] = [
     type: "Public - Student",
     status: "ready",
   },
-  {
-    id: "3",
-    name: "Poi Ching School",
-    creationDate: "2025-12-12",
-    labels: ["Primary 4", "Primary 5", "Primary 6", "Secondary 2"],
-    completedCount: 89,
-    totalCount: 150,
-    type: "Parent",
-    status: "pending",
-  },
-  {
-    id: "4",
-    name: "Poi Ching School",
-    creationDate: "2025-12-12",
-    labels: ["All Students"],
-    completedCount: 145,
-    totalCount: 200,
-    type: "Student",
-    status: "ready",
-  },
-  {
-    id: "5",
-    name: "Poi Ching School",
-    creationDate: "2025-12-12",
-    labels: [],
-    completedCount: 200,
-    totalCount: 200,
-    type: "Public - Parent",
-    status: "closed",
-  },
-  {
-    id: "6",
-    name: "Poi Ching School",
-    creationDate: "2025-12-12",
-    labels: ["Primary 1", "Primary 2"],
-    completedCount: 145,
-    totalCount: 200,
-    type: "Public - Student",
-    status: "ready",
-  },
-  {
-    id: "7",
-    name: "Poi Ching School",
-    creationDate: "2025-12-12",
-    labels: ["Secondary 3", "Secondary 4"],
-    completedCount: 50,
-    totalCount: 100,
-    type: "Parent",
-    status: "pending",
-  },
+  // ...
 ];
 
+
 export default function SurveyListPage() {
-  const handleNewSurvey = () => {
-    console.log("Create new survey");
-  };
+  // ✅ hooks live here
+  const [filterValues, setFilterValues] = useState<FilterValues>({
+    name: "",
+    status: "",
+    type: [],
+  });
 
-  const handleUseTemplate = () => {
-    console.log("Use template");
-  };
+  const filteredSurveys = useMemo(() => {
+    return mockSurveys.filter((survey) => {
+      if (
+        filterValues.name &&
+        !survey.name
+          .toLowerCase()
+          .includes((filterValues.name as string).toLowerCase())
+      ) {
+        return false;
+      }
 
-  const handleDashboard = (survey: Survey) => {
-    console.log("View dashboard for:", survey.name);
-  };
+      if (filterValues.status && survey.status !== filterValues.status) {
+        return false;
+      }
 
-  const handleEdit = (survey: Survey) => {
-    console.log("Edit survey:", survey.name);
-  };
+      if (
+        (filterValues.type as string[])?.length > 0 &&
+        !(filterValues.type as string[]).includes(survey.type)
+      ) {
+        return false;
+      }
 
-  const handleDelete = (survey: Survey) => {
-    console.log("Delete survey:", survey.id);
-  };
+      return true;
+    });
+  }, [filterValues]);
 
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-6 py-10">
+        <div className="flex justify-end mb-4">
+          <UniversalFilter
+            filters={surveyFilters}
+            values={filterValues}
+            onChange={setFilterValues}
+            onClear={() =>
+              setFilterValues({
+                name: "",
+                status: "",
+                type: [],
+              })
+            }
+          />
+        </div>
+
         <SurveyList
-          surveys={mockSurveys}
+          surveys={filteredSurveys}
           maxLabelsToShow={2}
-          onNewSurvey={handleNewSurvey}
-          onUseTemplate={handleUseTemplate}
-          onDashboard={handleDashboard}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
         />
       </div>
     </main>
