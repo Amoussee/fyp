@@ -33,9 +33,7 @@ export default async function AuthedLayout({ children }: { children: React.React
   return (
     <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <AppBarComponent />
-      <main style={{ flex: 1, display: 'flex' }}>
-        {children}
-      </main>
+      <main style={{ flex: 1, display: 'flex' }}>{children}</main>
     </div>
   );
 }

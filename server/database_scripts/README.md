@@ -3,6 +3,7 @@
 Follow these steps to get the development environment running.
 
 ### 1. Start the Infrastructure (Database)
+
 We use Docker to run the PostgreSQL database. From the **root** directory, run:
 
 ```bash
@@ -20,5 +21,6 @@ npm install
 npm run dev
 
 # Stopping the environment
-# From the root directory 
+# From the root directory
 docker compose down -v
+```
