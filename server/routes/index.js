@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import userRoutes from './userRoutes.js';
 import schoolRoutes from './schoolRoutes.js';
+import surveyRoutes from './surveyRoutes.js';
 
 const apiRouter = express.Router();
 
@@ -15,6 +16,9 @@ apiRouter.use('/users', userRoutes);
 
 // Route Group: /api/schools
 apiRouter.use('/schools', schoolRoutes);
+
+// Route Group: /api/surveys
+apiRouter.use('/surveys', surveyRoutes);
 
 // Future groups (e.g., /api/products, /api/auth)
 // apiRouter.use('/products', productRoutes);
