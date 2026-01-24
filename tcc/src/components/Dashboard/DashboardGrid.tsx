@@ -1,5 +1,5 @@
 import React from 'react';
-import { WidgetConfig } from '../../types/dashboard';
+import { WidgetConfig, DashboardLayoutType } from '../../types/dashboard';
 import DashboardCell from './DashboardCell';
 
 interface DashboardGridProps {
@@ -8,24 +8,49 @@ interface DashboardGridProps {
   onEditWidget: (config: WidgetConfig) => void;
   surveySchema: any;
   surveyResponses: any[];
+  layoutType?: DashboardLayoutType;
 }
 
-const GRID_SIZE = 6; // Fixed 6 slots for MVP
+const DashboardGrid = ({ 
+  widgets, 
+  onAddWidget, 
+  onEditWidget, 
+  surveySchema, 
+  surveyResponses,
+  layoutType = 'layout-2' 
+}: DashboardGridProps) => {
+  
+  // Determine grid configuration based on layout type
+  let gridSize = 2;
+  let gridClass = 'grid-cols-1 lg:grid-cols-2';
 
-const DashboardGrid = ({ widgets, onAddWidget, onEditWidget, surveySchema, surveyResponses }: DashboardGridProps) => {
-  // Create an array of length GRID_SIZE
-  const slots = Array.from({ length: GRID_SIZE });
+  switch (layoutType) {
+    case 'layout-1':
+        gridSize = 1;
+        gridClass = 'grid-cols-1';
+        break;
+    case 'layout-2':
+        gridSize = 2;
+        gridClass = 'grid-cols-1 lg:grid-cols-2';
+        break;
+    case 'layout-3':
+        gridSize = 3;
+        gridClass = 'grid-cols-1 lg:grid-cols-3';
+        break;
+    case 'layout-4':
+        gridSize = 4;
+        gridClass = 'grid-cols-1 md:grid-cols-2'; // 2x2
+        break;
+  }
+  
+  // Create an array of length based on layout
+  const slots = Array.from({ length: gridSize });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+    <div className={`grid gap-6 p-6 w-full transition-all duration-300 ${gridClass}`}>
       {slots.map((_, index) => {
-        // Find if we have a widget for this slot (assuming widgets are just pushed linearly or have position)
-        // For simple MVP: Widgets array maps to slots? Or we store index?
-        // Let's assume we map by index or use `widgets[index]` for simplicity if sequential.
-        // Better: `widgets` has an `id` or position. 
-        // Let's assume the parent manages the array size or we just match by index.
-        
-        const widget = widgets[index]; // Simple index mapping for now
+        const widget = widgets[index];
+
 
         return (
           <DashboardCell
@@ -42,3 +67,4 @@ const DashboardGrid = ({ widgets, onAddWidget, onEditWidget, surveySchema, surve
 };
 
 export default DashboardGrid;
+
