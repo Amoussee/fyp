@@ -17,7 +17,7 @@ router.route('/')
 // --- Specific Survey Routes (:id) ---
 router.route('/:id')
     .get(SurveyController.getById)
-    .put(SurveyController.update)
+    .put(SurveyValidator.validateUpdate ,SurveyController.update)
     .delete(SurveyController.delete);
 
 
