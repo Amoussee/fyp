@@ -1,5 +1,5 @@
 import express from 'express';
-import SurveyController from '../controllers/surveyController.js';
+import SurveyController from '../controllers/survey.controller.js';
 import SurveyValidator from '../middleware/survey.validator.js';
 
 const router = express.Router();
@@ -14,7 +14,7 @@ router.route('/')
 
 
 
-// --- Specific User Routes (:id) ---
+// --- Specific Survey Routes (:id) ---
 router.route('/:id')
     .get(SurveyController.getById)
     .put(SurveyController.update)
