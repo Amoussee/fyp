@@ -1,8 +1,8 @@
 "use client";
 
-import { SurveyTemplateList } from "../../../../../components/ui/surveyTemplateList"; // Add this
 import { useState, useMemo } from "react";
 import { SurveyList, type Survey } from "../../../../../components/ui/surveyList";
+import { SurveyTemplateList } from "../../../../../components/ui/surveyTemplateList";
 import {
   UniversalFilter,
   type FilterConfig,
@@ -12,16 +12,16 @@ import {
 const surveyFilters: FilterConfig[] = [
   {
     field: "name",
-    label: "School Name",
+    label: "Survey Name",
     type: "text",
-    placeholder: "Search by school name",
+    placeholder: "Search by survey name",
   },
   {
     field: "status",
     label: "Status",
     type: "radio",
     options: [
-      { value: "open", label: "Open" },
+      { value: "pending", label: "Pending" },
       { value: "ready", label: "Ready" },
       { value: "closed", label: "Closed" },
     ],
@@ -37,12 +37,17 @@ const surveyFilters: FilterConfig[] = [
       { value: "Student", label: "Student" },
     ],
   },
+  {
+    field: "creationDate",
+    label: "Creation Date",
+    type: "dateRange",
+  },
 ];
 
 const mockSurveys: Survey[] = [
   {
     id: "1",
-    name: "Poi Ching School",
+    name: "Poi Ching School Carbon Emissions",
     creationDate: "2025-12-12",
     labels: ["Primary 1", "Primary 2", "Primary 3"],
     completedCount: 145,
@@ -52,7 +57,7 @@ const mockSurveys: Survey[] = [
   },
   {
     id: "2",
-    name: "Poi Ching School",
+    name: "East Side Best Routes",
     creationDate: "2025-12-12",
     labels: ["Secondary 1"],
     completedCount: 145,
@@ -60,22 +65,41 @@ const mockSurveys: Survey[] = [
     type: "Public - Student",
     status: "ready",
   },
-  // ...
+  {
+    id: "3",
+    name: "Student Wellbeing Survey 2025",
+    creationDate: "2025-01-15",
+    labels: ["Primary 4", "Primary 5", "Primary 6"],
+    completedCount: 89,
+    totalCount: 150,
+    type: "Student",
+    status: "pending",
+  },
+  {
+    id: "4",
+    name: "Parent Feedback Q1 2025",
+    creationDate: "2025-01-20",
+    labels: ["All Grades"],
+    completedCount: 200,
+    totalCount: 200,
+    type: "Parent",
+    status: "closed",
+  },
 ];
 
-
 export default function SurveyListPage() {
-  // ✅ hooks live here
   const [filterValues, setFilterValues] = useState<FilterValues>({
     name: "",
     status: "",
     type: [],
+    creationDate: { start: null, end: null },
   });
 
-  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false); // Add this
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   const filteredSurveys = useMemo(() => {
     return mockSurveys.filter((survey) => {
+      // Name filter
       if (
         filterValues.name &&
         !survey.name
@@ -85,15 +109,40 @@ export default function SurveyListPage() {
         return false;
       }
 
+      // Status filter
       if (filterValues.status && survey.status !== filterValues.status) {
         return false;
       }
 
+      // Type filter
       if (
         (filterValues.type as string[])?.length > 0 &&
         !(filterValues.type as string[]).includes(survey.type)
       ) {
         return false;
+      }
+
+      // Date range filter
+      if (filterValues.creationDate) {
+        const dateRange = filterValues.creationDate as { start: any; end: any };
+        if (dateRange.start || dateRange.end) {
+          const surveyDate = new Date(survey.creationDate);
+          
+          if (dateRange.start) {
+            const startDate = new Date(dateRange.start.format('YYYY-MM-DD'));
+            if (surveyDate < startDate) {
+              return false;
+            }
+          }
+          
+          if (dateRange.end) {
+            const endDate = new Date(dateRange.end.format('YYYY-MM-DD'));
+            endDate.setHours(23, 59, 59, 999);
+            if (surveyDate > endDate) {
+              return false;
+            }
+          }
+        }
       }
 
       return true;
@@ -113,22 +162,22 @@ export default function SurveyListPage() {
                 name: "",
                 status: "",
                 type: [],
+                creationDate: { start: null, end: null },
               })
             }
           />
         </div>
 
         <SurveyList
-            surveys={filteredSurveys}
-            maxLabelsToShow={2}
-            onUseTemplate={() => setIsTemplateModalOpen(true)} // Add this
-            onNewSurvey={() => console.log("New survey")}
-            onDashboard={(survey) => console.log("Dashboard", survey)}
-            onEdit={(survey) => console.log("Edit", survey)}
-            onDelete={(survey) => console.log("Delete", survey)}
-          />
+          surveys={filteredSurveys}
+          maxLabelsToShow={2}
+          onUseTemplate={() => setIsTemplateModalOpen(true)}
+          onNewSurvey={() => console.log("New survey")}
+          onDashboard={(survey) => console.log("Dashboard", survey)}
+          onEdit={(survey) => console.log("Edit", survey)}
+          onDelete={(survey) => console.log("Delete", survey)}
+        />
 
-        {/* Add the modal */}
         <SurveyTemplateList
           isOpen={isTemplateModalOpen}
           onClose={() => setIsTemplateModalOpen(false)}
