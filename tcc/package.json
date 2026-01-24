@@ -64,10 +64,13 @@
     "mysql2": "^3.16.0",
     "next": "^16.1.6",
     "next-themes": "^0.4.6",
-    "react": "19.2.3",
+    "plotly.js": "^3.3.1",
+    "react": "^19.2.3",
     "react-day-picker": "9.8.0",
-    "react-dom": "19.2.3",
+    "react-dom": "^19.2.3",
     "react-hook-form": "^7.60.0",
+    "react-pivottable": "^0.11.0",
+    "react-plotly.js": "^2.6.0",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.4",
     "sonner": "^1.7.4",
@@ -90,10 +93,17 @@
     "@tailwindcss/postcss": "^4",
     "@types/lodash": "^4.17.23",
     "@types/node": "^20",
+<<<<<<< HEAD
 >>>>>>> a9bf461 (added survey dashboard flow (1st iteration))
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.23",
+=======
+    "@types/plotly.js": "^3.0.9",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/react-pivottable": "^0.11.6",
+>>>>>>> 22a2e65 (survey dashboard (2nd iteration))
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "eslint-config-prettier": "^10.1.8",

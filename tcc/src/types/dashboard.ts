@@ -6,6 +6,16 @@ export interface WidgetConfig {
     chartType: ChartType;
     aggregation: 'count' | 'sum' | 'average';
     title?: string; // Optional custom title
+    pivotState?: any; // Stores the state from react-pivottable
+}
+
+export type DashboardLayoutType = 'layout-1' | 'layout-2' | 'layout-3' | 'layout-4';
+
+export interface Dashboard {
+    id: string;
+    name: string;
+    layoutType: DashboardLayoutType;
+    widgets: WidgetConfig[];
 }
 
 export interface DashboardLayout {
