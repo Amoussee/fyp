@@ -30,12 +30,27 @@ class SurveyModel {
 
   // 4. Update
   async update(id, data) {
+    const fields = [];
+    const values = [];
+    let idx = 1;
+
+    for (const [key, value] of Object.entries(data)) {
+        fields.push(`${key} = $${idx}`);
+        values.push(value);
+        idx++;
+    }
+
+    if (fields.length === 0) return null;
+
     const query = `
-      UPDATE surveys 
-      SET title = $1, description = $2, survey_type = $3, metadata = $4, schema_json = $5
-      WHERE form_id = $6
-      RETURNING *`;
-    const values = [data.title, data.description, data.survey_type, data.metadata, data.schema_json, id];
+        UPDATE surveys
+        SET ${fields.join(", ")}
+        WHERE form_id = $${idx}
+        RETURNING *
+    `;
+
+    values.push(id);
+
     const { rows } = await pool.query(query, values);
     return rows[0];
   }
