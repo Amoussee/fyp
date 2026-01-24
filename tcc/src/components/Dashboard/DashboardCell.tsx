@@ -1,6 +1,6 @@
 import React from 'react';
 import { WidgetConfig } from '../../types/dashboard';
-import DynamicSurveyPivot from '../pivotTable'; // Reroutes to your existing chart logic
+import PivotTableV2 from '../pivotTableV2';
 
 interface DashboardCellProps {
   config?: WidgetConfig;
@@ -10,54 +10,52 @@ interface DashboardCellProps {
 }
 
 const DashboardCell = ({ config, onClick, surveySchema, surveyResponses }: DashboardCellProps) => {
+  // Flatten data for PivotTable
+  const flatData = React.useMemo(() => {
+    return surveyResponses.map(r => {
+        const row: any = {};
+        surveySchema.fields.forEach((f: any) => {
+            row[f.label] = (r.responses as Record<string, any>)[f.id];
+        });
+        return row;
+    });
+  }, [surveyResponses, surveySchema]);
+
   if (!config) {
     return (
       <div
         onClick={onClick}
-        className="flex items-center justify-center h-64 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+        className="flex items-center justify-center h-[500px] border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:bg-gray-50 hover:border-indigo-300 transition-all duration-300 group"
       >
-        <div className="text-center text-gray-500">
-          <span className="text-4xl block mb-2">+</span>
-          <span className="text-sm font-medium">Add Chart</span>
+        <div className="text-center text-gray-400 group-hover:text-indigo-500">
+
+          <span className="text-5xl block mb-3 font-light">+</span>
+          <span className="text-sm font-semibold tracking-wide uppercase">Add Chart</span>
         </div>
       </div>
     );
   }
 
-  // We need to adapt the config to what DynamicSurveyPivot expects unless we refactor it.
-  // For now, let's wrap it or assume DynamicSurveyPivot can take overrides.
-  // Actually, DynamicSurveyPivot manages its own state for selection. 
-  // We should ideally pass props to it to controlled mode, OR refactor it.
-  // Given the instruction to reuse it:
-  
-  // NOTE: PivotTable currently has internal state. We will need to refactor it or
-  // pass an "initialConfig" or "controlledConfig" if we want it to display what we selected.
-  // For this step, I'll pass the whole component, but strictly we might need to modify PivotTable 
-  // to accept `preSelectedQuestion` etc.
-  
-  // Let's assume for this MVP step we are just mounting it. 
-  // However, DynamicSurveyPivot as written is an interactive explorer.
-  // To make it a "Display Widget", we likely need to pass props to lock it or preset it.
-  
   return (
-    <div className="bg-white p-4 shadow rounded-lg h-64 overflow-hidden relative group min-w-0 w-full">
-       {/* 
-         TODO: PivotTable needs to support "controlled" mode to show the specific chart 
-         defined in `config`. I will need to edit PivotTable to accept `config` prop.
-       */}
-       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <button onClick={onClick} className="bg-gray-200 p-1 rounded text-xs">Edit</button>
+    <div className="bg-white p-2 shadow-xl rounded-2xl h-[500px] overflow-hidden relative group border border-gray-100 hover:shadow-2xl transition-all duration-300">
+
+       <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex gap-2">
+
+          <button onClick={onClick} className="bg-white/80 backdrop-blur-sm shadow-sm p-1.5 rounded-md text-xs hover:bg-indigo-50 hover:text-indigo-600 transition-all font-semibold">
+            Edit
+          </button>
        </div>
        
-       <DynamicSurveyPivot 
-            surveySchema={surveySchema} 
-            surveyResponses={surveyResponses}
-            // Passing these in creates a "preset" if generic pivot supports it.
-            // I will need to update PivotTable to accept these.
-            activeConfig={config} 
-       />
+       <div className="h-full w-full">
+         <PivotTableV2 
+              data={flatData}
+              readOnly={true}
+              initialState={config.pivotState}
+         />
+       </div>
     </div>
   );
 };
+
 
 export default DashboardCell;
