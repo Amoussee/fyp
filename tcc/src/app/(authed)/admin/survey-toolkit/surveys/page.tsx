@@ -1,5 +1,6 @@
 "use client";
 
+import { SurveyTemplateList } from "../../../../../components/ui/surveyTemplateList"; // Add this
 import { useState, useMemo } from "react";
 import { SurveyList, type Survey } from "../../../../../components/ui/surveyList";
 import {
@@ -20,7 +21,7 @@ const surveyFilters: FilterConfig[] = [
     label: "Status",
     type: "radio",
     options: [
-      { value: "pending", label: "Pending" },
+      { value: "open", label: "Open" },
       { value: "ready", label: "Ready" },
       { value: "closed", label: "Closed" },
     ],
@@ -71,6 +72,8 @@ export default function SurveyListPage() {
     type: [],
   });
 
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false); // Add this
+
   const filteredSurveys = useMemo(() => {
     return mockSurveys.filter((survey) => {
       if (
@@ -116,8 +119,23 @@ export default function SurveyListPage() {
         </div>
 
         <SurveyList
-          surveys={filteredSurveys}
-          maxLabelsToShow={2}
+            surveys={filteredSurveys}
+            maxLabelsToShow={2}
+            onUseTemplate={() => setIsTemplateModalOpen(true)} // Add this
+            onNewSurvey={() => console.log("New survey")}
+            onDashboard={(survey) => console.log("Dashboard", survey)}
+            onEdit={(survey) => console.log("Edit", survey)}
+            onDelete={(survey) => console.log("Delete", survey)}
+          />
+
+        {/* Add the modal */}
+        <SurveyTemplateList
+          isOpen={isTemplateModalOpen}
+          onClose={() => setIsTemplateModalOpen(false)}
+          onSelectTemplate={(template) => {
+            console.log("Selected template:", template);
+            // Handle template selection (e.g., navigate to create survey page)
+          }}
         />
       </div>
     </main>
