@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import "survey-core/defaultV2.min.css";
 
 :root {
   --main-color: #6aa84f;
