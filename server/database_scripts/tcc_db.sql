@@ -47,7 +47,25 @@ CREATE TABLE IF NOT EXISTS users (
     last_login TIMESTAMP 
 );
 
--- 3. SURVEYS (QUESTIONS)
+-- 3. SURVEY TEMPLATES
+CREATE TABLE IF NOT EXISTS survey_templates (
+    template_id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    -- core data needed to recreate a survey
+    schema_json JSONB NOT NULL,
+    metadata JSONB DEFAULT '{}',
+
+    owner_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+
+    CONSTRAINT fk_templates_owner
+        FOREIGN KEY (owner_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+);
+
+-- 4. SURVEYS (QUESTIONS)
 CREATE TYPE survey_scope AS ENUM ('PUBLIC', 'AUTHENTICATED');
 
 CREATE TABLE IF NOT EXISTS surveys (
@@ -64,14 +82,14 @@ CREATE TABLE IF NOT EXISTS surveys (
     CONSTRAINT fk_surveys_created_by
         FOREIGN KEY (created_by)
         REFERENCES users(user_id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
     CONSTRAINT fk_surveys_template
         FOREIGN KEY (source_template_id)
         REFERENCES survey_templates(template_id)
         ON DELETE SET NULL
 );
 
--- 4. SURVEY RESPONSES
+-- 5. SURVEY RESPONSES
 CREATE TABLE IF NOT EXISTS survey_responses (
     response_id SERIAL PRIMARY KEY,
     form_id INT NOT NULL,
@@ -87,24 +105,6 @@ CREATE TABLE IF NOT EXISTS survey_responses (
         FOREIGN KEY (user_id)
         REFERENCES users(user_id)
         ON DELETE SET NULL
-);
-
--- 5. SURVEY TEMPLATES
-CREATE TABLE IF NOT EXISTS survey_templates (
-    template_id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    -- core data needed to recreate a survey
-    schema_json JSONB NOT NULL,
-    metadata JSONB DEFAULT '{}',
-
-    owner_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-
-    CONSTRAINT fk_templates_owner
-        FOREIGN KEY (owner_id)
-        REFERENCES users(user_id)
-        ON DELETE CASCADE
 );
 
 -- 6. DASHBOARDS
