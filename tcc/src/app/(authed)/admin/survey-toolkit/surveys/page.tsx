@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { SurveyList, type Survey } from '../../../../../components/ui/surveyList';
 import { SurveyTemplateList } from '../../../../../components/ui/surveyTemplateList';
+import type { Dayjs } from 'dayjs'; // Add this import at the top
 import {
   UniversalFilter,
   type FilterConfig,
@@ -122,7 +123,7 @@ export default function SurveyListPage() {
 
       // Date range filter
       if (filterValues.creationDate) {
-        const dateRange = filterValues.creationDate as { start: any; end: any };
+        const dateRange = filterValues.creationDate as { start: Dayjs | null; end: Dayjs };
         if (dateRange.start || dateRange.end) {
           const surveyDate = new Date(survey.creationDate);
 

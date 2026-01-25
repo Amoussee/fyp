@@ -30,7 +30,6 @@ import {
 } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { UniversalFilter, type FilterConfig, type FilterValues } from './UniversalFilter';
-import type { Dayjs } from 'dayjs';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
@@ -258,24 +257,6 @@ export function AccountManagement() {
     setSelectedAccountId(null);
   };
 
-  const handleEdit = () => {
-    if (!selectedAccountId) return;
-    // do something with selectedAccountId
-    handleMenuClose();
-  };
-
-  const handleDelete = () => {
-    if (!selectedAccountId) return;
-    // do something with selectedAccountId
-    handleMenuClose();
-  };
-
-  const handleViewDetails = () => {
-    if (!selectedAccountId) return;
-    // do something with selectedAccountId
-    handleMenuClose();
-  };
-
   const handleEditClick = () => {
     const account = accounts.find((acc) => acc.id === selectedAccountId);
     if (account) {
@@ -402,11 +383,6 @@ export function AccountManagement() {
     } finally {
       handleMenuClose();
     }
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const handleFilterChange = (newFilterValues: FilterValues) => {

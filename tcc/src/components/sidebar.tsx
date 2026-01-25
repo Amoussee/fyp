@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import EditIcon from '@mui/icons-material/Edit';
 
 import {
   Avatar,
