@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 interface VisualizationCardProps {
   title: string;
@@ -8,13 +8,11 @@ interface VisualizationCardProps {
   className?: string;
 }
 
-function VisualizationCard({ title, children, className = "" }: VisualizationCardProps) {
+function VisualizationCard({ title, children, className = '' }: VisualizationCardProps) {
   return (
     <div className={`bg-white border-2 border-emerald-600 rounded-xl p-6 ${className}`}>
       <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
-      <div className="w-full h-full">
-        {children}
-      </div>
+      <div className="w-full h-full">{children}</div>
     </div>
   );
 }
@@ -27,31 +25,31 @@ const mockCompletionData = {
 };
 
 const mockResponseDistribution = [
-  { label: "Q1", value: 85, color: "from-pink-400 to-pink-300" },
-  { label: "Q2", value: 60, color: "from-emerald-400 to-emerald-300" },
-  { label: "Q3", value: 95, color: "from-amber-400 to-amber-300" },
+  { label: 'Q1', value: 85, color: 'from-pink-400 to-pink-300' },
+  { label: 'Q2', value: 60, color: 'from-emerald-400 to-emerald-300' },
+  { label: 'Q3', value: 95, color: 'from-amber-400 to-amber-300' },
 ];
 
 const mockTimelineData = [
-  { date: "Mon", responses: 20 },
-  { date: "Tue", responses: 35 },
-  { date: "Wed", responses: 28 },
-  { date: "Thu", responses: 42 },
-  { date: "Fri", responses: 38 },
-  { date: "Sat", responses: 15 },
-  { date: "Sun", responses: 12 },
+  { date: 'Mon', responses: 20 },
+  { date: 'Tue', responses: 35 },
+  { date: 'Wed', responses: 28 },
+  { date: 'Thu', responses: 42 },
+  { date: 'Fri', responses: 38 },
+  { date: 'Sat', responses: 15 },
+  { date: 'Sun', responses: 12 },
 ];
 
 const mockCategoryData = [
-  { category: "Primary 1", value: 35, color: "bg-blue-500" },
-  { category: "Primary 2", value: 40, color: "bg-emerald-500" },
-  { category: "Primary 3", value: 25, color: "bg-amber-500" },
+  { category: 'Primary 1', value: 35, color: 'bg-blue-500' },
+  { category: 'Primary 2', value: 40, color: 'bg-emerald-500' },
+  { category: 'Primary 3', value: 25, color: 'bg-amber-500' },
 ];
 
 const mockSentimentData = [
-  { label: "Positive", value: 65, color: "bg-emerald-500" },
-  { label: "Neutral", value: 25, color: "bg-gray-400" },
-  { label: "Negative", value: 10, color: "bg-red-500" },
+  { label: 'Positive', value: 65, color: 'bg-emerald-500' },
+  { label: 'Neutral', value: 25, color: 'bg-gray-400' },
+  { label: 'Negative', value: 10, color: 'bg-red-500' },
 ];
 
 interface CompletionChartProps {
@@ -63,14 +61,7 @@ function CompletionChart({ data }: CompletionChartProps) {
     <div className="flex items-center justify-center py-4">
       <div className="relative">
         <svg className="w-48 h-48 transform -rotate-90">
-          <circle
-            cx="96"
-            cy="96"
-            r="80"
-            stroke="#e5e7eb"
-            strokeWidth="16"
-            fill="none"
-          />
+          <circle cx="96" cy="96" r="80" stroke="#e5e7eb" strokeWidth="16" fill="none" />
           <circle
             cx="96"
             cy="96"
@@ -92,7 +83,9 @@ function CompletionChart({ data }: CompletionChartProps) {
           <div className="text-center">
             <div className="text-3xl font-bold text-gray-900">{data.percentage}%</div>
             <div className="text-sm text-gray-600 mt-1">Completed</div>
-            <div className="text-xs text-gray-500 mt-1">{data.completed}/{data.total}</div>
+            <div className="text-xs text-gray-500 mt-1">
+              {data.completed}/{data.total}
+            </div>
           </div>
         </div>
       </div>
@@ -105,13 +98,13 @@ interface BarChartProps {
 }
 
 function BarChart({ data }: BarChartProps) {
-  const maxValue = Math.max(...data.map(d => d.value));
-  
+  const maxValue = Math.max(...data.map((d) => d.value));
+
   return (
     <div className="flex items-end justify-center gap-6 h-48 px-4">
       {data.map((item, index) => (
         <div key={index} className="flex flex-col items-center gap-2 flex-1">
-          <div 
+          <div
             className={`w-full bg-gradient-to-t ${item.color} rounded-t-lg transition-all hover:opacity-80`}
             style={{ height: `${(item.value / maxValue) * 100}%` }}
           ></div>
@@ -128,12 +121,14 @@ interface LineChartProps {
 }
 
 function LineChart({ data }: LineChartProps) {
-  const maxValue = Math.max(...data.map(d => d.responses));
-  const points = data.map((item, i) => {
-    const x = (i / (data.length - 1)) * 100;
-    const y = 100 - (item.responses / maxValue) * 80;
-    return `${x},${y}`;
-  }).join(' ');
+  const maxValue = Math.max(...data.map((d) => d.responses));
+  const points = data
+    .map((item, i) => {
+      const x = (i / (data.length - 1)) * 100;
+      const y = 100 - (item.responses / maxValue) * 80;
+      return `${x},${y}`;
+    })
+    .join(' ');
 
   return (
     <div className="h-48 w-full">
@@ -204,7 +199,9 @@ function PieChart({ data }: PieChartProps) {
         {data.map((item, i) => (
           <div key={i} className="flex items-center gap-2 text-sm">
             <div className={`w-3 h-3 rounded ${item.color}`}></div>
-            <span className="text-gray-700">{item.category}: {item.value}%</span>
+            <span className="text-gray-700">
+              {item.category}: {item.value}%
+            </span>
           </div>
         ))}
       </div>
@@ -240,7 +237,7 @@ function HorizontalBarChart({ data }: HorizontalBarChartProps) {
 }
 
 export function VisualisationDashboard() {
-  const [selectedSurvey] = useState("Poi Ching School Carbon Emissions");
+  const [selectedSurvey] = useState('Poi Ching School Carbon Emissions');
 
   return (
     <main className="min-h-screen bg-gray-50 w-full">
@@ -289,7 +286,7 @@ export function VisualisationDashboard() {
 
         <div className="bg-gradient-to-br from-emerald-50 to-blue-50 border-2 border-emerald-600 rounded-2xl p-8">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Visualizations</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <VisualizationCard title="Completion Status">
               <CompletionChart data={mockCompletionData} />

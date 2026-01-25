@@ -1,5 +1,5 @@
 import { Sidebar } from '../../../../../components/sidebar';
-import {VisualisationDashboard} from "../../../../../components/ui/visualisationDashboard";
+import { VisualisationDashboard } from '../../../../../components/ui/visualisationDashboard';
 import { Box } from '@mui/material';
 
 export default function VisualisationDashboardPage() {
