@@ -3,7 +3,6 @@ import * as React from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { decodeSession, SESSION_COOKIE_NAME } from '@/src/lib/mockAuth';
-import AppBarComponent from '@/src/components/appbar';
 import { Sidebar } from '@/src/components/sidebar';
 
 function AppHeader({ role }: { role: string }) {

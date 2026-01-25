@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import EditIcon from '@mui/icons-material/Edit';
 
 import {
   Avatar,
@@ -34,6 +35,10 @@ type NavSection = { heading: string; items: NavItem[] };
 
 const navSections: NavSection[] = [
   {
+    id: 'survey',
+    label: 'Survey',
+    icon: <EditIcon sx={{ fontSize: 20 }} />,
+    href: '/admin/survey-toolkit/surveys',
     heading: 'Overview',
     items: [{ label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> }],
   },
