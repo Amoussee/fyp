@@ -9,13 +9,15 @@ import { SURVEY_CREATION_DEFAULTS } from "@/src/app/(authed)/admin/survey-toolki
 import { validateSurveyDetails } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/validation";
 import { hasErrors } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/helpers";
 import type { SurveyCreationForm, SurveyCreationErrors } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types";
+import { SurveyQuestionsStep } from "@/src/components/survey-creation/SurveyQuestionsStep";
+import { surveyJsonToSections } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/transform";
 
 type StepId = 0 | 1 | 2;
 
 const steps = [
-  { label: "Survey details", helper: "Set up the basics" },
-  { label: "Questions", helper: "Add your survey questions" },
-  { label: "Preview & status", helper: "Review and manage publishing" },
+  { label: "Survey Details", helper: "Set up the basics" },
+  { label: "Survey Questions", helper: "Add your survey questions" },
+  { label: "Preview & Status", helper: "Review and manage publishing" },
 ] as const;
 
 
@@ -42,9 +44,18 @@ export default function SurveyCreationPage() {
     const nextErrors = validateSurveyDetails(form);
     setErrors(nextErrors);
     if (hasErrors(nextErrors)) return;
-    // TODO submit
-    console.log("submit payload:", form);
+
+    const payload = {
+      ...form,
+      // generate sections at submit time
+      sections: surveyJsonToSections(form.surveyJson),
+    };
+
+    console.log("submit payload:", payload);
+
+    // TODO send payload to backend
   };
+
 
   const clearError = (key: keyof SurveyCreationForm) => {
     setErrors((prev) => ({ ...prev, [key]: undefined }));
@@ -58,54 +69,57 @@ export default function SurveyCreationPage() {
           steps={steps}
           onPrev={handleBack}
           onNext={handleNext}
-          onSaveDraft={() => console.log("Saving draft:", form)}
+          onSaveDraft={() => {
+            const draftPayload = {
+              ...form,
+              sections: surveyJsonToSections(form.surveyJson),
+            };
+            console.log("Saving draft:", draftPayload);
+          }}
         />
 
-        <Card elevation={0} sx={{ border: `1px solid ${BRAND.border}`, borderRadius: 3 }}>
-          <CardContent sx={{ pt: 0 }}>
-            {activeStep === 0 && <SurveyDetailsStep
-              form={form}
-              setForm={setForm}
-              errors={errors}
-              clearError={clearError}
-            />
-            }
+        {activeStep === 0 && 
+          <SurveyDetailsStep
+            form={form}
+            setForm={setForm}
+            errors={errors}
+            clearError={clearError}
+          />
+        }
 
-            {activeStep === 1 && (
-              <Box sx={{ p: 3 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  Questions (Placeholder)
-                </Typography>
-              </Box>
-            )}
+        {activeStep === 1 && (
+          <SurveyQuestionsStep
+            form={form}
+            setForm={setForm}
+          />
+        )}
 
-            {activeStep === 2 && (
-              <Box sx={{ p: 3 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  Preview & Status (Placeholder)
-                </Typography>
-              </Box>
-            )}
 
-            <Divider sx={{ mt: 3 }} />
+        {activeStep === 2 && (
+          <Box sx={{ p: 3 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+              Preview & Status (Placeholder)
+            </Typography>
+          </Box>
+        )}
 
-            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-              <Button variant="text" onClick={handleBack} disabled={activeStep === 0} sx={{ borderRadius: 999 }}>
-                Back
-              </Button>
+        <Divider sx={{ mt: 3 }} />
 
-              {activeStep < 2 ? (
-                <Button variant="contained" onClick={handleNext} sx={{ borderRadius: 999, px: 3, boxShadow: "none" }}>
-                  Next
-                </Button>
-              ) : (
-                <Button variant="contained" onClick={handleFinish} sx={{ borderRadius: 999, px: 3, boxShadow: "none" }}>
-                  Finish
-                </Button>
-              )}
-            </Box>
-          </CardContent>
-        </Card>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+          <Button variant="text" onClick={handleBack} disabled={activeStep === 0} sx={{ borderRadius: 999 }}>
+            Back
+          </Button>
+
+          {activeStep < 2 ? (
+            <Button variant="contained" onClick={handleNext} sx={{ borderRadius: 999, px: 3, boxShadow: "none" }}>
+              Next
+            </Button>
+          ) : (
+            <Button variant="contained" onClick={handleFinish} sx={{ borderRadius: 999, px: 3, boxShadow: "none" }}>
+              Finish
+            </Button>
+          )}
+        </Box>
       </div>
     </div>
   );

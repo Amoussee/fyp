@@ -61,15 +61,14 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
   }, [form.isDirected, form.recipients.length, setForm]);
 
   return (
-    <Card elevation={0}>
-      <CardContent sx={{ p: 3, mt: 3 }}>
+    <Card elevation={0} sx={{ border: `1px solid ${BRAND.border}`, borderRadius: 3 }}>
+      <CardContent sx={{ p: 3, m: 3 }}>
         {/* <Typography variant="h6" sx={{ fontWeight: 700, color: BRAND.text }}>
           Survey Details
         </Typography> */}
-
         <TextField
-          // label="Survey Title"
-          placeholder='Insert a Title'
+          label="Survey Title"
+          placeholder='Enter a Title'
           value={form.title}
           onChange={(e) => {
             setForm((prev) => ({ ...prev, title: e.target.value }));
@@ -78,7 +77,19 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
           error={Boolean(errors.title)}
           helperText={errors.title ?? " "}
           fullWidth
-          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }}
+          InputLabelProps={{
+            sx: {
+              transform: 'translate(14px, 10px) scale(2)', 
+              '&.MuiInputLabel-shrink': {
+                transform: 'translate(14px, -9px) scale(0.75)',
+              },
+            },
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2.5,
+            },
+          }}
           slotProps={{
             input: {
               sx: {
@@ -88,7 +99,6 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
                   py: 1.4,
                 },
               },
-              
             },
           }}
         />
