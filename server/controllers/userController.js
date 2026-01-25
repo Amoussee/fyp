@@ -122,7 +122,7 @@ export const updateUser = async (req, res) => {
     }
 
     res.status(200).json({ message: 'User updated successfully', user: result.rows[0] });
-  } catch (error) {
+  } catch {
     console.error('Error updating user:', error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -142,7 +142,7 @@ export const deleteUser = async (req, res) => {
       message: `User with ID ${id} deleted successfully`,
       deletedUser: result.rows[0],
     });
-  } catch (error) {
+  } catch {
     console.error(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
