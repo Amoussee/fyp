@@ -30,7 +30,6 @@ import {
 } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { UniversalFilter, type FilterConfig, type FilterValues } from './UniversalFilter';
-import type { Dayjs } from 'dayjs';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
@@ -51,7 +50,7 @@ interface Group {
 
 interface UserApiResponse {
   user_id: number;
-  first_name: string;
+  firstname: string;
   email: string;
   role: string;
   deactivated: boolean;
@@ -152,7 +151,7 @@ export function AccountManagement() {
       setAccounts(
         users.map((user) => ({
           id: String(user.user_id),
-          firstname: user.first_name,
+          firstname: user.firstname,
           email: user.email,
           tag: user.role,
           status: user.deactivated ? 'deactivated' : 'active',
@@ -256,24 +255,6 @@ export function AccountManagement() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedAccountId(null);
-  };
-
-  const handleEdit = () => {
-    if (!selectedAccountId) return;
-    // do something with selectedAccountId
-    handleMenuClose();
-  };
-
-  const handleDelete = () => {
-    if (!selectedAccountId) return;
-    // do something with selectedAccountId
-    handleMenuClose();
-  };
-
-  const handleViewDetails = () => {
-    if (!selectedAccountId) return;
-    // do something with selectedAccountId
-    handleMenuClose();
   };
 
   const handleEditClick = () => {
@@ -402,11 +383,6 @@ export function AccountManagement() {
     } finally {
       handleMenuClose();
     }
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const handleFilterChange = (newFilterValues: FilterValues) => {

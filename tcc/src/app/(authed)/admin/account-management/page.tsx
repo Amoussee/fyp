@@ -1,4 +1,3 @@
-import { Sidebar } from '../../../../components/sidebar';
 import { AccountManagement } from '../../../../components/AccountManagement';
 import { Box } from '@mui/material';
 
