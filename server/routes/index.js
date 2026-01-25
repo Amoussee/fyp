@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import userRoutes from './userRoutes.js';
+import userRoutes from './user.routes.js';
 import schoolRoutes from './school.routes.js';
 import surveyRoutes from './survey.routes.js';
 import responsesRoutes from './responses.routes.js';
