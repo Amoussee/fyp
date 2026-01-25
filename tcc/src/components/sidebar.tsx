@@ -45,7 +45,7 @@ const navSections: NavSection[] = [
   {
     heading: 'Toolkit',
     items: [
-      { label: 'Survey List', href: '/admin/survey-toolkit', icon: <AssignmentRoundedIcon /> },
+      { label: 'Survey List', href: '/admin/survey-toolkit/surveys', icon: <AssignmentRoundedIcon /> },
       {
         label: 'Visualisation',
         href: '/admin/visualisation/dashboard',
