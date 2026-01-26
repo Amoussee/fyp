@@ -3,33 +3,63 @@
 import React, { useState, useEffect } from 'react';
 import PivotTableUI from './react-pivottable/PivotTableUI';
 import PivotTable from './react-pivottable/PivotTable'; // <-- Import PivotTable for read-only mode
+import * as PivotUtils from './react-pivottable/Utilities';
 import createPlotlyRenderers from './react-pivottable/PlotlyRenderers';
+// import { aggregators } from './react-pivottable/Utilities'; // hi amos it's here
 import TableRenderers from './react-pivottable/TableRenderers';
 import Plot from 'react-plotly.js';
 import './react-pivottable/pivottable.css';
 
-// create the renderers and pass them to the PivotTableUI
 const PlotlyRenderers = createPlotlyRenderers(Plot);
 export const allRenderers = Object.assign({}, TableRenderers, PlotlyRenderers);
+const aggregators = PivotUtils.aggregators;
+
+
+console.log('DEBUG: PivotUtils full import:', PivotUtils);
+console.log('DEBUG: Extracted aggregators:', aggregators);
 
 // Helper to remove non-serializable/dangerous props from state
 const cleanState = (state: any) => {
-  if (!state) return state;
-  const { data, renderers, onChange, ...rest } = state;
-  return rest;
+    if (!state) return state;
+    const { data, renderers, onChange, ...rest } = state;
+    return rest;
 };
 
 interface PivotTableV2Props {
-  data?: any[];
-  onSave?: (state: any) => void;
-  onCancel?: () => void;
-  readOnly?: boolean; // <-- Re-added readOnly prop
-  initialState?: any;
+    data?: any[];
+    onSave?: (state: any) => void;
+    onCancel?: () => void;
+    readOnly?: boolean; // <-- Re-added readOnly prop
+    initialState?: any;
 }
 
-export default function PivotTableV2({ 
-    data = [['attribute', 'attribute2'], ['value1', 'value2']], 
-    onSave, 
+// Hardcoded list of default aggregators from react-pivottable/Utilities
+const VALID_AGGREGATORS = [
+    'Count',
+    'Count Unique Values',
+    'List Unique Values',
+    'Sum',
+    'Integer Sum',
+    'Average',
+    'Median',
+    'Sample Variance',
+    'Sample Standard Deviation',
+    'Minimum',
+    'Maximum',
+    'First',
+    'Last',
+    'Sum over Sum',
+    'Sum as Fraction of Total',
+    'Sum as Fraction of Rows',
+    'Sum as Fraction of Columns',
+    'Count as Fraction of Total',
+    'Count as Fraction of Rows',
+    'Count as Fraction of Columns'
+];
+
+export default function PivotTableV2({
+    data = [['attribute', 'attribute2'], ['value1', 'value2']],
+    onSave,
     onCancel,
     readOnly = false, // <-- Set default value for readOnly
     initialState
@@ -38,14 +68,28 @@ export default function PivotTableV2({
         rendererName: 'Grouped Column Chart', // Start with a chart
     });
 
+    // Sanitize aggregatorName to prevent crashes
+    const safePivotState = { ...pivotState };
+    // If aggregatorName is missing OR strictly invalid
+    if (!safePivotState.aggregatorName || !VALID_AGGREGATORS.includes(safePivotState.aggregatorName)) {
+        console.warn(`Invalid or missing aggregatorName detected: "${safePivotState.aggregatorName}". Falling back to "Count".`);
+        safePivotState.aggregatorName = 'Count';
+    }
+
+    // Ensure aggregators is passed down if not already (though we pass it explicitly in JSX now)
+    // Make sure we aren't passing undefined aggregators
+    if (!aggregators) {
+        console.error('CRITICAL: aggregators object is missing!');
+    }
+
     // Debugging pivot state to check why titles are not showing
     console.log('DEBUG: pivotState', pivotState);
 
     // Helper function to get a dynamic chart title
     const getChartTitle = () => {
-        const rows = pivotState.rows || [];
-        const cols = pivotState.cols || [];
-        
+        const rows = safePivotState.rows || [];
+        const cols = safePivotState.cols || [];
+
         if (rows.length && cols.length) return `${rows.join(', ')} vs ${cols.join(', ')}`;
         if (cols.length) return `Distribution by ${cols.join(', ')}`;
         if (rows.length) return `Distribution by ${rows.join(', ')}`;
@@ -55,18 +99,17 @@ export default function PivotTableV2({
     // Define common Plotly layout and config settings for reusability
     const commonPlotlyLayout = {
         // Title validation removed from chart
-        xaxis: { 
-
-            title: { 
-                text: pivotState.cols?.join(', ') || 'Attributes',
+        xaxis: {
+            title: {
+                text: safePivotState.cols?.join(', ') || 'Attributes',
                 font: { size: 12 }
             },
             automargin: true,
             tickfont: { size: 11 }
         },
-        yaxis: { 
-            title: { 
-                text: pivotState.rows?.join(', ') || 'Values',
+        yaxis: {
+            title: {
+                text: safePivotState.rows?.join(', ') || 'Values',
                 font: { size: 12 }
             },
             automargin: true,
@@ -75,10 +118,10 @@ export default function PivotTableV2({
         // IMPORTANT: Ensure sufficient margins for titles and legends
         margin: { t: 80, b: 100, l: 80, r: 40 }, // Increased bottom margin for legend
         showlegend: true, // Make sure legend is shown
-        legend: { 
+        legend: {
             orientation: 'h', // Horizontal legend
             y: -0.25,         // Position below x-axis
-            x: 0.5, 
+            x: 0.5,
             xanchor: 'center',
             font: { size: 10 }
         },
@@ -111,9 +154,10 @@ export default function PivotTableV2({
                 <PivotTable // Renders the final chart without UI controls
                     data={data}
                     renderers={allRenderers}
-                    {...pivotState}
+                    aggregators={aggregators}
+                    {...safePivotState}
                     rendererOptions={{
-                        plotly: { 
+                        plotly: {
                             layout: {
                                 ...commonPlotlyLayout, // Apply common layout
                                 height: 420, // Increased height for better visibility
@@ -121,7 +165,7 @@ export default function PivotTableV2({
                                 // For read-only, you might want smaller font sizes or less interactivity
                                 xaxis: { ...commonPlotlyLayout.xaxis, tickfont: { size: 10 } },
                                 yaxis: { ...commonPlotlyLayout.yaxis, tickfont: { size: 10 } },
-                                legend: { ...commonPlotlyLayout.legend, font: { size: 10 }, y: -0.2 }, 
+                                legend: { ...commonPlotlyLayout.legend, font: { size: 10 }, y: -0.2 },
                                 margin: { t: 40, b: 100, l: 70, r: 20 }, // Optimized margins
                             },
                             config: {
@@ -151,9 +195,9 @@ export default function PivotTableV2({
                 onChange={(s: any) => {
                     setPivotState(cleanState(s));
                 }}
-                {...pivotState}
+                {...safePivotState}
                 rendererOptions={{ // ALL PLOTLY CONFIGURATION GOES INSIDE rendererOptions
-                    plotly: { 
+                    plotly: {
                         layout: {
                             ...commonPlotlyLayout, // Apply common layout
                             height: 450, // Specific height for edit view
@@ -169,7 +213,7 @@ export default function PivotTableV2({
             {(onSave || onCancel) && (
                 <div className="flex justify-end gap-3 mt-4 border-t pt-4">
                     {onCancel && (
-                        <button 
+                        <button
                             onClick={onCancel}
                             className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                         >
@@ -177,8 +221,8 @@ export default function PivotTableV2({
                         </button>
                     )}
                     {onSave && (
-                        <button 
-                            onClick={() => onSave(pivotState)}
+                        <button
+                            onClick={() => onSave(safePivotState)}
                             className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md transition-colors"
                         >
                             Confirm Selection

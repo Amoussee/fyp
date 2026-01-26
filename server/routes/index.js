@@ -1,11 +1,10 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import userRoutes from './user.routes.js';
-import schoolRoutes from './school.routes.js';
-import surveyRoutes from './survey.routes.js';
-import responsesRoutes from './responses.routes.js';
-import surveyTemplateRoutes from './surveyTemplate.routes.js';
+import userRoutes from './userRoutes.js';
+import schoolRoutes from './schoolRoutes.js';
+import dashboardRoutes from './dashboardRoutes.js';
+import surveyRoutes from './surveyRoutes.js';
 
 const apiRouter = express.Router();
 
@@ -29,5 +28,10 @@ apiRouter.use('/templates', surveyTemplateRoutes);
 
 // Future groups (e.g., /api/products, /api/auth)
 // apiRouter.use('/products', productRoutes);
+// Route Group: /api/dashboards
+apiRouter.use('/dashboards', dashboardRoutes);
+
+// Route Group: /api/surveys
+apiRouter.use('/surveys', surveyRoutes);
 
 export default apiRouter;
