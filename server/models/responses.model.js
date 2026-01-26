@@ -17,14 +17,34 @@ class SurveyResponseModel {
 
     // 2. GET all responses by form_id
     async findByFormId(formId) {
-        const query = 'SELECT * FROM survey_responses WHERE form_id = $1 ORDER BY created_at DESC';
+        const query = `
+        SELECT 
+            sr.*, 
+            u.user_id, 
+            u.role, 
+            u.organisation
+        FROM survey_responses sr
+        JOIN users u ON sr.user_id = u.user_id
+        WHERE sr.form_id = $1
+        `;
+
         const { rows } = await pool.query(query, [formId]);
         return rows;
     }
 
-    // Get a specific response
+    // Find a specific response by ID and join user data
     async findById(id) {
-        const query = 'SELECT * FROM survey_responses WHERE response_id = $1';
+        const query = `
+        SELECT 
+            sr.*, 
+            u.user_id, 
+            u.role, 
+            u.organisation
+        FROM survey_responses sr
+        JOIN users u ON sr.user_id = u.user_id
+        WHERE sr.response_id = $1
+        `;
+
         const { rows } = await pool.query(query, [id]);
         return rows[0];
     }
