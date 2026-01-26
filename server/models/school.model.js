@@ -16,9 +16,9 @@ class SchoolModel {
         const values = [];
         let index = 1;
 
-        if (filters.name) {
+        if (filters.school_name) {
             conditions.push(`school_name ILIKE $${index++}`);
-            values.push(`%${filters.name}%`);
+            values.push(`%${filters.school_name}%`);
         }
 
         if (filters.zone_code) {
@@ -62,48 +62,32 @@ class SchoolModel {
     }
 
     async update(id, data) {
-        const {
-            school_name,
-            address,
-            mrt_desc,
-            dgp_code,
-            zone_code,
-            mainlevel_code,
-            nature_code,
-            type_code,
-        } = data;
+        const fields = [];
+        const values = [];
+        let placeholderIndex = 1;
 
-        const { rows } = await pool.query(
-            `
-        UPDATE schools
-        SET
-        school_name    = COALESCE($1, school_name),
-        address        = COALESCE($2, address),
-        mrt_desc       = COALESCE($3, mrt_desc),
-        dgp_code       = COALESCE($4, dgp_code),
-        zone_code      = COALESCE($5, zone_code),
-        mainlevel_code = COALESCE($6, mainlevel_code),
-        nature_code    = COALESCE($7, nature_code),
-        type_code      = COALESCE($8, type_code)
-        WHERE school_id = $9
-        RETURNING *
-        `,
-            [
-                school_name,
-                address,
-                mrt_desc,
-                dgp_code,
-                zone_code,
-                mainlevel_code,
-                nature_code,
-                type_code,
-                id,
-            ]
-        );
+        for (const [key, value] of Object.entries(data)) {
+            // Only include fields that are actually in the data object
+            if (value !== undefined) {
+                fields.push(`${key} = $${placeholderIndex}`);
+                values.push(value);
+                placeholderIndex++;
+            }
+        }
 
+        if (fields.length === 0) return null;
+
+        values.push(id);
+        
+        const query = `
+            UPDATE schools 
+            SET ${fields.join(', ')} 
+            WHERE school_id = $${placeholderIndex} 
+            RETURNING *`;
+
+        const { rows } = await pool.query(query, values);
         return rows[0];
     }
-
 
     async delete(id) {
         const { rowCount } = await pool.query('DELETE FROM schools WHERE school_id = $1', [id]);
