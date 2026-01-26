@@ -5,6 +5,7 @@ import userRoutes from './user.routes.js';
 import schoolRoutes from './school.routes.js';
 import surveyRoutes from './survey.routes.js';
 import responsesRoutes from './responses.routes.js';
+import surveyRoutes from './surveyTemplate.routes.js';
 
 const apiRouter = express.Router();
 const PORT = process.env.PORT || 5001;
@@ -23,6 +24,9 @@ apiRouter.use('/surveys', surveyRoutes);
 
 // Route Group: /api/responses
 apiRouter.use('/responses', responsesRoutes);
+
+// Route Group: /api/template
+apiRouter.use('/templates', surveyTemplateRoutes);
 
 // Future groups (e.g., /api/products, /api/auth)
 // apiRouter.use('/products', productRoutes);
