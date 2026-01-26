@@ -53,18 +53,24 @@ class UserController {
   };
 
   update = async (req, res) => {
-    try {
-      const user = await UserModel.update(req.params.id, req.body);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-      res.status(200).json({
-        message: 'User updated successfully',
-        user,
-      });
-    } catch (error) {
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
+    const { id } = req.params;
+
+    const allowedUpdates = {
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      full_name: req.body.full_name,
+      organisation: req.body.organisation,
+      phone_number: req.body.phone_number,
+      number_child: req.body.number_child,
+      child_details: req.body.child_details
+    };
+
+    Object.keys(allowedUpdates).forEach(key => 
+      allowedUpdates[key] === undefined && delete allowedUpdates[key]
+    );
+
+    const updatedUser = await UserModel.update(id, allowedUpdates);
+    res.status(200).json(updatedUser);
   };
 
   delete = async (req, res) => {

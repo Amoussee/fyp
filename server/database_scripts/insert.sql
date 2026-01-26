@@ -352,7 +352,7 @@ INSERT INTO users (
     full_name, 
     email, 
     phone_number, 
-    is_active,       -- changed from 'deactivated'
+    is_active,
     organisation, 
     role, 
     number_child, 
