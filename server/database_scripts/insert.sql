@@ -532,3 +532,138 @@ INSERT INTO schools (school_name, address, mrt_desc, dgp_code, mainlevel_code, n
 ('ZHENGHUA SECONDARY SCHOOL', '62 Bukit Panjang Ring Road', 'JELAPANG LRT', 'BUKIT PANJANG', 'SECONDARY (S1-S5)', 'CO-ED SCHOOL', 'GOVERNMENT SCHOOL', 'WEST', NULL),
 ('ZHONGHUA PRIMARY SCHOOL', '12 SERANGOON AVENUE 4', 'Ang Mo Kio MRT, Bishan MRT, Serangoon MRT', 'SERANGOON', 'PRIMARY', 'CO-ED SCHOOL', 'GOVERNMENT SCHOOL', 'SOUTH', NULL),
 ('ZHONGHUA SECONDARY SCHOOL', '13 SERANGOON AVENUE 3', 'SERANGOON MRT', 'SERANGOON', 'SECONDARY (S1-S5)', 'CO-ED SCHOOL', 'GOVERNMENT SCHOOL', 'SOUTH', NULL);
+
+INSERT INTO users (
+    first_name, 
+    last_name, 
+    full_name, 
+    email, 
+    phone_number, 
+    is_active,       -- changed from 'deactivated'
+    organisation, 
+    role, 
+    number_child, 
+    child_details,
+    school_id
+)
+VALUES
+(
+ 'Alice', 'Tan', 'Alice Tan', 'admin1@tcc.org', '+65 9999 9999', TRUE,
+ 'TCC', 'admin', 0, '[]'::jsonb, NULL
+),
+(
+ 'Ben', 'Lim', 'Ben Lim', 'admin2@tcc.org', '+65 8888 8888', FALSE,
+ 'TCC', 'admin', 0, '[]'::jsonb, NULL
+),
+(
+ 'Clara', 'Ong', 'Clara Ong', 'parent1@school.edu', '+65 9888 8888', TRUE,
+ 'Admiralty Primary', 'parent', 1, '[{"name":"Child A", "school":"Admiralty Primary School"}]'::jsonb,
+ (SELECT school_id FROM schools WHERE school_name = 'ADMIRALTY PRIMARY SCHOOL' LIMIT 1) -- Dynamic Link
+),
+(
+ 'Daniel', 'Lee', 'Daniel Lee', 'parent2@school.edu', '+65 8989 9898', TRUE,
+ 'Ai Tong School', 'parent', 1, '[{"name":"Child B","school":"Ai Tong School"}]'::jsonb,
+ (SELECT school_id FROM schools WHERE school_name = 'AI TONG SCHOOL' LIMIT 1)
+),
+(
+ 'Evelyn', 'Ng', 'Evelyn Ng', 'parent3@school.edu', '+65 9898 8989', TRUE,
+ 'Riverside Secondary', 'parent', 1, '[{"name":"Child C","school":"Riverside Secondary School"}]'::jsonb,
+ (SELECT school_id FROM schools WHERE school_name = 'RIVERSIDE SECONDARY SCHOOL' LIMIT 1)
+);
+
+INSERT INTO survey_templates (title, description, schema_json, metadata, owner_id)
+VALUES
+(
+  'General Recycling Audit', 
+  'Standard template for tracking student recycling habits.',
+  '{"questions":[{"id":"q1","type":"yes_no","question":"Do you recycle?"}]}', 
+  '{"difficulty":"easy", "tags":["environment","waste"]}',
+  1 -- Owned by Admin Alice
+),
+(
+  'Transport Emission Check',
+  'Template for calculating transport carbon footprint.',
+  '{"questions":[{"id":"q1","type":"multiple_choice","options":["Bus","MRT","Car","Walk"]}]}',
+  '{"difficulty":"medium", "tags":["transport","carbon"]}',
+  1
+);
+
+INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by)
+VALUES
+(
+  'Recycling Habits (May 2026)',   -- Custom Title for this specific run
+  'Student recycling habits for May',
+  '{}',
+  '{"questions":[{"id":"q1","type":"yes_no","question":"Do you recycle?"}]}', -- Copied from Template 1
+  1, -- Links to "General Recycling Audit" template
+  1  -- Created by Admin Alice
+),
+(
+  'Transport Check (Class 1A)',
+  'Commute methods for Class 1A',
+  '{}',
+  '{"questions":[{"id":"q1","type":"multiple_choice","options":["Bus","MRT","Car","Walk"]}]}', -- Copied from Template 2
+  2, -- Links to "Transport Emission Check" template
+  2  -- Created by Admin Ben
+),
+(
+  'Energy Awareness',
+  'Energy usage awareness',
+  '{}',
+  '{"questions":[{"id":"q1","type":"scale","min":1,"max":5}]}',
+  NULL,
+  1
+),
+(
+  'Water Conservation',
+  'Water saving habits',
+  '{}',
+  '{"questions":[{"id":"q1","type":"yes_no"}]}',
+  NULL,
+  2
+),
+(
+  'Food Waste',
+  'Canteen food waste',
+  '{}',
+  '{"questions":[{"id":"q1","type":"text"}]}',
+  NULL,
+  1
+);
+
+INSERT INTO survey_responses (form_id, responses, user_id)
+VALUES
+(1, '{"q1":"Yes"}', 3),
+(1, '{"q1":"No"}', 4),
+(2, '{"q1":4}', 3),
+(3, '{"q1":"Yes"}', 4),
+(4, '{"q1":"Bus"}', 5);
+
+INSERT INTO dashboards (owner_id, name, config)
+VALUES
+(
+  1,
+  'Recycling Dashboard',
+  '{"layout":[{"type":"barchart","question_id":"q1"}]}'
+),
+(
+  1,
+  'Energy Dashboard',
+  '{"layout":[{"type":"average","question_id":"q1"}]}'
+),
+(
+  2,
+  'Water Dashboard',
+  '{"layout":[{"type":"pie","question_id":"q1"}]}'
+),
+(
+  2,
+  'Transport Dashboard',
+  '{"layout":[{"type":"barchart","question_id":"q1"}]}'
+),
+(
+  1,
+  'Food Waste Dashboard',
+  '{"layout":[{"type":"wordcloud","question_id":"q1"}]}'
+);
+
