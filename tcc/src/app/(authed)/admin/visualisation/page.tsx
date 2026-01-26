@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardGrid from '../../../../components/Dashboard/DashboardGrid';
 import DashboardTabs from '../../../../components/Dashboard/DashboardTabs';
 import CreateDashboardModal from '../../../../components/Dashboard/CreateDashboardModal';
@@ -51,11 +51,56 @@ export default function VisualisationPage() {
     // Initial State: No Dashboards
     const [dashboards, setDashboards] = useState<Dashboard[]>([]);
     const [activeDashboardId, setActiveDashboardId] = useState<string>('');
-    
+
     // UI State
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isExploring, setIsExploring] = useState(false);
     const [activeSlot, setActiveSlot] = useState<number | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
+    const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+    const showNotification = (type: 'success' | 'error', message: string) => {
+        setNotification({ type, message });
+        setTimeout(() => setNotification(null), 5000);
+    };
+
+    // Fetch User Session and then Dashboards
+    useEffect(() => {
+        const initData = async () => {
+            try {
+                // 1. Get current user session
+                const meRes = await fetch('/api/auth/me');
+                if (!meRes.ok) {
+                    console.error('Failed to fetch auth session');
+                    return;
+                }
+                const { user } = await meRes.json();
+                console.log('User session loaded:', user); // DEBUG LOG
+                setUserEmail(user.email);
+
+                // 2. Fetch dashboards for this user using email
+                const dashRes = await fetch(`/api/dashboards?email=${user.email}`);
+                if (dashRes.ok) {
+                    const rawData = await dashRes.json();
+                    // Map Postgres schema to Dashboard interface
+                    const mappedDashboards: Dashboard[] = rawData.map((d: any) => ({
+                        id: d.dashboard_id.toString(),
+                        name: d.name,
+                        layoutType: d.config.layoutType,
+                        widgets: d.config.widgets || []
+                    }));
+                    setDashboards(mappedDashboards);
+                    if (mappedDashboards.length > 0) {
+                        setActiveDashboardId(mappedDashboards[0].id);
+                    }
+                }
+            } catch (error) {
+                console.error('Initialization failed:', error);
+            }
+        };
+        initData();
+    }, []);
 
     // Dynamic Data derivation
     const flatData = React.useMemo(() => {
@@ -89,14 +134,14 @@ export default function VisualisationPage() {
             }
             return newDashboards;
         });
-        
+
         // Also set active explicitly if logic above needs it immediately, 
         // but setState is async. The length check above inside setter is safer for ordering 
         // but activeId uses separte state.
         // Actually, better to just set it active always if we want to jump to it?
         // Or only if it's the first one? Let's jump to new dashboard always for better UX.
         setActiveDashboardId(newDashboard.id);
-        
+
         setIsCreateModalOpen(false);
     };
 
@@ -120,7 +165,7 @@ export default function VisualisationPage() {
         const rowLabel = pivotState.rows?.[0];
         const question = MOCK_SCHEMA.fields.find(f => f.label === rowLabel);
         const questionId = question ? question.id : 'q1';
-        
+
         setDashboards(prev => prev.map(d => {
             if (d.id !== activeDashboardId) return d;
 
@@ -128,16 +173,82 @@ export default function VisualisationPage() {
             newWidgets[activeSlot] = {
                 id: `widget-${Date.now()}`,
                 questionId: questionId,
-                chartType: pivotState.rendererName, 
+                chartType: pivotState.rendererName,
                 aggregation: pivotState.aggregatorName || 'count',
                 pivotState: pivotState // Save the full state for rendering in the grid
             };
 
             return { ...d, widgets: newWidgets };
         }));
-        
+
         setIsExploring(false);
         setActiveSlot(null);
+    };
+
+    const handleSaveDashboard = async () => {
+        console.log("save button pressed");
+        console.log("State check:", { activeDashboard, userEmail });
+
+        if (!activeDashboard || !userEmail) {
+            console.error("Missing activeDashboard or userEmail", {
+                hasDashboard: !!activeDashboard,
+                hasEmail: !!userEmail
+            });
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            // Check if it's a new dashboard (temp ID starting with 'dash-')
+            const isNew = activeDashboard.id.startsWith('dash-');
+
+            const payload = {
+                dashboard_id: isNew ? undefined : parseInt(activeDashboard.id),
+                email: userEmail,
+                name: activeDashboard.name,
+                layoutType: activeDashboard.layoutType,
+                widgets: activeDashboard.widgets
+            };
+
+            const response = await fetch('/api/dashboards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                const updatedDash = await response.json();
+                console.log('Dashboard saved successfully:', updatedDash);
+
+                // Update local state with the real ID from database
+                setDashboards(prev => prev.map(d => {
+                    if (d.id === activeDashboard.id) {
+                        return {
+                            ...d,
+                            id: updatedDash.dashboard_id.toString()
+                        };
+                    }
+                    return d;
+                }));
+
+                if (isNew) {
+                    setActiveDashboardId(updatedDash.dashboard_id.toString());
+                }
+
+                showNotification('success', 'Changes saved successfully!');
+            } else {
+                const errorData = await response.json();
+                console.error('Save failed:', errorData);
+                showNotification('error', `Failed to save: ${errorData.error || 'Unknown error'}`);
+            }
+        } catch (error) {
+            console.error('Error saving dashboard:', error);
+            showNotification('error', 'A network error occurred while saving.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -148,16 +259,41 @@ export default function VisualisationPage() {
                         <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Dashboard Builder</h1>
                         <p className="text-gray-500 mt-2">Design your insights by adding and configuring widgets.</p>
                     </div>
+                    {activeDashboard && (
+                        <button
+                            onClick={handleSaveDashboard}
+                            disabled={isSaving}
+                            className={`px-6 py-2.5 rounded-lg font-semibold shadow-md transition-all flex items-center gap-2 ${isSaving
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-green-600 hover:bg-green-700 text-white transform hover:-translate-y-0.5'
+                                }`}
+                        >
+                            {isSaving ? (
+                                <>
+                                    <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                                    Saving...
+                                </>
+                            ) : (
+                                <>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l6-6a1 1 0 00-1.414-1.414L11 12.586l-2.293-2.293z" />
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                                    </svg>
+                                    Save Changes
+                                </>
+                            )}
+                        </button>
+                    )}
                 </div>
 
                 {/* Dashboard Tabs Navigation */}
-                <DashboardTabs 
-                    dashboards={dashboards} 
+                <DashboardTabs
+                    dashboards={dashboards}
                     activeDashboardId={activeDashboardId}
                     onSwitchDashboard={setActiveDashboardId}
                     onAddDashboard={() => setIsCreateModalOpen(true)}
                 />
-                
+
                 {dashboards.length === 0 ? (
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-16 text-center animate-in fade-in zoom-in-95 duration-500">
                         <div className="mx-auto w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
@@ -180,8 +316,8 @@ export default function VisualisationPage() {
                                     <h2 className="text-2xl font-bold text-gray-800">Configure Widget for Slot {activeSlot! + 1}</h2>
                                     <p className="text-sm text-gray-500">Drag and drop attributes to build your visualization.</p>
                                 </div>
-                                <PivotTableV2 
-                                    data={flatData} 
+                                <PivotTableV2
+                                    data={flatData}
                                     onSave={handleSaveFromPivot}
                                     onCancel={() => setIsExploring(false)}
                                     initialState={activeSlot !== null ? widgets[activeSlot]?.pivotState : undefined}
@@ -190,8 +326,8 @@ export default function VisualisationPage() {
                         ) : (
                             <div className="animate-in fade-in duration-700">
                                 {activeDashboard && (
-                                    <DashboardGrid 
-                                        widgets={widgets} 
+                                    <DashboardGrid
+                                        widgets={widgets}
                                         onAddWidget={handleAddWidget}
                                         onEditWidget={handleEditWidget}
                                         surveySchema={MOCK_SCHEMA}
@@ -206,11 +342,38 @@ export default function VisualisationPage() {
             </div>
 
             {/* Create Dashboard Modal */}
-            <CreateDashboardModal 
+            <CreateDashboardModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
                 onCreate={handleCreateDashboard}
             />
+
+            {/* Notification Toast */}
+            {notification && (
+                <div className={`fixed bottom-8 right-8 z-[100] animate-in fade-in slide-in-from-right-8 duration-300`}>
+                    <div className={`${notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+                        } text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 min-w-[320px]`}>
+                        {notification.type === 'success' ? (
+                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                        ) : (
+                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        )}
+                        <div>
+                            <p className="font-bold">{notification.type === 'success' ? 'Success' : 'Error'}</p>
+                            <p className="text-sm opacity-90">{notification.message}</p>
+                        </div>
+                        <button onClick={() => setNotification(null)} className="ml-auto opacity-70 hover:opacity-100">
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

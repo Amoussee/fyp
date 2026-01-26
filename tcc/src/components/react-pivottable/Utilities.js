@@ -214,7 +214,7 @@ var aggregatorTemplates = {
 
     return function (_ref) {
       var _ref2 = _slicedToArray(_ref, 1),
-          attr = _ref2[0];
+        attr = _ref2[0];
 
       return function () {
         return {
@@ -239,7 +239,7 @@ var aggregatorTemplates = {
 
     return function (_ref3) {
       var _ref4 = _slicedToArray(_ref3, 1),
-          attr = _ref4[0];
+        attr = _ref4[0];
 
       return function () {
         return {
@@ -264,7 +264,7 @@ var aggregatorTemplates = {
 
     return function (_ref5) {
       var _ref6 = _slicedToArray(_ref5, 1),
-          attr = _ref6[0];
+        attr = _ref6[0];
 
       return function (data) {
         return {
@@ -305,7 +305,7 @@ var aggregatorTemplates = {
 
     return function (_ref7) {
       var _ref8 = _slicedToArray(_ref7, 1),
-          attr = _ref8[0];
+        attr = _ref8[0];
 
       return function () {
         return {
@@ -340,7 +340,7 @@ var aggregatorTemplates = {
 
     return function (_ref9) {
       var _ref10 = _slicedToArray(_ref9, 1),
-          attr = _ref10[0];
+        attr = _ref10[0];
 
       return function () {
         return {
@@ -391,8 +391,8 @@ var aggregatorTemplates = {
 
     return function (_ref11) {
       var _ref12 = _slicedToArray(_ref11, 2),
-          num = _ref12[0],
-          denom = _ref12[1];
+        num = _ref12[0],
+        denom = _ref12[1];
 
       return function () {
         return {
@@ -881,7 +881,7 @@ var PivotData = function () {
 
 PivotData.forEachRecord = function (input, derivedAttributes, f) {
   var addRecord = void 0,
-      record = void 0;
+    record = void 0;
   if (Object.getOwnPropertyNames(derivedAttributes).length === 0) {
     addRecord = f;
   } else {
