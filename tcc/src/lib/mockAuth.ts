@@ -9,7 +9,7 @@ export type MockUser = {
   lastname: string;
   role: Role;
   status: UserStatus;
-  sub: string; // Cognito user sub equivalent
+  sub?: string; // Cognito user sub equivalent (optional now)
 };
 
 export type SessionPayload = {
@@ -34,7 +34,7 @@ export const MOCK_USERS: MockUser[] = [
     lastname: 'Loh',
     role: 'admin',
     status: 'active',
-    sub: 'user-admin-001',
+    // sub: 'user-admin-001',
   },
   {
     email: 'parent@email.com',
@@ -43,7 +43,7 @@ export const MOCK_USERS: MockUser[] = [
     lastname: 'Khoo',
     role: 'parent',
     status: 'active',
-    sub: 'user-parent-001',
+    // sub: 'user-parent-001',
   },
   {
     email: 'deactivated_parent@email.com',
@@ -52,14 +52,21 @@ export const MOCK_USERS: MockUser[] = [
     lastname: 'Heng',
     role: 'parent',
     status: 'deactivated',
-    sub: 'user-parent-002',
+    // sub: 'user-parent-002',
   },
+  {
+    email: 'admin1@tcc.org',
+    password: 'Password123!',
+    role: 'admin',
+    status: 'active',
+    // sub: 'user-admin-001',
+  }
 ];
 
 export function makeSession(user: MockUser): SessionPayload {
   const now = Math.floor(Date.now() / 1000);
   return {
-    sub: user.sub,
+    sub: user.sub || user.email, // Fallback to email if sub is missing
     email: user.email,
     firstname: user.firstname,
     lastname: user.lastname,
