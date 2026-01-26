@@ -1,7 +1,7 @@
 // routes/response.routes.js
 import express from 'express';
-import ResponseController from '../controllers/response.controller.js';
-import ResponseValidator from '../middleware/response.validator.js';
+import ResponseController from '../controllers/responses.controller.js';
+import ResponseValidator from '../middleware/responses.validator.js';
 
 const router = express.Router();
 
