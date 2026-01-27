@@ -5,6 +5,6 @@ export const BRAND = {
   text: '#111827',
   muted: '#6C8270',
   green: '#50ab72',
-  greenSoft: 'rgba(133, 201, 158, 0.50)',
-  greenHover: 'rgba(133, 201, 158, 0.30)',
+  greenSoft: 'rgba(11, 187, 7, 0.2)',
+  greenHover: 'rgba(11, 187, 7, 0.1)',
 } as const;
