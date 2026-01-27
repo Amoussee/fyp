@@ -3,8 +3,20 @@ import React, { useState, useEffect } from 'react';
 import DashboardGrid from '../../../../components/Dashboard/DashboardGrid';
 import DashboardTabs from '../../../../components/Dashboard/DashboardTabs';
 import CreateDashboardModal from '../../../../components/Dashboard/CreateDashboardModal';
-import PivotTableV2 from '../../../../components/pivotTableV2';
+// import PivotTableV2 from '../../../../components/pivotTableV2'; // old import
 import { WidgetConfig, Dashboard, DashboardLayoutType } from '../../../../types/dashboard';
+// new pivot table import
+import dynamic from 'next/dynamic';
+
+const PivotTableV2 = dynamic(() => import('../../../../components/pivotTableV2'), {
+    ssr: false,
+    loading: () => (
+        <div className="flex flex-col items-center justify-center p-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
+            <p className="text-gray-500 font-medium">Initializing Visualization Engine...</p>
+        </div>
+    )
+});
 
 // Mock Data for MVP Verification (Moved outside for cleaner re-renders)
 const MOCK_SCHEMA = {
@@ -331,7 +343,8 @@ export default function VisualisationPage() {
                                         onAddWidget={handleAddWidget}
                                         onEditWidget={handleEditWidget}
                                         surveySchema={MOCK_SCHEMA}
-                                        surveyResponses={MOCK_RESPONSES}
+                                        // Pass flatData if the grid handles the final rendering
+                                        surveyResponses={flatData}
                                         layoutType={activeDashboard.layoutType}
                                     />
                                 )}
