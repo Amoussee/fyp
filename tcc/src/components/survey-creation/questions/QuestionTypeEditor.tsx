@@ -12,7 +12,7 @@ export function QuestionTypeEditor({ element, onPatch, onChangeKind }: {
 }) {
   const kind = (element.kind ?? "short_text") as QuestionKind;
 
-  if (kind === "multiple_choice_single" || kind === "multiple_choice_multi" || kind === "ranking") {
+  if (kind === "single_choice" || kind === "multi_select" || kind === "ranking") {
     return <ChoicesEditor element={element} onPatch={onPatch} onChangeKind={onChangeKind} />;
   }
 
@@ -27,7 +27,7 @@ export function QuestionTypeEditor({ element, onPatch, onChangeKind }: {
   if (
     kind === "short_text" ||
     kind === "long_text" ||
-    kind === "single_number" ||
+    kind === "number" ||
     kind === "number_range" ||
     kind === "single_date"
   ) {

@@ -3,6 +3,18 @@
 import * as React from "react";
 import { Box, TextField, Typography } from "@mui/material";
 
+const SHORT_TEXT_MAX = 1000;
+const LONG_TEXT_MAX = 3000;
+const LONG_TEXT_ROWS = 3;
+
+function enforceIfDifferent(element: any, desired: Record<string, any>) {
+  const patch: Record<string, any> = {};
+  for (const [k, v] of Object.entries(desired)) {
+    if (element?.[k] !== v) patch[k] = v;
+  }
+  return patch;
+}
+
 type Props = {
   element: any; // SurveyJS element JSON
   onPatch: (patch: Partial<any>) => void;
@@ -43,15 +55,22 @@ export function TextEditor({ element, onPatch }: Props) {
   // enforce “base” settings for each kind (without being too aggressive)
   React.useEffect(() => {
     if (kind === "short_text") {
-      if (element.type !== "text" || element.inputType !== "text") {
-        onPatch({ type: "text", inputType: "text" });
-      }
+      const patch = enforceIfDifferent(element, {
+        type: "text",
+        inputType: "text",
+        maxLength: SHORT_TEXT_MAX,
+      });
+      if (Object.keys(patch).length) onPatch(patch);
     }
 
-    if (kind === "single_number") {
-      if (element.type !== "text" || element.inputType !== "number") {
-        onPatch({ type: "text", inputType: "number" });
-      }
+    if (kind === "long_text") {
+      const patch = enforceIfDifferent(element, {
+        type: "comment",
+        rows: LONG_TEXT_ROWS,
+        maxLength: LONG_TEXT_MAX,
+        autoGrow: true, // remove this line if your SurveyJS build doesn't support it
+      });
+      if (Object.keys(patch).length) onPatch(patch);
     }
 
     if (kind === "number_range") {
@@ -78,18 +97,9 @@ export function TextEditor({ element, onPatch }: Props) {
   if (kind === "long_text") {
     return (
       <Box>
-        <Typography sx={{ fontWeight: 700, mb: 1 }}>Long text settings</Typography>
-
-        <TextField
-          label="Rows"
-          type="number"
-          value={element.rows ?? 4}
-          onChange={(e) => onPatch({ rows: Number(e.target.value || 4) })}
-          sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2.5 }, width: 200 }}
-        />
-
-        <Typography sx={{ mt: 1, color: "text.secondary", fontSize: 13 }}>
-          Uses SurveyJS <code>comment</code> question.
+        <Typography sx={{ fontWeight: 700, mb: 1 }}>Long text</Typography>
+        <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+          3-line comment box (auto-expands), max {LONG_TEXT_MAX} characters.
         </Typography>
       </Box>
     );
@@ -134,7 +144,7 @@ export function TextEditor({ element, onPatch }: Props) {
     );
   }
 
-  if (kind === "single_number") {
+  if (kind === "number") {
     return (
       <Box>
         <Typography sx={{ fontWeight: 700, mb: 1 }}>Number settings</Typography>
@@ -159,21 +169,9 @@ export function TextEditor({ element, onPatch }: Props) {
   // short_text default
   return (
     <Box>
-      <Typography sx={{ fontWeight: 700, mb: 1 }}>Short text settings</Typography>
-
-      <TextField
-        label="Max length"
-        type="number"
-        value={element.maxLength ?? ""}
-        onChange={(e) => {
-          const v = e.target.value;
-          onPatch({ maxLength: v === "" ? undefined : Number(v) });
-        }}
-        sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2.5 }, width: 220 }}
-      />
-
-      <Typography sx={{ mt: 1, color: "text.secondary", fontSize: 13 }}>
-        Uses SurveyJS <code>text</code> question.
+      <Typography sx={{ fontWeight: 700, mb: 1 }}>Short text</Typography>
+      <Typography sx={{ color: "text.secondary", fontSize: 13 }}>
+        Single-line input, max {SHORT_TEXT_MAX} characters.
       </Typography>
     </Box>
   );

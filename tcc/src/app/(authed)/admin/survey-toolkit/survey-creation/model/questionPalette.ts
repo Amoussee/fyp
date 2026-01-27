@@ -1,44 +1,87 @@
 // src/survey-creation/model/questionPalette.ts
+import type { SvgIconComponent } from "@mui/icons-material";
+import ShortTextIcon from "@mui/icons-material/ShortText";
+import NotesIcon from "@mui/icons-material/Notes";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import NumbersIcon from "@mui/icons-material/Numbers";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+
+/**
+ * 1) Full list of question kinds you support in your system (ALL 11).
+ * This is what your surveyJson element.kind should be.
+ */
 export type QuestionKind =
-  | "multiple_choice_single"
-  | "multiple_choice_multi"
-  | "multiple_short_text"
   | "short_text"
   | "long_text"
+  | "multi_select"
+  | "single_choice"
+  | "number"
   | "scale"
-  | "single_number"
+  | "multiple_short_text"
   | "number_range"
   | "single_date"
   | "date_range"
   | "ranking";
 
+/**
+ * 2) Subset shown in the right-side icon rail (keep it compact).
+ * (It can be expanded later without breaking the model.)
+ */
+export type QuestionRailKind =
+  | "short_text"
+  | "long_text"
+  | "multi_select"
+  | "single_choice"
+  | "number"
+  | "scale";
+
+export type QuestionKindMeta<K extends QuestionKind = QuestionKind> = {
+  kind: K;
+  label: string;
+  icon: SvgIconComponent;
+};
+
+/**
+ * Right rail list (only 6)
+ */
+export const QUESTION_KINDS: QuestionKindMeta<QuestionRailKind>[] = [
+  { kind: "short_text", label: "Short text", icon: ShortTextIcon },
+  { kind: "long_text", label: "Long text", icon: NotesIcon },
+  { kind: "multi_select", label: "Multi-select", icon: CheckBoxIcon },
+  { kind: "single_choice", label: "Single choice", icon: RadioButtonCheckedIcon },
+  { kind: "number", label: "Number", icon: NumbersIcon },
+  { kind: "scale", label: "Scale", icon: LeaderboardIcon },
+];
+
 export type PaletteItem = {
   kind: QuestionKind;
   label: string;
-  // Which SurveyJS base type we use
   sjType: string;
-  // Default element JSON fields (beyond type/name/title)
   defaults?: Record<string, any>;
 };
 
+/**
+ * Full palette (ALL 11)
+ */
 export const QUESTION_PALETTE: PaletteItem[] = [
-  // 1) Multiple choice (single)
+  // Multi-select
   {
-    kind: "multiple_choice_single",
-    label: "Multiple choice (single select)",
-    sjType: "radiogroup",
-    defaults: { choices: ["Option 1", "Option 2"] },
-  },
-
-  // 2) Multiple choice (multi)
-  {
-    kind: "multiple_choice_multi",
+    kind: "multi_select",
     label: "Multiple choice (multi select)",
     sjType: "checkbox",
     defaults: { choices: ["Option 1", "Option 2"] },
   },
 
-  // 3) Multiple short text
+  // Single choice
+  {
+    kind: "single_choice",
+    label: "Multiple choice (single select)",
+    sjType: "radiogroup",
+    defaults: { choices: ["Option 1", "Option 2"] },
+  },
+
+  // Multiple short text
   {
     kind: "multiple_short_text",
     label: "Multiple short text",
@@ -51,15 +94,15 @@ export const QUESTION_PALETTE: PaletteItem[] = [
     },
   },
 
-  // 4) Short text
+  // Short text
   {
     kind: "short_text",
     label: "Short text",
     sjType: "text",
-    defaults: { inputType: "text" },
+    defaults: { inputType: "text", maxLength: 100 },
   },
 
-  // 5) Long text
+  // Long text
   {
     kind: "long_text",
     label: "Long text",
@@ -67,7 +110,7 @@ export const QUESTION_PALETTE: PaletteItem[] = [
     defaults: { rows: 4 },
   },
 
-  // 6) Scale
+  // Scale
   {
     kind: "scale",
     label: "Scale",
@@ -75,19 +118,15 @@ export const QUESTION_PALETTE: PaletteItem[] = [
     defaults: { rateMin: 1, rateMax: 5, rateStep: 1 },
   },
 
-  // 7) Single number
+  // Number
   {
-    kind: "single_number",
-    label: "Single number",
+    kind: "number",
+    label: "Number",
     sjType: "text",
-    defaults: {
-      inputType: "number",
-      // you can also use validators if you prefer
-      // validators: [{ type: "numeric" }]
-    },
+    defaults: { inputType: "number" },
   },
 
-  // 8) Number range
+  // Number range
   {
     kind: "number_range",
     label: "Number range",
@@ -98,7 +137,7 @@ export const QUESTION_PALETTE: PaletteItem[] = [
     },
   },
 
-  // 9) Single date
+  // Single date
   {
     kind: "single_date",
     label: "Single date",
@@ -106,7 +145,7 @@ export const QUESTION_PALETTE: PaletteItem[] = [
     defaults: { inputType: "date" },
   },
 
-  // 10) Date range (best done as multipletext with 2 date inputs)
+  // Date range
   {
     kind: "date_range",
     label: "Date range",
@@ -119,7 +158,7 @@ export const QUESTION_PALETTE: PaletteItem[] = [
     },
   },
 
-  // 11) Ranking
+  // Ranking
   {
     kind: "ranking",
     label: "Ranking",
@@ -128,7 +167,6 @@ export const QUESTION_PALETTE: PaletteItem[] = [
   },
 ];
 
-// Helpers
 export function kindToPaletteItem(kind: QuestionKind) {
   const item = QUESTION_PALETTE.find((x) => x.kind === kind);
   if (!item) throw new Error(`Unknown QuestionKind: ${kind}`);
