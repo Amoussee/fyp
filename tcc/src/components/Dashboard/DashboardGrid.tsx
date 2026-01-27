@@ -54,7 +54,7 @@ const DashboardGrid = ({
 
         return (
           <DashboardCell
-            key={index}
+            key={widget ? widget.id : `empty-${index}`}
             config={widget}
             onClick={() => widget ? onEditWidget(widget) : onAddWidget(index)}
             surveySchema={surveySchema}
