@@ -119,8 +119,8 @@ function makeRenderer(PlotlyComponent) {
           title: titleText,
           hovermode: 'closest',
           /* eslint-disable no-magic-numbers */
-          width: window.innerWidth / 1.5,
-          height: window.innerHeight / 1.4 - 50
+          // width: window.innerWidth / 1.5,
+          // height: window.innerHeight / 1.4 - 50
           /* eslint-enable no-magic-numbers */
         };
 
@@ -155,7 +155,9 @@ function makeRenderer(PlotlyComponent) {
           data: data,
           layout: Object.assign(layout, layoutOptions, this.props.plotlyOptions),
           config: this.props.plotlyConfig,
-          onUpdate: this.props.onRendererUpdate
+          onUpdate: this.props.onRendererUpdate,
+          useResizeHandler: true,
+          style: { width: '100%', height: '100%' }
         });
       }
     }]);
@@ -215,19 +217,17 @@ function makeScatterRenderer(PlotlyComponent) {
         var layout = {
           title: this.props.rows.join('-') + ' vs ' + this.props.cols.join('-'),
           hovermode: 'closest',
-          /* eslint-disable no-magic-numbers */
           xaxis: { title: this.props.cols.join('-'), automargin: true },
-          yaxis: { title: this.props.rows.join('-'), automargin: true },
-          width: window.innerWidth / 1.5,
-          height: window.innerHeight / 1.4 - 50
-          /* eslint-enable no-magic-numbers */
+          yaxis: { title: this.props.rows.join('-'), automargin: true }
         };
 
         return _react2.default.createElement(PlotlyComponent, {
           data: [data],
           layout: Object.assign(layout, this.props.plotlyOptions),
           config: this.props.plotlyConfig,
-          onUpdate: this.props.onRendererUpdate
+          onUpdate: this.props.onRendererUpdate,
+          useResizeHandler: true,
+          style: { width: '100%', height: '100%' }
         });
       }
     }]);
