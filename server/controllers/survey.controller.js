@@ -36,11 +36,19 @@ class SurveyController {
   // PUT /surveys/:id
   update = async (req, res) => {
     try {
+      // Ensure the request body has fields to update
+      if (Object.keys(req.body).length === 0) {
+        return res.status(400).json({ message: 'No fields to update' });
+      }
+
+      // Call the model to update the survey
       const updated = await SurveyModel.update(req.params.id, req.body);
+
       if (!updated) return res.status(404).json({ message: 'Survey not found' });
-      res.status(200).json(updated);
+
+      res.status(200).json(updated);  // Return the updated survey data
     } catch (err) {
-      res.status(500).json({ error: 'Update failed' });
+      res.status(500).json({ error: 'Update failed', details: err.message });
     }
   };
 

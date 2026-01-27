@@ -5,7 +5,7 @@ import userRoutes from './user.routes.js';
 import schoolRoutes from './school.routes.js';
 import surveyRoutes from './survey.routes.js';
 import responsesRoutes from './responses.routes.js';
-import surveyRoutes from './surveyTemplate.routes.js';
+import surveyTemplateRoutes from './surveyTemplate.routes.js';
 
 const apiRouter = express.Router();
 const PORT = process.env.PORT || 5001;

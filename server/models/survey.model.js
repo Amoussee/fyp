@@ -4,7 +4,7 @@ import pool from '../config/postgres.js';
 class SurveyModel {
   // 1. Get All
   async findAll() {
-    const query = 'SELECT * FROM surveys ORDER BY created_at DESC';
+    const query = 'SELECT * FROM surveys';
     const { rows } = await pool.query(query);
     return rows;
   }
@@ -18,12 +18,12 @@ class SurveyModel {
 
   // 3. Create
   async create(data) {
-    const { title, description, source_template_id, survey_type, metadata, schema_json, created_by } = data;
+    const { title, description, metadata, schema_json, source_template_id, created_by } = data;
     const query = `
-      INSERT INTO surveys (title, description, source_template_id, survey_type, metadata, schema_json, created_by)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *`;
-    const values = [title, description, source_template_id, survey_type, metadata, schema_json, created_by];
+    const values = [title, description, metadata, schema_json, source_template_id, created_by];
     const { rows } = await pool.query(query, values);
     return rows[0];
   }
@@ -34,25 +34,31 @@ class SurveyModel {
     const values = [];
     let idx = 1;
 
+    // Dynamically build the fields and values for the update
     for (const [key, value] of Object.entries(data)) {
+      if (value !== undefined) {  // Ensure we only update fields with defined values
         fields.push(`${key} = $${idx}`);
         values.push(value);
         idx++;
+      }
     }
 
+    // If no fields are provided for update, return null
     if (fields.length === 0) return null;
 
-    const query = `
-        UPDATE surveys
-        SET ${fields.join(", ")}
-        WHERE form_id = $${idx}
-        RETURNING *
-    `;
-
+    // Add the ID at the end of the values for the WHERE clause
     values.push(id);
 
+    // Construct the query
+    const query = `
+      UPDATE surveys
+      SET ${fields.join(", ")}
+      WHERE form_id = $${idx}
+      RETURNING *
+    `;
+
     const { rows } = await pool.query(query, values);
-    return rows[0];
+    return rows[0];  // Return the updated survey
   }
 
   // 5. Delete
