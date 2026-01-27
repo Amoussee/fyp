@@ -24,15 +24,15 @@ export default function VisualisationsPage() {
 =======
 'use client';
 import React, { useState, useEffect } from 'react';
-import DashboardGrid from '../../../../components/Dashboard/DashboardGrid';
-import DashboardTabs from '../../../../components/Dashboard/DashboardTabs';
-import CreateDashboardModal from '../../../../components/Dashboard/CreateDashboardModal';
+import DashboardGrid from '../../../../../components/Dashboard/DashboardGrid';
+import DashboardTabs from '../../../../../components/Dashboard/DashboardTabs';
+import CreateDashboardModal from '../../../../../components/Dashboard/CreateDashboardModal';
 // import PivotTableV2 from '../../../../components/pivotTableV2'; // old import
-import { WidgetConfig, Dashboard, DashboardLayoutType } from '../../../../types/dashboard';
+import { WidgetConfig, Dashboard, DashboardLayoutType } from '../../../../../types/dashboard';
 // new pivot table import
 import dynamic from 'next/dynamic';
 
-const PivotTableV2 = dynamic(() => import('../../../../components/pivotTableV2'), {
+const PivotTableV2 = dynamic(() => import('../../../../../components/pivotTableV2'), {
     ssr: false,
     loading: () => (
         <div className="flex flex-col items-center justify-center p-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
@@ -195,6 +195,7 @@ export default function VisualisationPage() {
     };
 
     const handleSaveFromPivot = (pivotState: any) => {
+        console.log('DEBUG: handleSaveFromPivot received:', pivotState); // Trace saving
         if (activeSlot === null || !activeDashboardId) return;
 
         // Map label back to ID for reference (though pivotState is the primary driver now)
@@ -347,17 +348,19 @@ export default function VisualisationPage() {
                 ) : (
                     <>
                         {isExploring ? (
-                            <div className="inline-block bg-white p-8 rounded-2xl shadow-xl border border-gray-100 animate-in fade-in slide-in-from-bottom-4 duration-500 w-fit">
-                                <div className="mb-6">
-                                    <h2 className="text-2xl font-bold text-gray-800">Configure Widget for Slot {activeSlot! + 1}</h2>
-                                    <p className="text-sm text-gray-500">Drag and drop attributes to build your visualization.</p>
+                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+                                <div className="bg-white p-8 rounded-2xl shadow-xl max-h-[95vh] overflow-y-auto w-fit animate-in zoom-in-95 duration-300">
+                                    <div className="mb-6">
+                                        <h2 className="text-2xl font-bold text-gray-800">Configure Widget for Slot {activeSlot! + 1}</h2>
+                                        <p className="text-sm text-gray-500">Drag and drop attributes to build your visualization.</p>
+                                    </div>
+                                    <PivotTableV2
+                                        data={flatData}
+                                        onSave={handleSaveFromPivot}
+                                        onCancel={() => setIsExploring(false)}
+                                        initialState={activeSlot !== null ? widgets[activeSlot]?.pivotState : undefined}
+                                    />
                                 </div>
-                                <PivotTableV2
-                                    data={flatData}
-                                    onSave={handleSaveFromPivot}
-                                    onCancel={() => setIsExploring(false)}
-                                    initialState={activeSlot !== null ? widgets[activeSlot]?.pivotState : undefined}
-                                />
                             </div>
                         ) : (
                             <div className="animate-in fade-in duration-700">
@@ -368,7 +371,7 @@ export default function VisualisationPage() {
                                         onEditWidget={handleEditWidget}
                                         surveySchema={MOCK_SCHEMA}
                                         // Pass flatData if the grid handles the final rendering
-                                        surveyResponses={flatData}
+                                        surveyResponses={MOCK_RESPONSES}
                                         layoutType={activeDashboard.layoutType}
                                     />
                                 )}

@@ -12,14 +12,12 @@ import './react-pivottable/pivottable.css';
 
 const PlotlyRenderers = createPlotlyRenderers(Plot);
 export const allRenderers = Object.assign({}, TableRenderers, PlotlyRenderers);
-const fetchedAggregators = PivotUtils.aggregators || (PivotUtils as any).default?.aggregators;
-console.log('DEBUG: PivotUtils full import:', PivotUtils);
-console.log('DEBUG: Extracted aggregators:', fetchedAggregators);
+const fetchedAggregators = PivotUtils.aggregators; // Correctly access exported aggregators
 
 // Helper to remove non-serializable/dangerous props from state
 const cleanState = (state: any) => {
     if (!state) return state;
-    const { data, renderers, onChange, ...rest } = state;
+    const { data, renderers, onChange, aggregators, ...rest } = state; // Remove aggregators from saved state too
     return rest;
 };
 
@@ -31,29 +29,7 @@ interface PivotTableV2Props {
     initialState?: any;
 }
 
-// Hardcoded list of default aggregators from react-pivottable/Utilities
-const VALID_AGGREGATORS = [
-    'Count',
-    'Count Unique Values',
-    'List Unique Values',
-    'Sum',
-    'Integer Sum',
-    'Average',
-    'Median',
-    'Sample Variance',
-    'Sample Standard Deviation',
-    'Minimum',
-    'Maximum',
-    'First',
-    'Last',
-    'Sum over Sum',
-    'Sum as Fraction of Total',
-    'Sum as Fraction of Rows',
-    'Sum as Fraction of Columns',
-    'Count as Fraction of Total',
-    'Count as Fraction of Rows',
-    'Count as Fraction of Columns'
-];
+// ... unchanged code ...
 
 export default function PivotTableV2({
     data = [['attribute', 'attribute2'], ['value1', 'value2']],
@@ -62,26 +38,30 @@ export default function PivotTableV2({
     readOnly = false, // <-- Set default value for readOnly
     initialState
 }: PivotTableV2Props) {
-    const [pivotState, setPivotState] = useState<any>(cleanState(initialState) || {
+    const cleanedInitial = cleanState(initialState);
+
+    const [pivotState, setPivotState] = useState<any>(cleanedInitial || {
         rendererName: 'Grouped Column Chart', // Start with a chart
     });
 
+    console.log('DEBUG: ReadOnly?', readOnly);
+    console.log('DEBUG: pivotState keys:', Object.keys(pivotState));
+    console.log('DEBUG: cols:', pivotState.cols);
+    console.log('DEBUG: rows:', pivotState.rows);
+    console.log('DEBUG: rendererName:', pivotState.rendererName);
+
     // Sanitize aggregatorName to prevent crashes
     const safePivotState = { ...pivotState };
+    
+    // IMPORTANT: Remove aggregators from the state object we pass down.
+    // The saved state often has { aggregators: {} }, which overrides the valid aggregators prop.
+    delete safePivotState.aggregators; 
+
     // If aggregatorName is missing OR strictly invalid
     if (!safePivotState.aggregatorName || !(safePivotState.aggregatorName in fetchedAggregators)) {
         console.warn(`Invalid aggregatorName: "${safePivotState.aggregatorName}". Falling back to "Count".`);
         safePivotState.aggregatorName = 'Count';
     }
-
-    // Ensure aggregators is passed down if not already (though we pass it explicitly in JSX now)
-    // Make sure we aren't passing undefined aggregators
-    if (!fetchedAggregators) {
-        console.error('CRITICAL: aggregators object is missing!');
-    }
-
-    // Debugging pivot state to check why titles are not showing
-    console.log('DEBUG: pivotState', pivotState);
 
     // Helper function to get a dynamic chart title
     const getChartTitle = () => {
@@ -123,6 +103,7 @@ export default function PivotTableV2({
             xanchor: 'center',
             font: { size: 10 }
         },
+        hovermode: 'closest', // Ensure tooltips are enabled on hover
     };
 
     const commonPlotlyConfig = {
@@ -145,45 +126,47 @@ export default function PivotTableV2({
     // --- READ ONLY MODE (Dashboard View) ---
     if (readOnly) {
         return (
-            <div className="flex justify-center mb-2 px-2">
-                <h2 className="max-w-full font-bold text-gray-700 text-sm text-ellipsis overflow-hidden whitespace-nowrap">
+            <div className="flex flex-col h-full w-full overflow-hidden dashboard-modebar-left">
+                <h2 className="flex-none font-bold text-gray-700 text-sm text-ellipsis overflow-hidden whitespace-nowrap px-2 mb-2 text-center">
                     {getChartTitle()}
                 </h2>
-                <PivotTable // Renders the final chart without UI controls
-                    data={data}
-                    renderers={allRenderers}
-                    {...safePivotState}
-                    aggregators={fetchedAggregators}
-                    aggregatorName={safePivotState.aggregatorName || 'Count'}
-                    rendererOptions={{
-                        plotly: {
-                            layout: {
-                                ...commonPlotlyLayout, // Apply common layout
-                                height: 420, // Increased height for better visibility
-                                autosize: true,
-                                // For read-only, you might want smaller font sizes or less interactivity
-                                xaxis: { ...commonPlotlyLayout.xaxis, tickfont: { size: 10 } },
-                                yaxis: { ...commonPlotlyLayout.yaxis, tickfont: { size: 10 } },
-                                legend: { ...commonPlotlyLayout.legend, font: { size: 10 }, y: -0.2 },
-                                margin: { t: 40, b: 100, l: 70, r: 20 }, // Optimized margins
-                            },
-                            config: {
-                                ...commonPlotlyConfig, // Apply common config
-                                staticPlot: true, // Usually true for dashboard view
-                                displayModeBar: false, // Hide mode bar in read-only
-                            },
-                            style: { width: '100%', height: '100%' } // Force full width/height
-                        }
-                    }}
+                <div className="flex-grow min-h-0 w-full relative">
+                    <PivotTable // Renders the final chart without UI controls
+                        data={data}
+                        renderers={allRenderers}
+                        {...safePivotState}
+                        aggregators={fetchedAggregators}
+                        aggregatorName={safePivotState.aggregatorName || 'Count'}
+                        rendererOptions={{
+                            plotly: {
+                                layout: {
+                                    ...commonPlotlyLayout, // Apply common layout
+                                    autosize: true, // IMPORTANT: Let Plotly autosize to the container
+                                    // For read-only, you might want smaller font sizes or less interactivity
+                                    xaxis: { ...commonPlotlyLayout.xaxis, tickfont: { size: 10 } },
+                                    yaxis: { ...commonPlotlyLayout.yaxis, tickfont: { size: 10 } },
+                                    legend: { ...commonPlotlyLayout.legend, font: { size: 10 }, y: -0.2 },
+                                    margin: { t: 50, b: 80, l: 50, r: 20 }, // Margins restored for Legend + Toolbar
+                                },
+                                config: {
+                                    ...commonPlotlyConfig, // Apply common config
+                                    // staticPlot: true, // REMOVED: Caused rendering mismatches
+                                    displayModeBar: true, // SHOW mode bar in dashboard as requested
+                                },
+                                style: { width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 } // Absolute positioning to force fit
+                            }
+                        }}
 
-                />
+                    />
+                </div>
             </div>
         );
+
     }
 
     // --- EDIT MODE (Popup Creation) ---
     return (
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full min-w-[1000px]">
             <h3 className="text-lg font-bold text-gray-800 mb-2 px-2">
                 {getChartTitle()}
             </h3>
@@ -200,7 +183,7 @@ export default function PivotTableV2({
                     plotly: {
                         layout: {
                             ...commonPlotlyLayout, // Apply common layout
-                            height: 450, // Specific height for edit view
+                            height: 650, // Specific height for edit view
                             autosize: true
                         },
                         config: {
