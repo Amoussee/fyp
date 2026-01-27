@@ -12,11 +12,9 @@ import './react-pivottable/pivottable.css';
 
 const PlotlyRenderers = createPlotlyRenderers(Plot);
 export const allRenderers = Object.assign({}, TableRenderers, PlotlyRenderers);
-const aggregators = PivotUtils.aggregators;
-
-
+const fetchedAggregators = PivotUtils.aggregators || (PivotUtils as any).default?.aggregators;
 console.log('DEBUG: PivotUtils full import:', PivotUtils);
-console.log('DEBUG: Extracted aggregators:', aggregators);
+console.log('DEBUG: Extracted aggregators:', fetchedAggregators);
 
 // Helper to remove non-serializable/dangerous props from state
 const cleanState = (state: any) => {
@@ -71,14 +69,14 @@ export default function PivotTableV2({
     // Sanitize aggregatorName to prevent crashes
     const safePivotState = { ...pivotState };
     // If aggregatorName is missing OR strictly invalid
-    if (!safePivotState.aggregatorName || !VALID_AGGREGATORS.includes(safePivotState.aggregatorName)) {
-        console.warn(`Invalid or missing aggregatorName detected: "${safePivotState.aggregatorName}". Falling back to "Count".`);
+    if (!safePivotState.aggregatorName || !(safePivotState.aggregatorName in fetchedAggregators)) {
+        console.warn(`Invalid aggregatorName: "${safePivotState.aggregatorName}". Falling back to "Count".`);
         safePivotState.aggregatorName = 'Count';
     }
 
     // Ensure aggregators is passed down if not already (though we pass it explicitly in JSX now)
     // Make sure we aren't passing undefined aggregators
-    if (!aggregators) {
+    if (!fetchedAggregators) {
         console.error('CRITICAL: aggregators object is missing!');
     }
 
@@ -141,7 +139,7 @@ export default function PivotTableV2({
 
     const handleChange = (s: any) => {
         const { ...rest } = s;
-        setPivotState(rest);
+        setPivotState(cleanState(s));
     };
 
     // --- READ ONLY MODE (Dashboard View) ---
@@ -154,8 +152,9 @@ export default function PivotTableV2({
                 <PivotTable // Renders the final chart without UI controls
                     data={data}
                     renderers={allRenderers}
-                    aggregators={aggregators}
                     {...safePivotState}
+                    aggregators={fetchedAggregators}
+                    aggregatorName={safePivotState.aggregatorName || 'Count'}
                     rendererOptions={{
                         plotly: {
                             layout: {
@@ -192,10 +191,11 @@ export default function PivotTableV2({
 
                 data={data}
                 renderers={allRenderers}
+                {...safePivotState}
+                aggregators={fetchedAggregators}
                 onChange={(s: any) => {
                     setPivotState(cleanState(s));
                 }}
-                {...safePivotState}
                 rendererOptions={{ // ALL PLOTLY CONFIGURATION GOES INSIDE rendererOptions
                     plotly: {
                         layout: {
