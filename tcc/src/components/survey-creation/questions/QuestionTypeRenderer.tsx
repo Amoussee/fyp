@@ -7,7 +7,7 @@ import type { QuestionMode } from "./types/QuestionTypeComponent";
 import { ChoicesQuestion } from "./question-types/choices";
 // import { RatingQuestion } from "./question-types/rating";
 // import { MultipleTextQuestion } from "./question-types/multipleText";
-// import { TextQuestion } from "./question-types/text";
+import { TextQuestion } from "./question-types/text";
 // import { AdvancedJsonQuestion } from "./question-types/advancedJson";
 
 type Props = {
@@ -19,9 +19,7 @@ type Props = {
 
 export function QuestionTypeRenderer({ kind, mode, element, onPatch }: Props) {
   if (kind === "single_choice" || kind === "multi_select" || kind === "ranking") {
-    console.log("selected single choice!")
     return <ChoicesQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
-    return null;
   }
 
   if (kind === "scale") {
@@ -41,9 +39,7 @@ export function QuestionTypeRenderer({ kind, mode, element, onPatch }: Props) {
     kind === "number_range" ||
     kind === "single_date"
   ) {
-    console.log("selected short text!")
-    // return <TextQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
-    return null;
+    return <TextQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
   }
 
   // return <AdvancedJsonQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
