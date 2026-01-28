@@ -1,7 +1,7 @@
-import { AccountManagement } from '../../../../components/AccountManagement';
+import { VisualisationDashboard } from '../../../../../components/ui/visualisationDashboard';
 import { Box } from '@mui/material';
 
-export default function AccountManagementPage() {
+export default function VisualisationDashboardPage() {
   return (
     <Box
       sx={{
@@ -12,7 +12,7 @@ export default function AccountManagementPage() {
       {/* <AppBar /> - Assuming you have this component */}
 
       <Box sx={{ display: 'flex' }}>
-        <AccountManagement />
+        <VisualisationDashboard />
       </Box>
     </Box>
   );

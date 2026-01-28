@@ -15,7 +15,7 @@ export const getUsers = async (req, res) => {
 export const getUsersInfo = async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT user_id, "firstName", "lastName", email, organisation, role, is_active FROM users',
+      'SELECT user_id, "firstname", "lastName", email, organisation, role, is_active FROM users',
     );
     res.status(200).json(result.rows);
   } catch (error) {
@@ -42,7 +42,7 @@ export const getUserById = async (req, res) => {
     const result = await pool.query('SELECT * FROM users WHERE user_id = $1', [id]);
     if (result.rows.length === 0) return res.status(404).json({ message: 'User not found.' });
     res.status(200).json(result.rows[0]);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -155,7 +155,7 @@ export const deactivateUser = async (req, res) => {
     const result = await pool.query('UPDATE users SET is_active = FALSE WHERE user_id = $1', [id]);
     if (result.rowCount === 0) return res.status(404).json({ message: 'User not found' });
     res.status(200).json({ message: 'User deactivated' });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
