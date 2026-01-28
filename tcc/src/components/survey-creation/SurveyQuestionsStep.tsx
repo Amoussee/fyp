@@ -341,83 +341,82 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
           },
         }}
       >
-         <DialogTitle sx={{ px: 3, pt: 2.5, pb: 1.5 }}>
-    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-        <Box>
-          <Typography sx={{ fontWeight: 600, fontSize: 18, lineHeight: 1.1 }}>
-            Delete section?
+        <DialogTitle sx={{ px: 3, pt: 2.5, pb: 1.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+              <Box>
+                <Typography sx={{ fontWeight: 600, fontSize: 18, lineHeight: 1.1 }}>
+                  Delete section?
+                </Typography>
+                <Typography sx={{ mt: 0.5, fontSize: 13, color: "text.secondary" }}>
+                  This action cannot be undone.
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* optional close X */}
+            {/* <IconButton
+              onClick={() => setDeleteSectionName(null)}
+              size="small"
+              aria-label="Close"
+              sx={{
+                borderRadius: "50%",
+                color: "text.secondary",
+                "&:hover": { bgcolor: "rgba(0,0,0,0.06)" },
+              }}
+            >
+              <CloseIcon sx={{ fontSize: 16 }} />
+            </IconButton> */}
+          </Box>
+        </DialogTitle>
+
+        <Divider sx={{ borderColor: BRAND.border, mx: 2 }} />
+
+        {/* Content */}
+        <DialogContent sx={{ px: 3, py: 2 }}>
+          <Typography sx={{ fontSize: 14, lineHeight: 1.6 }}>
+            This will permanently delete{" "}
+            <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
+              {sectionToDelete?.title || "Untitled"}
+            </Box>{" "}
+            and all questions inside it.
           </Typography>
-          <Typography sx={{ mt: 0.5, fontSize: 13, color: "text.secondary" }}>
-            This action cannot be undone.
-          </Typography>
-        </Box>
-      </Box>
+        </DialogContent>
 
-      {/* optional close X */}
-      {/* <IconButton
-        onClick={() => setDeleteSectionName(null)}
-        size="small"
-        aria-label="Close"
-        sx={{
-          borderRadius: "50%",
-          color: "text.secondary",
-          "&:hover": { bgcolor: "rgba(0,0,0,0.06)" },
-        }}
-      >
-        <CloseIcon sx={{ fontSize: 16 }} />
-      </IconButton> */}
-    </Box>
-  </DialogTitle>
+        <Divider sx={{ borderColor: BRAND.border, mx: 2 }} />
 
-  <Divider sx={{ borderColor: BRAND.border, mx: 2 }} />
+        {/* Actions */}
+        <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
+          <Button
+            onClick={() => setDeleteSectionName(null)}
+            variant="outlined"
+            sx={{
+              textTransform: "none",
+              borderRadius: 2,
+              borderColor: BRAND.border,
+              color: "text.primary",
+              "&:hover": { borderColor: BRAND.border, bgcolor: "rgba(0,0,0,0.04)" },
+            }}
+          >
+            Cancel
+          </Button>
 
-  {/* Content */}
-  <DialogContent sx={{ px: 3, py: 2 }}>
-    <Typography sx={{ fontSize: 14, lineHeight: 1.6 }}>
-      This will permanently delete{" "}
-      <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
-        {sectionToDelete?.title || "Untitled"}
-      </Box>{" "}
-      and all questions inside it.
-    </Typography>
-  </DialogContent>
-
-  <Divider sx={{ borderColor: BRAND.border, mx: 2 }} />
-
-  {/* Actions */}
-  <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
-    <Button
-      onClick={() => setDeleteSectionName(null)}
-      variant="outlined"
-      sx={{
-        textTransform: "none",
-        borderRadius: 2,
-        borderColor: BRAND.border,
-        color: "text.primary",
-        "&:hover": { borderColor: BRAND.border, bgcolor: "rgba(0,0,0,0.04)" },
-      }}
-    >
-      Cancel
-    </Button>
-
-    <Button
-      onClick={onConfirmDeleteSection}
-      variant="contained"
-      color="error"
-      sx={{
-        textTransform: "none",
-        borderRadius: 2,
-        boxShadow: "none",
-        px: 2.5,
-        "&:hover": { boxShadow: "none" },
-      }}
-    >
-      Delete
-    </Button>
-  </DialogActions>
+          <Button
+            onClick={onConfirmDeleteSection}
+            variant="contained"
+            color="error"
+            sx={{
+              textTransform: "none",
+              borderRadius: 2,
+              boxShadow: "none",
+              px: 2.5,
+              "&:hover": { boxShadow: "none" },
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
       </Dialog>
-
     </div>
   );
 }
