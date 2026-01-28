@@ -80,3 +80,9 @@ export function changeElementKind(prev: any, pageName: string, elementName: stri
     page.elements[idx] = replacement;
   });
 }
+
+export function removePage(surveyJson: any, pageName: string) {
+  const pages = Array.isArray(surveyJson?.pages) ? surveyJson.pages : [];
+  const nextPages = pages.filter((p: any) => p?.name !== pageName);
+  return { ...surveyJson, pages: nextPages };
+}

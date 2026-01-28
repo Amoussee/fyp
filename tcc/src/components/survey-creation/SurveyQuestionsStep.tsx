@@ -4,8 +4,14 @@ import * as React from "react";
 import {
   Box,
   Button,
+  ButtonBase,
   Card,
   CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   IconButton,
   MenuItem,
@@ -14,11 +20,13 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { QuestionCard } from "@/src/components/survey-creation/questions/QuestionCard";
 
-import { BRAND } from "@/src/styles/brand";
+import { QuestionCard } from "@/src/components/survey-creation/questions/QuestionCard";
+import { removePage } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson";
 import type { SurveyCreationForm } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types";
+import { BRAND } from "@/src/styles/brand";
 
 import {
   addPage,
@@ -56,6 +64,31 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
   const pages = surveyJson.pages ?? [];
 
   const [activePageName, setActivePageName] = React.useState<string>(() => pages[0]?.name ?? "");
+
+  const [deleteSectionName, setDeleteSectionName] = React.useState<string | null>(null);
+
+  const sectionToDelete = React.useMemo(
+    () => pages.find((p) => p.name === deleteSectionName) ?? null,
+    [pages, deleteSectionName]
+  );
+
+  const onConfirmDeleteSection = () => {
+    if (!deleteSectionName) return;
+
+    setForm((prev) => {
+      const sj = ensureSurveyJson(prev);
+      const nextSj = removePage(sj, deleteSectionName);
+      return { ...prev, surveyJson: nextSj };
+    });
+
+    // pick a safe next active page
+    const remaining = pages.filter((p) => p.name !== deleteSectionName);
+    const nextActive = remaining[0]?.name ?? "";
+    setActivePageName(nextActive);
+
+    setDeleteSectionName(null);
+  };
+
 
   // keep activePageName valid
   React.useEffect(() => {
@@ -136,25 +169,53 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
         <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
           {pages.map((p) => {
             const active = p.name === activePageName;
+            const isOnlyOne = pages.length === 1;
+
             return (
-              <Button
+              <Box
                 key={p.name}
-                onClick={() => setActivePageName(p.name)}
-                variant={active ? "contained" : "outlined"}
                 sx={{
-                  textTransform: "none",
+                  display: "flex",
+                  alignItems: "center",
                   borderRadius: 2,
-                  boxShadow: "none",
-                  ...(active
-                    ? { bgcolor: BRAND.green, "&:hover": { bgcolor: BRAND.green } }
-                    : { borderColor: BRAND.border }),
+                  border: `1px solid ${BRAND.border}`,
+                  bgcolor: active ? BRAND.greenSoft : "transparent",
+                  overflow: "hidden",
+                  justifyContent: "space-around", 
+                  // gap: 1,
+                  px: 0.5
                 }}
               >
-                {p.title || "Untitled"}
-              </Button>
+                {/* Clickable tab area (NOT a <button> inside a <button>) */}
+                <ButtonBase
+                  onClick={() => setActivePageName(p.name)}
+                  sx={{
+                    px: 1.5,
+                    py: 0.75,
+                    textAlign: "left",
+                    borderRadius: 0,
+                  }}
+                >
+                  <Typography sx={{ fontSize: 14, fontWeight: 600, whiteSpace: "nowrap" }}>
+                    {p.title || "Untitled"}
+                  </Typography>
+                </ButtonBase>
+
+                {/* Separate delete button */}
+                {!isOnlyOne && (
+                  <IconButton
+                    size="small"
+                    onClick={() => setDeleteSectionName(p.name)}
+                    sx={{ borderRadius: "50%", p: 0.5 }}
+                  >
+                    <CloseIcon sx={{ fontSize: 14 }} />
+                  </IconButton>
+                )}
+              </Box>
             );
           })}
         </Box>
+
 
         <IconButton
           onClick={onAddSection}
@@ -162,6 +223,8 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
             border: `1px solid ${BRAND.border}`,
             borderRadius: 2,
             bgcolor: "rgba(21, 128, 61, 0.08)",
+            height: 36,
+            width: 36
           }}
         >
           <AddIcon />
@@ -264,32 +327,97 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
           >
             Add a new question
           </Button>
-
-          {/* Optional: let user pick any SurveyJS type */}
-          {/* <Select
-            size="small"
-            value=""
-            displayEmpty
-            renderValue={() => "Add question type…"}
-            onChange={(e) => {
-              const kind = e.target.value as QuestionKind;
-              if (kind) onAddQuestion(kind);
-            }}
-            sx={{
-              mt: 1,
-              borderRadius: 999,
-              "& fieldset": { borderColor: BRAND.border },
-              minWidth: 220,
-            }}
-          >
-            {QUESTION_PALETTE.map((opt) => (
-              <MenuItem key={opt.kind} value={opt.kind}>
-                {opt.label}
-              </MenuItem>
-            ))}
-          </Select> */}
         </Box>
       </Box>
+      <Dialog
+        open={!!deleteSectionName}
+        onClose={() => setDeleteSectionName(null)}
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            border: `1px solid ${BRAND.border}`,
+            boxShadow: "0 18px 60px rgba(0,0,0,0.20)",
+            minWidth: { xs: "92vw", sm: 520 },
+          },
+        }}
+      >
+         <DialogTitle sx={{ px: 3, pt: 2.5, pb: 1.5 }}>
+    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+        <Box>
+          <Typography sx={{ fontWeight: 600, fontSize: 18, lineHeight: 1.1 }}>
+            Delete section?
+          </Typography>
+          <Typography sx={{ mt: 0.5, fontSize: 13, color: "text.secondary" }}>
+            This action cannot be undone.
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* optional close X */}
+      {/* <IconButton
+        onClick={() => setDeleteSectionName(null)}
+        size="small"
+        aria-label="Close"
+        sx={{
+          borderRadius: "50%",
+          color: "text.secondary",
+          "&:hover": { bgcolor: "rgba(0,0,0,0.06)" },
+        }}
+      >
+        <CloseIcon sx={{ fontSize: 16 }} />
+      </IconButton> */}
+    </Box>
+  </DialogTitle>
+
+  <Divider sx={{ borderColor: BRAND.border, mx: 2 }} />
+
+  {/* Content */}
+  <DialogContent sx={{ px: 3, py: 2 }}>
+    <Typography sx={{ fontSize: 14, lineHeight: 1.6 }}>
+      This will permanently delete{" "}
+      <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
+        {sectionToDelete?.title || "Untitled"}
+      </Box>{" "}
+      and all questions inside it.
+    </Typography>
+  </DialogContent>
+
+  <Divider sx={{ borderColor: BRAND.border, mx: 2 }} />
+
+  {/* Actions */}
+  <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
+    <Button
+      onClick={() => setDeleteSectionName(null)}
+      variant="outlined"
+      sx={{
+        textTransform: "none",
+        borderRadius: 2,
+        borderColor: BRAND.border,
+        color: "text.primary",
+        "&:hover": { borderColor: BRAND.border, bgcolor: "rgba(0,0,0,0.04)" },
+      }}
+    >
+      Cancel
+    </Button>
+
+    <Button
+      onClick={onConfirmDeleteSection}
+      variant="contained"
+      color="error"
+      sx={{
+        textTransform: "none",
+        borderRadius: 2,
+        boxShadow: "none",
+        px: 2.5,
+        "&:hover": { boxShadow: "none" },
+      }}
+    >
+      Delete
+    </Button>
+  </DialogActions>
+      </Dialog>
+
     </div>
   );
 }
