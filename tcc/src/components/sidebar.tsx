@@ -36,27 +36,41 @@ type NavSection = { heading: string; items: NavItem[] };
 const navSections: NavSection[] = [
   {
     heading: 'Overview',
-    items: [
-      { label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> },
-    ],
+    items: [{ label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> }],
   },
   {
     heading: 'Survey',
     items: [
-      { label: 'Survey Toolkit', href: '/admin/survey-toolkit/surveys', icon: <EditIcon sx={{ fontSize: 20 }} /> },
+      {
+        label: 'Survey Toolkit',
+        href: '/admin/survey-toolkit/surveys',
+        icon: <EditIcon sx={{ fontSize: 20 }} />,
+      },
     ],
   },
   {
     heading: 'Toolkit',
     items: [
-      { label: 'Survey List', href: '/admin/survey-toolkit/surveys', icon: <AssignmentRoundedIcon /> },
-      { label: 'Visualisation', href: '/admin/visualisation/dashboard', icon: <InsightsRoundedIcon /> },
+      {
+        label: 'Survey List',
+        href: '/admin/survey-toolkit/surveys',
+        icon: <AssignmentRoundedIcon />,
+      },
+      {
+        label: 'Visualisation',
+        href: '/admin/visualisation/dashboard',
+        icon: <InsightsRoundedIcon />,
+      },
     ],
   },
   {
     heading: 'Admin',
     items: [
-      { label: 'Account Management', href: '/admin/account-management', icon: <ManageAccountsRoundedIcon /> },
+      {
+        label: 'Account Management',
+        href: '/admin/account-management',
+        icon: <ManageAccountsRoundedIcon />,
+      },
     ],
   },
 ];
