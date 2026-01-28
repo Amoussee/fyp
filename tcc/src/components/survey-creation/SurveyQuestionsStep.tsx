@@ -81,14 +81,25 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
       return { ...prev, surveyJson: nextSj };
     });
 
-    // pick a safe next active page
-    const remaining = pages.filter((p) => p.name !== deleteSectionName);
-    const nextActive = remaining[0]?.name ?? "";
-    setActivePageName(nextActive);
-
+    setActivePageName("");           // let the effect fix it
     setDeleteSectionName(null);
   };
 
+
+  const prevPagesLenRef = React.useRef(pages.length);
+
+  React.useEffect(() => {
+    const prevLen = prevPagesLenRef.current;
+    const nextLen = pages.length;
+
+    // If a section was added, set active to the last page
+    if (nextLen > prevLen) {
+      const last = pages[nextLen - 1];
+      if (last) setActivePageName(last.name);
+    }
+
+    prevPagesLenRef.current = nextLen;
+  }, [pages]);
 
   // keep activePageName valid
   React.useEffect(() => {
@@ -106,16 +117,6 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
       const sj = ensureSurveyJson(prev);
       const nextSj = addPage(sj, `Section ${(sj.pages?.length ?? 0) + 1}`);
       return { ...prev, surveyJson: nextSj };
-    });
-
-    // after state updates, set active to last page
-    queueMicrotask(() => {
-      setForm((prev) => {
-        const sj = ensureSurveyJson(prev);
-        const last = sj.pages?.[sj.pages.length - 1];
-        if (last) setActivePageName(last.name);
-        return prev;
-      });
     });
   };
 
