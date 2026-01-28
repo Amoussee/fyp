@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { decodeSession, SESSION_COOKIE_NAME } from '@/src/lib/mockAuth';
 
+import { Sidebar } from '@/src/components/sidebar';
 import { Box } from '@mui/material';
 
 export default async function ParentLayout({ children }: { children: React.ReactNode }) {
@@ -17,6 +18,7 @@ export default async function ParentLayout({ children }: { children: React.React
 
   return (
     <Box sx={{ flex: 1, display: 'flex', backgroundColor: '#f9fafb' }}>
+      <Sidebar />
       <Box component="main" sx={{ flex: 1, minWidth: 0 }}>
         {children}
       </Box>
