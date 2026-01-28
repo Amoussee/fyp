@@ -1,4 +1,5 @@
 TRUNCATE TABLE
+  survey_recipients,
   survey_responses,
   dashboards,
   surveys,
@@ -401,7 +402,7 @@ VALUES
   1
 );
 
-INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by, status)
+INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by, status, min_responses)
 VALUES
 (
   'Recycling Habits (May 2026)',   -- Custom Title for this specific run
@@ -410,7 +411,8 @@ VALUES
   '{"questions":[{"id":"q1","type":"yes_no","question":"Do you recycle?"}]}', -- Copied from Template 1
   1, -- Links to "General Recycling Audit" template
   1,  -- Created by Admin Alice
-  'open'
+  'open',
+  10
 ),
 (
   'Transport Check (Class 1A)',
@@ -419,7 +421,8 @@ VALUES
   '{"questions":[{"id":"q1","type":"multiple_choice","options":["Bus","MRT","Car","Walk"]}]}', -- Copied from Template 2
   2, -- Links to "Transport Emission Check" template
   2,  -- Created by Admin Ben
-  'draft'
+  'draft',
+  20
 ),
 (
   'Energy Awareness',
@@ -428,7 +431,8 @@ VALUES
   '{"questions":[{"id":"q1","type":"scale","min":1,"max":5}]}',
   NULL,
   1,
-  DEFAULT
+  DEFAULT,
+  30
 ),
 (
   'Water Conservation',
@@ -437,7 +441,8 @@ VALUES
   '{"questions":[{"id":"q1","type":"yes_no"}]}',
   NULL,
   2,
-  'closed'
+  'closed',
+  40
 ),
 (
   'Food Waste',
@@ -446,8 +451,15 @@ VALUES
   '{"questions":[{"id":"q1","type":"text"}]}',
   NULL,
   1,
-  'ready'
+  'ready',
+  50
 );
+
+INSERT INTO survey_recipients (survey_id, school_id)
+VALUES
+(1, (SELECT school_id FROM schools WHERE school_name = 'ADMIRALTY PRIMARY SCHOOL' LIMIT 1)),
+(1, (SELECT school_id FROM schools WHERE school_name = 'AI TONG SCHOOL' LIMIT 1)),
+(2, (SELECT school_id FROM schools WHERE school_name = 'RIVERSIDE SECONDARY SCHOOL' LIMIT 1));
 
 INSERT INTO survey_responses (form_id, responses, user_id)
 VALUES
