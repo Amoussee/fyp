@@ -1,61 +1,45 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import ListItemIcon from '@mui/material/ListItemIcon';
-
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-
 import { useRouter } from 'next/navigation';
 import { logout } from '@/src/lib/api/auth';
 
-const BRAND = {
-  bg: '#FFFFFF',
-  surface: '#F8FCF9',
-  border: '#DAE0DB',
-  text: '#111827',
-  muted: '#6C8270',
-  green: '#50ab72',
-  greenSoft: 'rgba(133, 201, 158, 0.50)',
-  greenHover: 'rgba(133, 201, 158, 0.30)',
-};
+const pages = ['Home', 'About us', 'What We Do', 'News', 'Contact Us'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-type Setting = 'Profile' | 'Account' | 'Dashboard' | 'Logout';
-const settings: Setting[] = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-const settingIcon: Record<Setting, React.ReactNode> = {
-  Profile: <PersonRoundedIcon fontSize="small" />,
-  Account: <SettingsRoundedIcon fontSize="small" />,
-  Dashboard: <DashboardRoundedIcon fontSize="small" />,
-  Logout: <LogoutRoundedIcon fontSize="small" />,
-};
-
-export default function AppBarComponent() {
-  const router = useRouter();
+function ResponsiveAppBar() {
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-  const open = Boolean(anchorElUser);
-
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
@@ -67,134 +51,94 @@ export default function AppBarComponent() {
     }
   };
 
-  const handleSettingClick = (setting: Setting) => {
-    // Wire these whenever you’re ready:
-    // if (setting === 'Profile') router.push('/admin/profile');
-    // if (setting === 'Account') router.push('/admin/account-management');
-    // if (setting === 'Dashboard') router.push('/admin/dashboard');
-
-    if (setting === 'Logout') return handleLogout();
-
-    // TEMP: just close for now
-    handleCloseUserMenu();
-  };
-
   return (
-    <AppBar
-      position="sticky"
-      elevation={0}
-      sx={{
-        bgcolor: BRAND.bg,
-        color: BRAND.text,
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-      }}
-    >
-      <Container maxWidth={false}>
-        <Toolbar disableGutters sx={{ minHeight: 64, px: 2 }}>
-          <Box sx={{ flexGrow: 1 }} />
-
+    <AppBar position="static" sx={{ backgroundColor: '#FFFFFF', color: '#343434' }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={160} // required
+              height={80} // required
+              style={{ height: '80px', width: 'auto' }}
+            />
+          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{ display: { xs: 'block', md: 'none' } }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'black', display: 'block', textTransform: 'none' }}
+              >
+                {page}
+              </Button>
+            ))}
+          </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open profile menu">
+            <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="User avatar" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
-
             <Menu
-              id="menu-profile"
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
               anchorEl={anchorElUser}
-              open={open}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
-              // ✅ anchor under the avatar, not the top of the screen
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              // ✅ Paper styling (this is the main “make it like sidebar” part)
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  mt: 1,
-                  width: 260, // similar feel to sidebar items
-                  p: 1, // padding around list
-                  borderRadius: 3, // rounded container
-                  border: `1px solid ${BRAND.border}`,
-                  bgcolor: BRAND.bg,
-                  overflow: 'hidden',
-                  boxShadow: '0 14px 40px rgba(17, 24, 39, 0.10)',
-                },
-              }}
-              MenuListProps={{
-                sx: {
-                  p: 0,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 0.5, // spacing between items like sidebar
-                },
-              }}
             >
-              {/* Optional: small header like sidebar vibe */}
-              <Box sx={{ px: 1, pt: 0.75, pb: 0.5 }}>
-                <Typography
-                  sx={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: BRAND.muted,
-                    letterSpacing: '0.08em',
-                  }}
+              {settings.map((setting) => (
+                <MenuItem
+                  key={setting}
+                  onClick={setting === 'Logout' ? handleLogout : handleCloseUserMenu}
                 >
-                  PROFILE
-                </Typography>
-              </Box>
-
-              {settings.map((setting) => {
-                // Insert a divider above Logout for structure
-                if (setting === 'Logout') {
-                  return (
-                    <React.Fragment key="divider-logout">
-                      <Divider sx={{ my: 0.5, borderColor: BRAND.border }} />
-                      <MenuItem
-                        onClick={() => handleSettingClick('Logout')}
-                        sx={{
-                          borderRadius: 2.5,
-                          px: 1.25,
-                          py: 1.1,
-                          color: BRAND.text,
-                          '&:hover': {
-                            bgcolor: BRAND.greenHover,
-                          },
-                        }}
-                      >
-                        <ListItemIcon sx={{ minWidth: 34, color: BRAND.green }}>
-                          {settingIcon.Logout}
-                        </ListItemIcon>
-                        <Typography sx={{ fontSize: 14, fontWeight: 600 }}>Logout</Typography>
-                      </MenuItem>
-                    </React.Fragment>
-                  );
-                }
-
-                return (
-                  <MenuItem
-                    key={setting}
-                    onClick={() => handleSettingClick(setting)}
-                    sx={{
-                      borderRadius: 2.5,
-                      px: 1.25,
-                      py: 1.1,
-                      color: BRAND.text,
-                      '&:hover': {
-                        bgcolor: BRAND.greenHover,
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ minWidth: 34, color: BRAND.muted }}>
-                      {settingIcon[setting]}
-                    </ListItemIcon>
-
-                    <Typography sx={{ fontSize: 14, fontWeight: 500 }}>{setting}</Typography>
-                  </MenuItem>
-                );
-              })}
+                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                </MenuItem>
+              ))}
             </Menu>
           </Box>
         </Toolbar>
@@ -202,3 +146,4 @@ export default function AppBarComponent() {
     </AppBar>
   );
 }
+export default ResponsiveAppBar;

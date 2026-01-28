@@ -1,6 +1,6 @@
 // src/components/OnboardingForm.js
 'use client';
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Box, Grid, Typography } from '@mui/material';
 import GenericButton from './GenericButton';
 import Numberfield from './Numberfields';
