@@ -55,35 +55,35 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
     });
   };
 
-  const surveyFilters: FilterConfig[] = [
-    {
-      field: 'name',
-      label: 'School Name',
-      type: 'text',
-      placeholder: 'Search by school name',
-    },
-    {
-      field: 'status',
-      label: 'Status',
-      type: 'radio',
-      options: [
-        { value: 'pending', label: 'Pending' },
-        { value: 'ready', label: 'Ready' },
-        { value: 'closed', label: 'Closed' },
-      ],
-    },
-    {
-      field: 'type',
-      label: 'Survey Type',
-      type: 'checkbox',
-      options: [
-        { value: 'Public - Parent', label: 'Public - Parent' },
-        { value: 'Public - Student', label: 'Public - Student' },
-        { value: 'Parent', label: 'Parent' },
-        { value: 'Student', label: 'Student' },
-      ],
-    },
-  ];
+  // const surveyFilters: FilterConfig[] = [
+  //   {
+  //     field: 'name',
+  //     label: 'School Name',
+  //     type: 'text',
+  //     placeholder: 'Search by school name',
+  //   },
+  //   {
+  //     field: 'status',
+  //     label: 'Status',
+  //     type: 'radio',
+  //     options: [
+  //       { value: 'pending', label: 'Pending' },
+  //       { value: 'ready', label: 'Ready' },
+  //       { value: 'closed', label: 'Closed' },
+  //     ],
+  //   },
+  //   {
+  //     field: 'type',
+  //     label: 'Survey Type',
+  //     type: 'checkbox',
+  //     options: [
+  //       { value: 'Public - Parent', label: 'Public - Parent' },
+  //       { value: 'Public - Student', label: 'Public - Student' },
+  //       { value: 'Parent', label: 'Parent' },
+  //       { value: 'Student', label: 'Student' },
+  //     ],
+  //   },
+  // ];
 
   const handleAlphabetToggle = (field: string, letter: string) => {
     const currentLetters = (values[field] as string[]) || [];

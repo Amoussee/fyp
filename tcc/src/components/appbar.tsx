@@ -147,7 +147,6 @@ export default function AppBarComponent() {
               </Box>
 
               {settings.map((setting) => {
-
                 // Insert a divider above Logout for structure
                 if (setting === 'Logout') {
                   return (
