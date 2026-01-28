@@ -1,0 +1,90 @@
+        35 |        1 | cedric               | {
+            "widgets": [
+                {
+                    "id": "widget-1769512405020",
+                    "chartType": "Stacked Column Cha
+rt", "pivotState": {"cols": ["Grade"], "rows": ["Distance"], "vals": [], "sorters": {}, "colOrder": "key_a_to_z", "rowOrder": "key_a_to_z","menuLimit": 500,
+                    "aggregators": {},
+                    "valueFilter": {},
+                    "rendererName": "Stacked Column Chart",
+                    "tableOptions": {},
+                    "aggregatorName": "Count",
+                    "rendererOptions": {
+                        "plotly": {
+                            "config": {
+                                "responsive": true,
+                                "displaylogo": false, "displayMod
+eBar": true}, "layout": {"xaxis": {"title": {"font": {"size": 12}, "text": "Attributes"}, "tickfont": {"size": 11}, "automargi
+n": true}, "yaxis": {"title": {"font": {"size": 12}, "text": "Distance"}, "tickfont": {"size": 11}, "automargin": true}, "heig
+ht": 450, "legend": {"x": 0.5, "y": -0.25, "font": {"size": 10}, "xanchor": "center", "orientation": "h"}, "margin": {"b": 100,"l": 80,
+                                "r": 40,
+                                "t": 80
+                            },
+                            "autosize": true,
+                            "showlegend": true
+                        }
+                    }
+                },
+                "hiddenAttributes": [],
+                "derivedAttributes": {}, "hidde
+nFromDragDrop": [], "hiddenFromAggregators": [], "unusedOrientationCutoff": 85}, "questionId": "q1", "aggregation": "Count"}, {"id": "widget-1769512412670",
+                "chartType": "Grouped Column Chart",
+                "pivotState": {
+                    "cols": [
+                        "Mode of Transport"
+                    ],
+                    "rows": ["Di
+stance"], "vals": [], "sorters": {}, "colOrder": "key_a_to_z", "rowOrder": "key_a_to_z", "menuLimit": 500, "aggregators": {}, "valueFilter": {},"rendererName": "Grouped Column Chart",
+                        "tableOptions": {},
+                        "aggregatorName": "Count",
+                        "rendererOptions": {
+                            "plotly": {
+                                "config": {
+                                    "responsive": true,
+                                    "displaylogo": false,
+                                    "displayModeBar": true
+                                },
+                                "layout": {
+                                    "xaxis": {
+                                        "title": {
+                                            "font": {
+                                                "size": 12
+                                            },
+                                            "text": "Attributes"
+                                        },
+                                        "tickfont": {
+                                            "size": 11
+                                        },
+                                        "automargin": true
+                                    },
+                                    "yaxis": {
+                                        "title": {
+                                            "font": {
+                                                "size": 12
+                                            },
+                                            "text": "Distance"
+                                        },
+                                        "tickfont": {
+                                            "size": 11
+                                        },
+                                        "automargin": true
+                                    },
+                                    "height": 450,
+                                    "legend": {
+                                        "x": 0.5,
+                                        "y": -0.25,
+                                        "font": {
+                                            "size": 10
+                                        },
+                                        "xanchor": "center",
+                                        "orientation": "h"
+                                    },
+                                    "margin": {
+                                        "b": 100,
+                                        "l": 80,
+                                        "r": 40,
+                                        "t": 80
+                                    },
+                                    "autosize": true, "sh
+owlegend": true}}}, "hiddenAttributes": [], "derivedAttributes": {}, "hiddenFromDragDrop": [], "hiddenFromAggregators": [], "u
+nusedOrientationCutoff": 85}, "questionId": "q1", "aggregation": "Count"}], "layoutType": "layout-2"} | 2026-01-27 11:13:39.66184
