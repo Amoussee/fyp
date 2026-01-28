@@ -101,25 +101,54 @@ export default function VisualisationPage() {
         setTimeout(() => setNotification(null), 5000);
     };
 
-    // Fetch User Session and then Dashboards
+    // Live Data State
+    const [liveData, setLiveData] = useState<any[]>([]);
+    const [liveSchema, setLiveSchema] = useState<any>(null);
+
+    // Fetch User Session and then Dashboards (COMMENTED OUT BECAUSE RESPONSES AND SCHEMA NOT DONE)
+    // useEffect(() => {
+    //     const initData = async () => {
+    //         try {
+    //             // 1. Existing Auth logic...
+    //             const meRes = await fetch('/api/auth/me');
+    //             const { user } = await meRes.json();
+    //             setUserEmail(user.email);
+
+    //             // 2. NEW: Fetch Actual Survey Data & Schema
+    //             const [surveyRes, schemaRes] = await Promise.all([
+    //                 fetch('/api/surveys/responses'),
+    //                 fetch('/api/surveys/schema')
+    //             ]);
+
+    //             if (surveyRes.ok && schemaRes.ok) {
+    //                 setLiveData(await surveyRes.json());
+    //                 setLiveSchema(await schemaRes.json());
+    //             }
+
+    //             // 3. Existing Dashboard fetch logic...
+    //             const dashRes = await fetch(`/api/dashboards?email=${user.email}`);
+    //             // ... (rest of your mappedDashboards logic)
+    //         } catch (error) {
+    //             console.error('Initialization failed:', error);
+    //         }
+    //     };
+    //     initData();
+    // }, []);
+
+    // PLACEHOLDER FUNCTION FOR DASHBOARD FETCHING
     useEffect(() => {
         const initData = async () => {
             try {
                 // 1. Get current user session
                 const meRes = await fetch('/api/auth/me');
-                if (!meRes.ok) {
-                    console.error('Failed to fetch auth session');
-                    return;
-                }
+                if (!meRes.ok) return;
                 const { user } = await meRes.json();
-                console.log('User session loaded:', user); // DEBUG LOG
                 setUserEmail(user.email);
 
-                // 2. Fetch dashboards for this user using email
+                // 2. Fetch dashboards for this user (REAL BACKEND)
                 const dashRes = await fetch(`/api/dashboards?email=${user.email}`);
                 if (dashRes.ok) {
                     const rawData = await dashRes.json();
-                    // Map Postgres schema to Dashboard interface
                     const mappedDashboards: Dashboard[] = rawData.map((d: any) => ({
                         id: d.dashboard_id.toString(),
                         name: d.name,
@@ -127,10 +156,14 @@ export default function VisualisationPage() {
                         widgets: d.config.widgets || []
                     }));
                     setDashboards(mappedDashboards);
+
                     if (mappedDashboards.length > 0) {
                         setActiveDashboardId(mappedDashboards[0].id);
                     }
                 }
+
+                // NOTE: We are NOT fetching survey responses/schema yet 
+                // because those endpoints aren't ready.
             } catch (error) {
                 console.error('Initialization failed:', error);
             }
@@ -140,14 +173,27 @@ export default function VisualisationPage() {
 
     // Dynamic Data derivation
     const flatData = React.useMemo(() => {
-        return MOCK_RESPONSES.map(r => {
+        // Check if we actually have responses to process
+        const hasLiveResponses = liveData && Array.isArray(liveData) && liveData.length > 0;
+        const dataToProcess = hasLiveResponses ? liveData : MOCK_RESPONSES;
+
+        // Check if we have a schema
+        const schemaToUse = liveSchema && liveSchema.fields ? liveSchema : MOCK_SCHEMA;
+
+        // Safety check: if somehow we still have no data, return empty array
+        if (!dataToProcess || dataToProcess.length === 0) return [];
+
+        return dataToProcess.map(r => {
             const row: any = {};
-            MOCK_SCHEMA.fields.forEach(f => {
-                row[f.label] = (r.responses as Record<string, any>)[f.id];
+            schemaToUse.fields.forEach((f: any) => {
+                // The key access is the most common point of failure
+                // We use optional chaining and a fallback to 'N/A' to prevent crashes
+                const val = r.responses?.[f.id];
+                row[f.label] = val !== undefined ? val : null;
             });
             return row;
         });
-    }, []);
+    }, [liveData, liveSchema]);
 
     // Get Active Dashboard
     const activeDashboard = dashboards.find(d => d.id === activeDashboardId);
@@ -193,15 +239,22 @@ export default function VisualisationPage() {
             setIsExploring(true);
         }
     };
-
+    const getCleanPivotState = (state: any) => {
+        return {
+            rows: state.rows || [],
+            cols: state.cols || [],
+            vals: state.vals || [],
+            aggregatorName: state.aggregatorName || 'Count',
+            rendererName: state.rendererName || 'Grouped Column Chart',
+            valueFilter: state.valueFilter || {}
+            // We explicitly exclude: aggregators, rendererOptions (Plotly layout), 
+            // and internal library metadata to keep the database small.
+        };
+    };
     const handleSaveFromPivot = (pivotState: any) => {
-        console.log('DEBUG: handleSaveFromPivot received:', pivotState); // Trace saving
         if (activeSlot === null || !activeDashboardId) return;
 
-        // Map label back to ID for reference (though pivotState is the primary driver now)
-        const rowLabel = pivotState.rows?.[0];
-        const question = MOCK_SCHEMA.fields.find(f => f.label === rowLabel);
-        const questionId = question ? question.id : 'q1';
+        const cleanedPivotState = getCleanPivotState(pivotState); // <--- Clean it here
 
         setDashboards(prev => prev.map(d => {
             if (d.id !== activeDashboardId) return d;
@@ -209,10 +262,10 @@ export default function VisualisationPage() {
             const newWidgets = [...d.widgets];
             newWidgets[activeSlot] = {
                 id: `widget-${Date.now()}`,
-                questionId: questionId,
-                chartType: pivotState.rendererName,
-                aggregation: pivotState.aggregatorName || 'count',
-                pivotState: pivotState // Save the full state for rendering in the grid
+                questionId: 'q1', // You can still derive this from schema if needed
+                chartType: cleanedPivotState.rendererName,
+                aggregation: cleanedPivotState.aggregatorName,
+                pivotState: cleanedPivotState // <--- Store only the necessary bits
             };
 
             return { ...d, widgets: newWidgets };
