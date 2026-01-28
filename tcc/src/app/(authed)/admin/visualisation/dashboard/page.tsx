@@ -1,4 +1,3 @@
-import { Sidebar } from '../../../../../components/sidebar';
 import { VisualisationDashboard } from '../../../../../components/ui/visualisationDashboard';
 import { Box } from '@mui/material';
 

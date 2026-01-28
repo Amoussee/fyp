@@ -52,6 +52,16 @@ const mockSentimentData = [
   { label: 'Negative', value: 10, color: 'bg-red-500' },
 ];
 
+type CategoryDatum = {
+  category: string;
+  value: number;
+  color: string; // tailwind class like "bg-emerald-500"
+};
+
+interface PieChartProps {
+  data: CategoryDatum[];
+}
+
 interface CompletionChartProps {
   data: typeof mockCompletionData;
 }
@@ -157,48 +167,57 @@ function LineChart({ data }: LineChartProps) {
   );
 }
 
-interface PieChartProps {
-  data: typeof mockCategoryData;
-}
+type PieSlice = {
+  item: CategoryDatum;
+  endAngle: number;
+  largeArc: 0 | 1;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+};
 
 function PieChart({ data }: PieChartProps) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
-  let currentAngle = 0;
+
+  const slices: PieSlice[] = data.reduce<PieSlice[]>((acc, item) => {
+    const prevEnd = acc.length ? acc[acc.length - 1].endAngle : 0;
+
+    const angle = total === 0 ? 0 : (item.value / total) * 360;
+
+    const startAngle = prevEnd;
+    const endAngle = prevEnd + angle;
+
+    const startRad = (startAngle - 90) * (Math.PI / 180);
+    const endRad = (endAngle - 90) * (Math.PI / 180);
+
+    const x1 = 50 + 40 * Math.cos(startRad);
+    const y1 = 50 + 40 * Math.sin(startRad);
+    const x2 = 50 + 40 * Math.cos(endRad);
+    const y2 = 50 + 40 * Math.sin(endRad);
+
+    const largeArc: 0 | 1 = angle > 180 ? 1 : 0;
+
+    return [...acc, { item, endAngle, largeArc, x1, y1, x2, y2 }];
+  }, []);
 
   return (
     <div className="flex items-center justify-center gap-8 h-48">
       <svg viewBox="0 0 100 100" className="w-40 h-40">
-        {data.map((item, i) => {
-          const percentage = item.value / total;
-          const angle = percentage * 360;
-          const startAngle = currentAngle;
-          const endAngle = currentAngle + angle;
-          currentAngle = endAngle;
-
-          const startRad = (startAngle - 90) * (Math.PI / 180);
-          const endRad = (endAngle - 90) * (Math.PI / 180);
-
-          const x1 = 50 + 40 * Math.cos(startRad);
-          const y1 = 50 + 40 * Math.sin(startRad);
-          const x2 = 50 + 40 * Math.cos(endRad);
-          const y2 = 50 + 40 * Math.sin(endRad);
-
-          const largeArc = angle > 180 ? 1 : 0;
-
-          return (
-            <path
-              key={i}
-              d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
-              className={item.color}
-              opacity="0.9"
-            />
-          );
-        })}
+        {slices.map(({ item, largeArc, x1, y1, x2, y2 }, i) => (
+          <path
+            key={i}
+            d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`}
+            className={item.color}
+            opacity="0.9"
+          />
+        ))}
       </svg>
+
       <div className="space-y-2">
-        {data.map((item, i) => (
-          <div key={i} className="flex items-center gap-2 text-sm">
-            <div className={`w-3 h-3 rounded ${item.color}`}></div>
+        {data.map((item) => (
+          <div key={item.category} className="flex items-center gap-2 text-sm">
+            <div className={`w-3 h-3 rounded ${item.color}`} />
             <span className="text-gray-700">
               {item.category}: {item.value}%
             </span>
