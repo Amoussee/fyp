@@ -401,7 +401,7 @@ VALUES
   1
 );
 
-INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by)
+INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by, status)
 VALUES
 (
   'Recycling Habits (May 2026)',   -- Custom Title for this specific run
@@ -409,7 +409,8 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"yes_no","question":"Do you recycle?"}]}', -- Copied from Template 1
   1, -- Links to "General Recycling Audit" template
-  1  -- Created by Admin Alice
+  1,  -- Created by Admin Alice
+  'open'
 ),
 (
   'Transport Check (Class 1A)',
@@ -417,7 +418,8 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"multiple_choice","options":["Bus","MRT","Car","Walk"]}]}', -- Copied from Template 2
   2, -- Links to "Transport Emission Check" template
-  2  -- Created by Admin Ben
+  2,  -- Created by Admin Ben
+  'draft'
 ),
 (
   'Energy Awareness',
@@ -425,7 +427,8 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"scale","min":1,"max":5}]}',
   NULL,
-  1
+  1,
+  DEFAULT
 ),
 (
   'Water Conservation',
@@ -433,7 +436,8 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"yes_no"}]}',
   NULL,
-  2
+  2,
+  'closed'
 ),
 (
   'Food Waste',
@@ -441,7 +445,8 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"text"}]}',
   NULL,
-  1
+  1,
+  'ready'
 );
 
 INSERT INTO survey_responses (form_id, responses, user_id)

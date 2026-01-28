@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS surveys CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS schools CASCADE;
 
+DROP TYPE IF EXISTS survey_status_enum CASCADE;
 DROP TYPE IF EXISTS user_role_enum CASCADE;
 DROP TYPE IF EXISTS survey_scope CASCADE;
 
@@ -67,6 +68,7 @@ CREATE TABLE IF NOT EXISTS survey_templates (
 
 -- 4. SURVEYS (QUESTIONS)
 CREATE TYPE survey_scope AS ENUM ('PUBLIC', 'AUTHENTICATED');
+CREATE TYPE survey_status_enum AS ENUM ('draft', 'open', 'ready', 'closed');
 
 CREATE TABLE IF NOT EXISTS surveys (
     form_id SERIAL PRIMARY KEY,
@@ -74,6 +76,7 @@ CREATE TABLE IF NOT EXISTS surveys (
     description TEXT,            -- added optional description
     source_template_id INT,      -- added source_template_id to reference survey_templates
     survey_type survey_scope NOT NULL DEFAULT 'AUTHENTICATED', -- added to distinguish between public and private surveys
+    status survey_status_enum NOT NULL DEFAULT 'draft', -- added to distinguish survey statuses
     metadata JSONB NOT NULL DEFAULT '{}',
     schema_json JSONB NOT NULL,
     created_by INT NOT NULL,
