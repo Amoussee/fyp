@@ -1,5 +1,6 @@
 -- SAFE RESET (for development only)
 DROP TABLE IF EXISTS survey_templates CASCADE;
+DROP TABLE IF EXISTS survey_recipients CASCADE;
 DROP TABLE IF EXISTS survey_responses CASCADE;
 DROP TABLE IF EXISTS dashboards CASCADE;
 DROP TABLE IF EXISTS surveys CASCADE;
@@ -77,6 +78,7 @@ CREATE TABLE IF NOT EXISTS surveys (
     source_template_id INT,      -- added source_template_id to reference survey_templates
     survey_type survey_scope NOT NULL DEFAULT 'AUTHENTICATED', -- added to distinguish between public and private surveys
     status survey_status_enum NOT NULL DEFAULT 'draft', -- added to distinguish survey statuses
+    min_responses INT NOT NULL DEFAULT 0,
     metadata JSONB NOT NULL DEFAULT '{}',
     schema_json JSONB NOT NULL,
     created_by INT NOT NULL,
@@ -92,7 +94,24 @@ CREATE TABLE IF NOT EXISTS surveys (
         ON DELETE SET NULL
 );
 
--- 5. SURVEY RESPONSES
+-- 5. SURVEY RECIPIENTS
+CREATE TABLE IF NOT EXISTS survey_recipients (
+    survey_id INT NOT NULL,
+    school_id INT NOT NULL,
+    PRIMARY KEY (survey_id, school_id),
+    
+    CONSTRAINT fk_recipient_survey
+        FOREIGN KEY (survey_id)
+        REFERENCES surveys(form_id)
+        ON DELETE CASCADE,
+        
+    CONSTRAINT fk_recipient_school
+        FOREIGN KEY (school_id)
+        REFERENCES schools(school_id)
+        ON DELETE CASCADE
+);
+
+-- 6. SURVEY RESPONSES
 CREATE TABLE IF NOT EXISTS survey_responses (
     response_id SERIAL PRIMARY KEY,
     form_id INT NOT NULL,
@@ -110,7 +129,7 @@ CREATE TABLE IF NOT EXISTS survey_responses (
         ON DELETE SET NULL
 );
 
--- 6. DASHBOARDS
+-- 7. DASHBOARDS
 CREATE TABLE IF NOT EXISTS dashboards (
     dashboard_id SERIAL PRIMARY KEY,
     owner_id INT NOT NULL,
