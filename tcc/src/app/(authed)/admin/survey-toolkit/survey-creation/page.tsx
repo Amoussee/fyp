@@ -4,12 +4,12 @@ import * as React from "react";
 import { Box, Card, CardContent, Divider, Typography, Button } from "@mui/material";
 import { SurveyDetailsStep } from "@/src/components/survey-creation/SurveyDetailsStep";
 import { SurveyCreationTopBar } from "@/src/components/survey-creation/SurveyCreationTopBar";
-import { BRAND } from "@/src/styles/brand";
 import { SURVEY_CREATION_DEFAULTS } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/defaults";
 import { validateSurveyDetails } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/validation";
 import { hasErrors } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/helpers";
 import type { SurveyCreationForm, SurveyCreationErrors } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types";
 import { SurveyQuestionsStep } from "@/src/components/survey-creation/SurveyQuestionsStep";
+import { SurveyPreviewStep } from "@/src/components/survey-creation/SurveyPreviewStep";
 import { surveyJsonToSections } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/transform";
 
 type StepId = 0 | 1 | 2;
@@ -96,11 +96,7 @@ export default function SurveyCreationPage() {
 
 
         {activeStep === 2 && (
-          <Box sx={{ p: 3 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-              Preview & Status (Placeholder)
-            </Typography>
-          </Box>
+          <SurveyPreviewStep form={form} />
         )}
 
         <Divider sx={{ mt: 3 }} />
