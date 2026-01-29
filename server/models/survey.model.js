@@ -3,20 +3,39 @@ import pool from '../config/postgres.js';
 
 class SurveyModel {
   // 1. Get All
-  async findAll() {
-    const query = `
+  async findAll(filters = {}) {
+    const {userId, status } = filters;
+
+    let query = `
       SELECT form_id, title, description, status, min_responses, created_at, created_by 
       FROM surveys 
       ORDER BY created_at DESC
     `;
+    const values = [];
+    let paramIndex = 1;
+
+    if (userId) {
+      query += ` AND created_by = $${paramIndex}`;
+      values.push(userId);
+      paramIndex++;
+    }
+
+    if (status) {
+      query += ` AND status = $${paramIndex}`;
+      values.push(status);
+      paramIndex++;
+    }
+
+    query += ` ORDER BY created_at DESC`;
+
     const { rows } = await pool.query(query);
     return rows;
   }
 
   // 2. Get by form ID
-  async findById(id) {
+  async findById(surveyId, userId = null) {
     // do a JOIN here to get the list of school_ids associated with this survey
-    const query = `
+    let query = `
       SELECT s.*, 
              COALESCE(json_agg(sr.school_id) FILTER (WHERE sr.school_id IS NOT NULL), '[]') AS recipients
       FROM surveys s
@@ -24,6 +43,16 @@ class SurveyModel {
       WHERE s.form_id = $1
       GROUP BY s.form_id
     `;
+
+    const values = [surveyId];
+
+    if (userId) {
+      query += ` AND s.created_by = $2`;
+      values.push(userId);
+    }
+
+    query += ` GROUP BY s.form_id`;
+
     const { rows } = await pool.query(query, [id]);
     return rows[0];
   }
@@ -127,6 +156,25 @@ class SurveyModel {
     const query = 'DELETE FROM surveys WHERE form_id = $1 RETURNING *';
     const { rowCount } = await pool.query(query, [id]);
     return rowCount > 0;
+  }
+
+  // 7. Check and Promote Status (Open -> Ready)
+  async checkAndPromoteStatus(surveyId) {
+    const query = `
+      UPDATE surveys
+      SET status = 'ready'
+      WHERE form_id = $1
+        AND status = 'open'
+        AND (
+          SELECT COUNT(*) 
+          FROM survey_responses 
+          WHERE survey_id = $1
+        ) >= min_responses
+      RETURNING *;
+    `;
+    
+    const { rows } = await pool.query(query, [surveyId]);
+    return rows[0] || null;
   }
 }
 
