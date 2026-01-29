@@ -4,7 +4,6 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { decodeSession, SESSION_COOKIE_NAME } from '@/src/lib/mockAuth';
 
-import { Sidebar } from '@/src/components/sidebar';
 import { Box } from '@mui/material';
 
 export default async function ParentLayout({ children }: { children: React.ReactNode }) {
