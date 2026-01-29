@@ -1,11 +1,17 @@
 // controllers/response.controller.js
 import SurveyResponseModel from '../models/responses.model.js';
+import SurveyModel from '../models/survey.model.js';
 
 class ResponseController {
     // POST /responses
     create = async (req, res) => {
         try {
             const newResponse = await SurveyResponseModel.create(req.body);
+            const surveyId = newResponse.form_id;
+
+            if (surveyId) {
+                const updatedSurvey = await SurveyModel.checkAndPromoteStatus(surveyId);
+            }
             res.status(201).json(newResponse);
         } catch (error) {
             console.error(error);

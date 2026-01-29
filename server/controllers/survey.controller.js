@@ -3,9 +3,13 @@ import SurveyModel from '../models/survey.model.js';
 
 class SurveyController {
   // GET /surveys
-  getAllsurverys = async (req, res) => {
+  getAllsurveys = async (req, res) => {
     try {
-      const data = await SurveyModel.findAll();
+      const { status, type } = req.query;
+      const userId = req.user ? req.user.id : undefined;
+      const filters = {status, type, userId};
+
+      const data = await SurveyModel.findAll(filters);
       res.status(200).json(data);
     } catch (err) {
       res.status(500).json({ error: 'Failed to retrieve surveys' });
@@ -15,7 +19,10 @@ class SurveyController {
   // GET /surveys/:id
   getById = async (req, res) => {
     try {
-      const survey = await SurveyModel.findById(req.params.id);
+      const surveyId = req.params.id;
+      const userId = req.user ? req.user.id : null;
+      
+      const survey = await SurveyModel.findById(surveyId, userId);
       if (!survey) return res.status(404).json({ message: 'Survey not found' });
       res.status(200).json(survey);
     } catch (err) {
@@ -27,6 +34,7 @@ class SurveyController {
   getByStatus = async (req, res) => {
     try {
       const { status } = req.params;
+      const userId = req.user ? req.user.id : undefined;
 
       // Validate against ENUM list
       const validStatuses = ['draft', 'open', 'ready', 'closed'];
@@ -46,7 +54,8 @@ class SurveyController {
   createSurvey = async (req, res) => {
     try {
       const newSurvey = await SurveyModel.create(req.body);
-      res.status(201).json(newSurvey);
+      const shareableLink = `${process.env.FRONTEND_URL}/surveys/respond/${newSurvey.form_id}`;
+      res.status(201).json({newSurvey, link: shareableLink, message: "Survey created successfully"});
     } catch (err) {
       res.status(500).json({ error: 'Could not create survey' });
     }
