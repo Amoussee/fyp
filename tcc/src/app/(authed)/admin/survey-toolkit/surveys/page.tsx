@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { SurveyList, type Survey } from '../../../../../components/ui/surveyList';
 import { SurveyTemplateList } from '../../../../../components/ui/surveyTemplateList';
 import type { Dayjs } from 'dayjs'; // Add this import at the top
@@ -89,6 +90,8 @@ const mockSurveys: Survey[] = [
 ];
 
 export default function SurveyListPage() {
+  const router = useRouter();
+
   const [filterValues, setFilterValues] = useState<FilterValues>({
     name: '',
     status: '',
@@ -171,7 +174,7 @@ export default function SurveyListPage() {
           surveys={filteredSurveys}
           maxLabelsToShow={2}
           onUseTemplate={() => setIsTemplateModalOpen(true)}
-          onNewSurvey={() => console.log('New survey')}
+          onNewSurvey={() => router.push('/admin/survey-toolkit/survey-creation')}
           onDashboard={(survey) => console.log('Dashboard', survey)}
           onEdit={(survey) => console.log('Edit', survey)}
           onDelete={(survey) => console.log('Delete', survey)}

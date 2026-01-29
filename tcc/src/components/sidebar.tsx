@@ -26,7 +26,7 @@ import InsightsRoundedIcon from '@mui/icons-material/InsightsRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import EditIcon from '@mui/icons-material/Edit';
+import { BRAND } from '@/src/styles/brand';
 
 import { logout } from '@/src/lib/api/auth';
 
@@ -75,16 +75,16 @@ const navSections: NavSection[] = [
   },
 ];
 
-const BRAND = {
-  bg: '#FFFFFF',
-  surface: '#F8FCF9',
-  border: '#DAE0DB',
-  text: '#111827',
-  muted: '#6C8270',
-  green: '#50ab72',
-  greenSoft: 'rgba(133, 201, 158, 0.50)',
-  greenHover: 'rgba(133, 201, 158, 0.30)',
-};
+// const BRAND = {
+//   bg: '#FFFFFF',
+//   surface: '#F8FCF9',
+//   border: '#DAE0DB',
+//   text: '#111827',
+//   muted: '#6C8270',
+//   green: '#50ab72',
+//   greenSoft: 'rgba(133, 201, 158, 0.50)',
+//   greenHover: 'rgba(133, 201, 158, 0.30)',
+// };
 
 function isRouteActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + '/');
