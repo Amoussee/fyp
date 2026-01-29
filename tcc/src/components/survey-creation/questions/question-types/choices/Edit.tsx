@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Box, Button, IconButton, TextField, Typography, Tooltip } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import type { QuestionTypeProps } from "../../types/QuestionTypeComponent";
+import * as React from 'react';
+import { Box, Button, IconButton, TextField, Typography, Tooltip } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import type { QuestionTypeProps } from '../../types/QuestionTypeComponent';
 
 export function ChoicesEdit({ element, onPatch }: QuestionTypeProps) {
   const choices: any[] = Array.isArray(element?.choices) ? element.choices : [];
@@ -27,24 +27,26 @@ export function ChoicesEdit({ element, onPatch }: QuestionTypeProps) {
 
   return (
     <Box>
-      <Typography sx={{ color: "GrayText", fontSize: 14, fontWeight: 400, mb: 1, mx: 1 }}>Choices</Typography>
+      <Typography sx={{ color: 'GrayText', fontSize: 14, fontWeight: 400, mb: 1, mx: 1 }}>
+        Choices
+      </Typography>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
         {choices.map((c, idx) => (
           <Box
             key={`${element.name}_choice_${idx}`}
             sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto",
+              display: 'grid',
+              gridTemplateColumns: '1fr auto',
               gap: 1,
-              alignItems: "center",
+              alignItems: 'center',
             }}
           >
             <TextField
-              value={typeof c === "string" ? c : String(c?.text ?? c?.value ?? "")}
+              value={typeof c === 'string' ? c : String(c?.text ?? c?.value ?? '')}
               onChange={(e) => setChoiceAt(idx, e.target.value)}
               fullWidth
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2.5 } }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }}
             />
 
             <Tooltip title="Delete option" arrow>
@@ -62,7 +64,7 @@ export function ChoicesEdit({ element, onPatch }: QuestionTypeProps) {
         ))}
       </Box>
 
-      <Button startIcon={<AddIcon />} onClick={addChoice} sx={{ mt: 1, textTransform: "none" }}>
+      <Button startIcon={<AddIcon />} onClick={addChoice} sx={{ mt: 1, textTransform: 'none' }}>
         Add choice
       </Button>
     </Box>

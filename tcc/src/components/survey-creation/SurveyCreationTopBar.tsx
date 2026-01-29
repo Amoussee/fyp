@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Box, Button, Chip, IconButton, Typography } from "@mui/material";
-import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import { BRAND } from "@/src/styles/brand";
+import * as React from 'react';
+import { Box, Button, Chip, IconButton, Typography } from '@mui/material';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import { BRAND } from '@/src/styles/brand';
 
 type StepId = 0 | 1 | 2;
 
@@ -36,13 +36,13 @@ export function SurveyCreationTopBar({
 
       <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           gap: 2,
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
           <IconButton
             onClick={onPrev}
             disabled={isFirst}
@@ -52,8 +52,8 @@ export function SurveyCreationTopBar({
               borderRadius: 999,
               border: `1px solid ${BRAND.border}`,
               bgcolor: BRAND.greenHover,
-              "&:hover": { bgcolor: BRAND.greenHover },
-              "&.Mui-disabled": { bgcolor: "rgba(0,0,0,0.03)", borderColor: BRAND.border },
+              '&:hover': { bgcolor: BRAND.greenHover },
+              '&.Mui-disabled': { bgcolor: 'rgba(0,0,0,0.03)', borderColor: BRAND.border },
             }}
           >
             <ChevronLeftRoundedIcon />
@@ -82,8 +82,8 @@ export function SurveyCreationTopBar({
               borderRadius: 999,
               border: `1px solid ${BRAND.border}`,
               bgcolor: BRAND.greenHover,
-              "&:hover": { bgcolor: BRAND.greenHover },
-              "&.Mui-disabled": { bgcolor: "rgba(0,0,0,0.03)", borderColor: BRAND.border },
+              '&:hover': { bgcolor: BRAND.greenHover },
+              '&.Mui-disabled': { bgcolor: 'rgba(0,0,0,0.03)', borderColor: BRAND.border },
             }}
           >
             <ChevronRightRoundedIcon />
@@ -91,7 +91,7 @@ export function SurveyCreationTopBar({
         </Box>
 
         {/* ✅ Actions on the right */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {/* Show only on last step */}
           {isLast && (
             <Button
@@ -99,13 +99,13 @@ export function SurveyCreationTopBar({
               variant="outlined"
               disabled={!onSaveTemplate}
               sx={{
-                textTransform: "none",
+                textTransform: 'none',
                 borderRadius: 999,
                 px: 2.5,
                 borderColor: BRAND.border,
                 color: BRAND.text,
                 bgcolor: BRAND.bg,
-                "&:hover": { borderColor: BRAND.border, bgcolor: "rgba(0,0,0,0.03)" },
+                '&:hover': { borderColor: BRAND.border, bgcolor: 'rgba(0,0,0,0.03)' },
               }}
             >
               Save as Template
@@ -118,11 +118,11 @@ export function SurveyCreationTopBar({
             disableElevation
             disabled={!onSaveDraft}
             sx={{
-              textTransform: "none",
+              textTransform: 'none',
               borderRadius: 999,
               px: 2.5,
               bgcolor: BRAND.green,
-              "&:hover": { bgcolor: BRAND.green },
+              '&:hover': { bgcolor: BRAND.green },
             }}
           >
             Save as Draft

@@ -91,7 +91,7 @@ const mockSurveys: Survey[] = [
 
 export default function SurveyListPage() {
   const router = useRouter();
-  
+
   const [filterValues, setFilterValues] = useState<FilterValues>({
     name: '',
     status: '',

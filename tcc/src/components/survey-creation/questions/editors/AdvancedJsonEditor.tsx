@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Box, Button, Collapse, TextField, Typography } from "@mui/material";
+import * as React from 'react';
+import { Box, Button, Collapse, TextField, Typography } from '@mui/material';
 
 type Props = {
   element: any;
@@ -28,16 +28,16 @@ export function AdvancedJsonEditor({ element, onPatch }: Props) {
       onPatch(rest);
       setError(null);
     } catch (e: any) {
-      setError(e?.message ?? "Invalid JSON");
+      setError(e?.message ?? 'Invalid JSON');
     }
   };
 
   return (
     <Box>
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
         <Typography sx={{ fontWeight: 700 }}>Advanced settings</Typography>
-        <Button onClick={() => setOpen((v) => !v)} sx={{ textTransform: "none" }}>
-          {open ? "Hide" : "Show"}
+        <Button onClick={() => setOpen((v) => !v)} sx={{ textTransform: 'none' }}>
+          {open ? 'Hide' : 'Show'}
         </Button>
       </Box>
 
@@ -49,12 +49,12 @@ export function AdvancedJsonEditor({ element, onPatch }: Props) {
             fullWidth
             multiline
             minRows={10}
-            sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2.5, fontFamily: "monospace" } }}
-            helperText={error ?? "Edit SurveyJS element JSON. (name is not applied for safety)"}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5, fontFamily: 'monospace' } }}
+            helperText={error ?? 'Edit SurveyJS element JSON. (name is not applied for safety)'}
             error={!!error}
           />
 
-          <Button onClick={apply} sx={{ mt: 1, textTransform: "none" }} variant="outlined">
+          <Button onClick={apply} sx={{ mt: 1, textTransform: 'none' }} variant="outlined">
             Apply JSON
           </Button>
         </Box>

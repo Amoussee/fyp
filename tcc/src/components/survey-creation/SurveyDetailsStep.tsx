@@ -1,13 +1,25 @@
 'use client';
 
 import * as React from 'react';
-import { Box, Card, CardContent, CircularProgress, TextField, Switch, FormControlLabel, Autocomplete } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  CircularProgress,
+  TextField,
+  Switch,
+  FormControlLabel,
+  Autocomplete,
+} from '@mui/material';
 import { BRAND } from '@/src/styles/brand';
 import { getSchools } from '@/src/lib/api/schools';
 import type { School } from '@/src/lib/api/types';
-import { toTitleCase } from "@/src/lib/utils/text";
-import type { SurveyCreationForm, SurveyCreationErrors, RecipientOption } from
-  "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types";
+import { toTitleCase } from '@/src/lib/utils/text';
+import type {
+  SurveyCreationForm,
+  SurveyCreationErrors,
+  RecipientOption,
+} from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types';
 
 type Props = {
   form: SurveyCreationForm;
@@ -15,7 +27,6 @@ type Props = {
   errors: SurveyCreationErrors;
   clearError: (key: keyof SurveyCreationForm) => void;
 };
-
 
 export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) {
   const [recipientOptions, setRecipientOptions] = React.useState<RecipientOption[]>([]);
@@ -68,18 +79,18 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
         </Typography> */}
         <TextField
           label="Survey Title"
-          placeholder='Enter a Title'
+          placeholder="Enter a Title"
           value={form.title}
           onChange={(e) => {
             setForm((prev) => ({ ...prev, title: e.target.value }));
-            clearError("title");
+            clearError('title');
           }}
           error={Boolean(errors.title)}
-          helperText={errors.title ?? " "}
+          helperText={errors.title ?? ' '}
           fullWidth
           InputLabelProps={{
             sx: {
-              transform: 'translate(14px, 10px) scale(2)', 
+              transform: 'translate(14px, 10px) scale(2)',
               '&.MuiInputLabel-shrink': {
                 transform: 'translate(14px, -9px) scale(0.75)',
               },
@@ -112,7 +123,9 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
                 onChange={(e) => setForm((prev) => ({ ...prev, isDirected: e.target.checked }))}
                 sx={{
                   '& .MuiSwitch-switchBase.Mui-checked': { color: BRAND.green },
-                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: BRAND.green },
+                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                    backgroundColor: BRAND.green,
+                  },
                 }}
               />
             }
@@ -137,7 +150,7 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
             value={form.recipients}
             onChange={(_, value) => {
               setForm((prev) => ({ ...prev, recipients: value }));
-              clearError("recipients");
+              clearError('recipients');
             }}
             getOptionLabel={(opt) => opt.label} // ✅ label shown = school_name
             isOptionEqualToValue={(opt, val) => opt.id === val.id} // ✅ avoids MUI warning
@@ -153,10 +166,9 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
                   errors.recipients ??
                   recipientsError ??
                   (form.isDirected
-                    ? "Choose schools to receive this survey."
-                    : "This field is only intended for Directed Surveys.")
+                    ? 'Choose schools to receive this survey.'
+                    : 'This field is only intended for Directed Surveys.')
                 }
-
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
@@ -182,18 +194,18 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
             value={form.minResponses}
             onChange={(e) => {
               const raw = e.target.value;
-              if (raw === "") {
-                setForm((prev) => ({ ...prev, minResponses: "" }));
-                clearError("minResponses");
+              if (raw === '') {
+                setForm((prev) => ({ ...prev, minResponses: '' }));
+                clearError('minResponses');
                 return;
               }
               const n = Number(raw);
               const clamped = Math.max(0, Math.min(99999, n));
               setForm((prev) => ({ ...prev, minResponses: clamped }));
-              clearError("minResponses");
+              clearError('minResponses');
             }}
             error={Boolean(errors.minResponses)}
-            helperText={errors.minResponses ?? " "}
+            helperText={errors.minResponses ?? ' '}
             inputProps={{ min: 0, step: 1 }}
             fullWidth
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }}
@@ -206,11 +218,10 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
             value={form.description}
             onChange={(e) => {
               setForm((prev) => ({ ...prev, description: e.target.value }));
-              clearError("description");
+              clearError('description');
             }}
             error={Boolean(errors.description)}
-            helperText={errors.description ?? " "}
-
+            helperText={errors.description ?? ' '}
             fullWidth
             multiline
             minRows={4}

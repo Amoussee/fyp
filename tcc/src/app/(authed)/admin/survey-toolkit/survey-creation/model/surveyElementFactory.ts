@@ -1,5 +1,5 @@
-import { createElementJson } from "./helpers";
-import { kindToPaletteItem, type QuestionKind } from "./questionPalette";
+import { createElementJson } from './helpers';
+import { kindToPaletteItem, type QuestionKind } from './questionPalette';
 
 export function createElementFromKind(kind: QuestionKind) {
   const item = kindToPaletteItem(kind);

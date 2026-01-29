@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   Box,
   Button,
@@ -18,15 +18,15 @@ import {
   Select,
   TextField,
   Typography,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
-import { QuestionCard } from "@/src/components/survey-creation/questions/QuestionCard";
-import { removePage } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson";
-import type { SurveyCreationForm } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types";
-import { BRAND } from "@/src/styles/brand";
+import { QuestionCard } from '@/src/components/survey-creation/questions/QuestionCard';
+import { removePage } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
+import type { SurveyCreationForm } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types';
+import { BRAND } from '@/src/styles/brand';
 
 import {
   addPage,
@@ -35,9 +35,12 @@ import {
   updateElement,
   removeElement,
   changeElementKind,
-} from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson";
+} from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
 
-import { QUESTION_PALETTE, type QuestionKind } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette";
+import {
+  QUESTION_PALETTE,
+  type QuestionKind,
+} from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette';
 
 type Props = {
   form: SurveyCreationForm;
@@ -51,8 +54,8 @@ function ensureSurveyJson(form: SurveyCreationForm) {
     pages: [
       {
         name: crypto.randomUUID(),
-        title: "Section 1",
-        description: "",
+        title: 'Section 1',
+        description: '',
         elements: [],
       },
     ],
@@ -63,13 +66,13 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
   const surveyJson = ensureSurveyJson(form);
   const pages = surveyJson.pages ?? [];
 
-  const [activePageName, setActivePageName] = React.useState<string>(() => pages[0]?.name ?? "");
+  const [activePageName, setActivePageName] = React.useState<string>(() => pages[0]?.name ?? '');
 
   const [deleteSectionName, setDeleteSectionName] = React.useState<string | null>(null);
 
   const sectionToDelete = React.useMemo(
     () => pages.find((p) => p.name === deleteSectionName) ?? null,
-    [pages, deleteSectionName]
+    [pages, deleteSectionName],
   );
 
   const onConfirmDeleteSection = () => {
@@ -81,10 +84,9 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
       return { ...prev, surveyJson: nextSj };
     });
 
-    setActivePageName("");           // let the effect fix it
+    setActivePageName(''); // let the effect fix it
     setDeleteSectionName(null);
   };
-
 
   const prevPagesLenRef = React.useRef(pages.length);
 
@@ -166,8 +168,8 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
   return (
     <div>
       {/* Section tabs */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
           {pages.map((p) => {
             const active = p.name === activePageName;
             const isOnlyOne = pages.length === 1;
@@ -176,15 +178,15 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
               <Box
                 key={p.name}
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
+                  display: 'flex',
+                  alignItems: 'center',
                   borderRadius: 2,
                   border: `1px solid ${BRAND.border}`,
-                  bgcolor: active ? BRAND.greenSoft : "transparent",
-                  overflow: "hidden",
-                  justifyContent: "space-around", 
+                  bgcolor: active ? BRAND.greenSoft : 'transparent',
+                  overflow: 'hidden',
+                  justifyContent: 'space-around',
                   // gap: 1,
-                  px: 0.5
+                  px: 0.5,
                 }}
               >
                 {/* Clickable tab area (NOT a <button> inside a <button>) */}
@@ -193,12 +195,12 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
                   sx={{
                     px: 1.5,
                     py: 0.75,
-                    textAlign: "left",
+                    textAlign: 'left',
                     borderRadius: 0,
                   }}
                 >
-                  <Typography sx={{ fontSize: 14, fontWeight: 600, whiteSpace: "nowrap" }}>
-                    {p.title || "Untitled"}
+                  <Typography sx={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                    {p.title || 'Untitled'}
                   </Typography>
                 </ButtonBase>
 
@@ -207,7 +209,7 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
                   <IconButton
                     size="small"
                     onClick={() => setDeleteSectionName(p.name)}
-                    sx={{ borderRadius: "50%", p: 0.5 }}
+                    sx={{ borderRadius: '50%', p: 0.5 }}
                   >
                     <CloseIcon sx={{ fontSize: 14 }} />
                   </IconButton>
@@ -217,15 +219,14 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
           })}
         </Box>
 
-
         <IconButton
           onClick={onAddSection}
           sx={{
             border: `1px solid ${BRAND.border}`,
             borderRadius: 2,
-            bgcolor: "rgba(21, 128, 61, 0.08)",
+            bgcolor: 'rgba(21, 128, 61, 0.08)',
             height: 36,
-            width: 36
+            width: 36,
           }}
         >
           <AddIcon />
@@ -237,13 +238,13 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
         <CardContent sx={{ p: 3 }}>
           <TextField
             label="Section Title"
-            placeholder='Enter a Title'
-            value={activePage.title ?? ""}
+            placeholder="Enter a Title"
+            value={activePage.title ?? ''}
             onChange={(e) => onUpdateSection({ title: e.target.value })}
             fullWidth
             InputLabelProps={{
               sx: {
-                transform: 'translate(14px, 10px) scale(2)', 
+                transform: 'translate(14px, 10px) scale(2)',
                 '&.MuiInputLabel-shrink': {
                   transform: 'translate(14px, -9px) scale(0.75)',
                 },
@@ -270,19 +271,19 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
           <Box sx={{ mt: 2 }}>
             <TextField
               label="Description"
-              value={activePage.description ?? ""}
+              value={activePage.description ?? ''}
               onChange={(e) => onUpdateSection({ description: e.target.value })}
               fullWidth
               multiline
               minRows={3}
-              sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2.5 } }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }}
             />
           </Box>
         </CardContent>
       </Card>
 
       {/* Questions */}
-      <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
         {elements.map((el: any, idx: number) => (
           <QuestionCard
             key={el.name}
@@ -304,26 +305,31 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
             onChangeKind={(elementName, nextKind) => {
               setForm((prev) => ({
                 ...prev,
-                surveyJson: changeElementKind(prev.surveyJson, activePageName, elementName, nextKind),
+                surveyJson: changeElementKind(
+                  prev.surveyJson,
+                  activePageName,
+                  elementName,
+                  nextKind,
+                ),
               }));
             }}
           />
         ))}
 
         {/* Add new question */}
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
           <Button
-            onClick={() => onAddQuestion("short_text")}
+            onClick={() => onAddQuestion('short_text')}
             startIcon={<AddIcon />}
             fullWidth
             sx={{
               mt: 1,
-              textTransform: "none",
+              textTransform: 'none',
               borderRadius: 2,
               py: 1.5,
               border: `1px solid ${BRAND.border}`,
-              bgcolor: "rgba(21, 128, 61, 0.10)",
-              "&:hover": { bgcolor: "rgba(21, 128, 61, 0.15)" },
+              bgcolor: 'rgba(21, 128, 61, 0.10)',
+              '&:hover': { bgcolor: 'rgba(21, 128, 61, 0.15)' },
             }}
           >
             Add a new question
@@ -337,19 +343,21 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
           sx: {
             borderRadius: 3,
             border: `1px solid ${BRAND.border}`,
-            boxShadow: "0 18px 60px rgba(0,0,0,0.20)",
-            minWidth: { xs: "92vw", sm: 520 },
+            boxShadow: '0 18px 60px rgba(0,0,0,0.20)',
+            minWidth: { xs: '92vw', sm: 520 },
           },
         }}
       >
         <DialogTitle sx={{ px: 3, pt: 2.5, pb: 1.5 }}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
               <Box>
                 <Typography sx={{ fontWeight: 600, fontSize: 18, lineHeight: 1.1 }}>
                   Delete section?
                 </Typography>
-                <Typography sx={{ mt: 0.5, fontSize: 13, color: "text.secondary" }}>
+                <Typography sx={{ mt: 0.5, fontSize: 13, color: 'text.secondary' }}>
                   This action cannot be undone.
                 </Typography>
               </Box>
@@ -376,10 +384,10 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
         {/* Content */}
         <DialogContent sx={{ px: 3, py: 2 }}>
           <Typography sx={{ fontSize: 14, lineHeight: 1.6 }}>
-            This will permanently delete{" "}
-            <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
-              {sectionToDelete?.title || "Untitled"}
-            </Box>{" "}
+            This will permanently delete{' '}
+            <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>
+              {sectionToDelete?.title || 'Untitled'}
+            </Box>{' '}
             and all questions inside it.
           </Typography>
         </DialogContent>
@@ -392,11 +400,11 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
             onClick={() => setDeleteSectionName(null)}
             variant="outlined"
             sx={{
-              textTransform: "none",
+              textTransform: 'none',
               borderRadius: 2,
               borderColor: BRAND.border,
-              color: "text.primary",
-              "&:hover": { borderColor: BRAND.border, bgcolor: "rgba(0,0,0,0.04)" },
+              color: 'text.primary',
+              '&:hover': { borderColor: BRAND.border, bgcolor: 'rgba(0,0,0,0.04)' },
             }}
           >
             Cancel
@@ -407,11 +415,11 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
             variant="contained"
             color="error"
             sx={{
-              textTransform: "none",
+              textTransform: 'none',
               borderRadius: 2,
-              boxShadow: "none",
+              boxShadow: 'none',
               px: 2.5,
-              "&:hover": { boxShadow: "none" },
+              '&:hover': { boxShadow: 'none' },
             }}
           >
             Delete

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Box, Chip, IconButton, Tooltip, Typography } from "@mui/material";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import { BRAND } from "@/src/styles/brand";
+import * as React from 'react';
+import { Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { BRAND } from '@/src/styles/brand';
 import {
   QUESTION_KINDS,
   type QuestionRailKind,
-} from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette";
+} from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette';
 
 type Props = {
   value: QuestionRailKind;
@@ -16,12 +16,7 @@ type Props = {
   onOpenChange?: (open: boolean) => void;
 };
 
-export function QuestionSettingsBar({
-  value,
-  onChange,
-  open: openProp,
-  onOpenChange,
-}: Props) {
+export function QuestionSettingsBar({ value, onChange, open: openProp, onOpenChange }: Props) {
   const [openLocal, setOpenLocal] = React.useState(false);
   const [pinnedOpen, setPinnedOpen] = React.useState(false);
   const [hoverOpen, setHoverOpen] = React.useState(false);
@@ -33,8 +28,7 @@ export function QuestionSettingsBar({
     if (!onOpenChange) setOpenLocal(v);
   };
 
-  const selectedLabel =
-    QUESTION_KINDS.find((k) => k.kind === value)?.label ?? "Question type";
+  const selectedLabel = QUESTION_KINDS.find((k) => k.kind === value)?.label ?? 'Question type';
 
   return (
     <Box
@@ -52,20 +46,20 @@ export function QuestionSettingsBar({
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setHoverOpen(false);
       }}
       sx={{
-        display: "flex",
-        alignItems: "center",
+        display: 'flex',
+        alignItems: 'center',
         height: 44,
-        justifyContent: "space-between",
-        width: "100%",
+        justifyContent: 'space-between',
+        width: '100%',
         // px: 1,
         borderRadius: 2.5,
         // border: `1px solid ${BRAND.border}`,
         // bgcolor: open ? BRAND.surface : "rgba(21, 128, 61, 0.06)",
-        overflow: "hidden",
+        overflow: 'hidden',
       }}
     >
       {/* LEFT GROUP: gear + icons */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
         {/* Gear */}
         <IconButton
           size="small"
@@ -77,21 +71,23 @@ export function QuestionSettingsBar({
             });
           }}
           aria-pressed={pinnedOpen}
-          aria-label={pinnedOpen ? "Collapse question type options" : "Expand question type options"}
+          aria-label={
+            pinnedOpen ? 'Collapse question type options' : 'Expand question type options'
+          }
           sx={{
             width: 36,
             height: 36,
             borderRadius: 2,
             border: `1px solid ${BRAND.border}`,
-            bgcolor: expanded ? BRAND.greenHover : "rgba(21, 128, 61, 0.06)",
+            bgcolor: expanded ? BRAND.greenHover : 'rgba(21, 128, 61, 0.06)',
           }}
         >
           <SettingsOutlinedIcon
             sx={{
               fontSize: 18,
-              color: "rgba(0,0,0,0.65)",
-              transition: "transform 180ms ease",
-              transform: expanded ? "rotate(90deg)" : "rotate(0deg)",
+              color: 'rgba(0,0,0,0.65)',
+              transition: 'transform 180ms ease',
+              transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
             }}
           />
         </IconButton>
@@ -99,17 +95,17 @@ export function QuestionSettingsBar({
         {/* Icons container (exists always, but animates open/closed) */}
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 0.5,
 
             // key: animate width instead of pushing layout weirdly
             maxWidth: expanded ? 420 : 0,
             opacity: expanded ? 1 : 0,
-            transform: expanded ? "translateX(0)" : "translateX(-6px)",
-            overflow: "hidden",
-            transition: "max-width 180ms ease, opacity 140ms ease, transform 300ms ease",
-            pointerEvents: expanded ? "auto" : "none",
+            transform: expanded ? 'translateX(0)' : 'translateX(-6px)',
+            overflow: 'hidden',
+            transition: 'max-width 180ms ease, opacity 140ms ease, transform 300ms ease',
+            pointerEvents: expanded ? 'auto' : 'none',
           }}
         >
           {QUESTION_KINDS.map((k, idx) => {
@@ -127,15 +123,15 @@ export function QuestionSettingsBar({
                     height: 36,
                     borderRadius: 2,
                     border: `1px solid ${BRAND.border}`,
-                    color: active ? BRAND.green : "rgba(0,0,0,0.65)",
-                    bgcolor: active ? BRAND.greenSoft : "transparent",
-                    "&:hover": { bgcolor: BRAND.greenHover },
+                    color: active ? BRAND.green : 'rgba(0,0,0,0.65)',
+                    bgcolor: active ? BRAND.greenSoft : 'transparent',
+                    '&:hover': { bgcolor: BRAND.greenHover },
 
                     // sequential pop
                     opacity: expanded ? 1 : 0,
-                    transform: expanded ? "scale(1)" : "scale(0.9)",
-                    transition: "opacity 380ms ease, transform 380ms ease",
-                    transitionDelay: expanded ? `${idx * 50}ms` : "0ms",
+                    transform: expanded ? 'scale(1)' : 'scale(0.9)',
+                    transition: 'opacity 380ms ease, transform 380ms ease',
+                    transitionDelay: expanded ? `${idx * 50}ms` : '0ms',
                   }}
                 >
                   <Icon fontSize="small" />
@@ -147,22 +143,21 @@ export function QuestionSettingsBar({
       </Box>
 
       {/* RIGHT: selected label, always at the end */}
-      <Box 
+      <Box
         display="flex"
         sx={{
-          gap: 0.5
+          gap: 0.5,
         }}
       >
         <Typography
           sx={{
-            ml: "auto",
-            my: "auto",
+            ml: 'auto',
+            my: 'auto',
             fontSize: 12,
             fontWeight: 700,
             color: BRAND.muted,
-            whiteSpace: "nowrap",
+            whiteSpace: 'nowrap',
             pl: 1,
-            
           }}
         >
           Selected Question Type:
@@ -173,9 +168,8 @@ export function QuestionSettingsBar({
             bgcolor: BRAND.greenSoft,
             fontWeight: 400,
           }}
-        /> 
+        />
       </Box>
     </Box>
-
   );
 }

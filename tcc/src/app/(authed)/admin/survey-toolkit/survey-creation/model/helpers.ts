@@ -1,8 +1,7 @@
 // src/features/surveyCreation/model/helpers.ts
-import type { SurveyCreationErrors, SurveyCreationForm } from "./types";
-import { Model } from "survey-core";
-import { QUESTION_PALETTE } from "./questionPalette";
-
+import type { SurveyCreationErrors, SurveyCreationForm } from './types';
+import { Model } from 'survey-core';
+import { QUESTION_PALETTE } from './questionPalette';
 
 export function hasErrors(errors: SurveyCreationErrors) {
   return Object.values(errors).some(Boolean);
@@ -10,7 +9,7 @@ export function hasErrors(errors: SurveyCreationErrors) {
 
 export function clearError<K extends keyof SurveyCreationForm>(
   errors: SurveyCreationErrors,
-  key: K
+  key: K,
 ): SurveyCreationErrors {
   return { ...errors, [key]: undefined };
 }
@@ -20,13 +19,12 @@ export function getAllSurveyJsQuestionTypes() {
   return QUESTION_PALETTE.map((x) => ({ value: x.kind, label: x.label }));
 }
 
-
 export function createElementJson(type: string, name?: string) {
   const id = crypto.randomUUID();
   return {
     type,
     name: name ?? `${type}_${id.slice(0, 8)}`,
-    title: "",
+    title: '',
   };
 }
 

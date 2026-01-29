@@ -26,7 +26,7 @@ import InsightsRoundedIcon from '@mui/icons-material/InsightsRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { BRAND } from '@/src/styles/brand'
+import { BRAND } from '@/src/styles/brand';
 
 import { logout } from '@/src/lib/api/auth';
 

@@ -147,7 +147,7 @@ export function AccountManagement() {
       }
 
       const users: UserApiResponse[] = await response.json();
-      console.log("users", users);
+      console.log('users', users);
 
       setAccounts(
         users.map((user) => ({
@@ -303,7 +303,6 @@ export function AccountManagement() {
       }
 
       await fetchAccounts();
-      
     } catch (err) {
       console.error('Failed to update account:', err);
       setError(err instanceof Error ? err.message : 'Failed to update account');

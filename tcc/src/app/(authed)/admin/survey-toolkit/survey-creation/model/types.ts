@@ -8,8 +8,8 @@ export type SurveyCreationForm = {
   description: string;
   isDirected: boolean;
   recipients: { id: string; label: string }[];
-  minResponses: number | "";
-  
+  minResponses: number | '';
+
   // for step 2:
   sections: SurveySection[];
   surveyJson: {
@@ -26,7 +26,7 @@ export type SurveyCreationForm = {
 export type SurveyCreationErrors = Partial<Record<keyof SurveyCreationForm, string>>;
 
 // Survey Questions
-export type QuestionType = "multi-select" | "single-select" | "short-text" | "number" | "nps-score";
+export type QuestionType = 'multi-select' | 'single-select' | 'short-text' | 'number' | 'nps-score';
 
 export type QuestionOption = {
   id: string;
@@ -55,4 +55,3 @@ export type SurveySection = {
   description: string;
   questions: SurveyQuestion[];
 };
-

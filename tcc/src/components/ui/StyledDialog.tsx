@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   Box,
   Dialog,
@@ -10,9 +10,9 @@ import {
   Divider,
   IconButton,
   Typography,
-} from "@mui/material";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { BRAND } from "@/src/styles/brand";
+} from '@mui/material';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { BRAND } from '@/src/styles/brand';
 
 type Props = {
   open: boolean;
@@ -21,12 +21,12 @@ type Props = {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
 
-  icon?: React.ReactNode;              // optional left icon
-  children: React.ReactNode;           // content area
-  actions?: React.ReactNode;           // action buttons area
+  icon?: React.ReactNode; // optional left icon
+  children: React.ReactNode; // content area
+  actions?: React.ReactNode; // action buttons area
 
-  showCloseIcon?: boolean;             // optional top-right X
-  maxWidthPx?: number;                 // optional sizing
+  showCloseIcon?: boolean; // optional top-right X
+  maxWidthPx?: number; // optional sizing
 };
 
 export function StyledDialog({
@@ -48,15 +48,17 @@ export function StyledDialog({
         sx: {
           borderRadius: 3,
           border: `1px solid ${BRAND.border}`,
-          boxShadow: "0 18px 60px rgba(0,0,0,0.20)",
-          minWidth: { xs: "92vw", sm: maxWidthPx },
+          boxShadow: '0 18px 60px rgba(0,0,0,0.20)',
+          minWidth: { xs: '92vw', sm: maxWidthPx },
         },
       }}
     >
       <DialogTitle sx={{ px: 3, pt: 2.5, pb: 1.5 }}>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-            {icon ? <Box sx={{ display: "grid", placeItems: "center" }}>{icon}</Box> : null}
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+            {icon ? <Box sx={{ display: 'grid', placeItems: 'center' }}>{icon}</Box> : null}
 
             <Box>
               <Typography sx={{ fontWeight: 700, fontSize: 18, lineHeight: 1.1 }}>
@@ -64,7 +66,7 @@ export function StyledDialog({
               </Typography>
 
               {subtitle ? (
-                <Typography sx={{ mt: 0.5, fontSize: 13, color: "text.secondary" }}>
+                <Typography sx={{ mt: 0.5, fontSize: 13, color: 'text.secondary' }}>
                   {subtitle}
                 </Typography>
               ) : null}
@@ -77,9 +79,9 @@ export function StyledDialog({
               size="small"
               aria-label="Close"
               sx={{
-                borderRadius: "50%",
-                color: "text.secondary",
-                "&:hover": { bgcolor: "rgba(0,0,0,0.06)" },
+                borderRadius: '50%',
+                color: 'text.secondary',
+                '&:hover': { bgcolor: 'rgba(0,0,0,0.06)' },
               }}
             >
               <CloseRoundedIcon sx={{ fontSize: 18 }} />

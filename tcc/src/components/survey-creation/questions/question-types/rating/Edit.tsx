@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Box, TextField, Typography } from "@mui/material";
-import type { QuestionTypeProps } from "../../types/QuestionTypeComponent";
+import * as React from 'react';
+import { Box, TextField, Typography } from '@mui/material';
+import type { QuestionTypeProps } from '../../types/QuestionTypeComponent';
 
-const fieldSx = { "& .MuiOutlinedInput-root": { borderRadius: 2.5 } };
+const fieldSx = { '& .MuiOutlinedInput-root': { borderRadius: 2.5 } };
 
 const MAX_LIMIT = 50;
 const MAX_POINTS = 11;
@@ -18,9 +18,9 @@ function buildScaleValues(min: number, max: number, step: number) {
 }
 
 function sanitizeScale(next: { rateMin?: number; rateMax?: number; rateStep?: number }) {
-  let rateMin = typeof next.rateMin === "number" ? Math.trunc(next.rateMin) : 1;
-  let rateMax = typeof next.rateMax === "number" ? Math.trunc(next.rateMax) : 5;
-  let rateStep = typeof next.rateStep === "number" ? Math.trunc(next.rateStep) : 1;
+  let rateMin = typeof next.rateMin === 'number' ? Math.trunc(next.rateMin) : 1;
+  let rateMax = typeof next.rateMax === 'number' ? Math.trunc(next.rateMax) : 5;
+  let rateStep = typeof next.rateStep === 'number' ? Math.trunc(next.rateStep) : 1;
 
   rateMax = clamp(rateMax, 1, MAX_LIMIT);
   rateMin = clamp(rateMin, 0, rateMax);
@@ -57,11 +57,11 @@ function sanitizeScale(next: { rateMin?: number; rateMax?: number; rateStep?: nu
 }
 
 function isIntString(s: string) {
-  return s === "" || /^-?\d+$/.test(s); // allow empty while typing
+  return s === '' || /^-?\d+$/.test(s); // allow empty while typing
 }
 
 function parseIntOrUndef(s: string) {
-  if (s.trim() === "") return undefined;
+  if (s.trim() === '') return undefined;
   const n = Number(s);
   return Number.isFinite(n) ? Math.trunc(n) : undefined;
 }
@@ -77,9 +77,9 @@ export function ScaleEdit({ element, onPatch }: QuestionTypeProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const rateMin = typeof element?.rateMin === "number" ? element.rateMin : 1;
-  const rateMax = typeof element?.rateMax === "number" ? element.rateMax : 5;
-  const rateStep = typeof element?.rateStep === "number" ? element.rateStep : 1;
+  const rateMin = typeof element?.rateMin === 'number' ? element.rateMin : 1;
+  const rateMax = typeof element?.rateMax === 'number' ? element.rateMax : 5;
+  const rateStep = typeof element?.rateStep === 'number' ? element.rateStep : 1;
 
   // local drafts so user can clear / type naturally
   const [draftMin, setDraftMin] = React.useState(String(rateMin));
@@ -115,11 +115,11 @@ export function ScaleEdit({ element, onPatch }: QuestionTypeProps) {
 
   return (
     <Box>
-      <Typography sx={{ color: "GrayText", fontSize: 14, fontWeight: 400, mb: 1, mx: 1 }}>
+      <Typography sx={{ color: 'GrayText', fontSize: 14, fontWeight: 400, mb: 1, mx: 1 }}>
         Scale settings
       </Typography>
 
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 2 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2 }}>
         <TextField
           label="Min"
           value={draftMin}
@@ -128,7 +128,7 @@ export function ScaleEdit({ element, onPatch }: QuestionTypeProps) {
             if (isIntString(v)) setDraftMin(v); // allow empty + integers only
           }}
           onBlur={() => commit({ min: draftMin })}
-          inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           sx={fieldSx}
         />
 
@@ -140,7 +140,7 @@ export function ScaleEdit({ element, onPatch }: QuestionTypeProps) {
             if (isIntString(v)) setDraftMax(v);
           }}
           onBlur={() => commit({ max: draftMax })}
-          inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           sx={fieldSx}
         />
 
@@ -152,29 +152,32 @@ export function ScaleEdit({ element, onPatch }: QuestionTypeProps) {
             if (isIntString(v)) setDraftStep(v);
           }}
           onBlur={() => commit({ step: draftStep })}
-          inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           sx={fieldSx}
         />
       </Box>
 
-      <Box sx={{ mt: 2, display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2 }}>
+      <Box
+        sx={{ mt: 2, display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}
+      >
         <TextField
           label="Min Label"
-          value={element?.minRateDescription ?? ""}
+          value={element?.minRateDescription ?? ''}
           onChange={(e) => onPatch({ minRateDescription: e.target.value })}
           sx={fieldSx}
         />
         <TextField
           label="Max Label"
-          value={element?.maxRateDescription ?? ""}
+          value={element?.maxRateDescription ?? ''}
           onChange={(e) => onPatch({ maxRateDescription: e.target.value })}
           sx={fieldSx}
         />
       </Box>
 
       {tooManyPoints ? (
-        <Typography sx={{ mt: 1, color: "warning.main", fontSize: 13 }}>
-          Tip: Too many scale points. Consider increasing step or narrowing the range (recommended ≤ {MAX_POINTS}).
+        <Typography sx={{ mt: 1, color: 'warning.main', fontSize: 13 }}>
+          Tip: Too many scale points. Consider increasing step or narrowing the range (recommended ≤{' '}
+          {MAX_POINTS}).
         </Typography>
       ) : null}
     </Box>

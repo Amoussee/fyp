@@ -1,5 +1,7 @@
 // src/lib/api/types.ts
-{/* This page is stores all reusable data types */}
+{
+  /* This page is stores all reusable data types */
+}
 
 // Schools
 export type School = {

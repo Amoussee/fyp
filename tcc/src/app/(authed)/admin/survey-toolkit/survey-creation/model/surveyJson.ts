@@ -1,6 +1,6 @@
 // src/survey-creation/model/surveyJson.ts
-import { createElementFromKind } from "./surveyElementFactory";
-import type { QuestionKind } from "./questionPalette";
+import { createElementFromKind } from './surveyElementFactory';
+import type { QuestionKind } from './questionPalette';
 
 export function updateSurveyJson<T extends object>(prev: T, recipe: (draft: T) => void): T {
   // Node/modern browsers support structuredClone; Next.js client does too in modern environments
@@ -20,7 +20,7 @@ export function addPage(prev: SurveyJson, title?: string) {
     draft.pages.push({
       name: uid(),
       title: title ?? `Section ${n}`,
-      description: "",
+      description: '',
       elements: [],
     });
   });
@@ -43,7 +43,12 @@ export function addElementByKind(prev: any, pageName: string, kind: QuestionKind
   });
 }
 
-export function updateElement(prev: SurveyJson, pageName: string, elementName: string, patch: Partial<any>) {
+export function updateElement(
+  prev: SurveyJson,
+  pageName: string,
+  elementName: string,
+  patch: Partial<any>,
+) {
   return updateSurveyJson(prev, (draft) => {
     const page = (draft.pages ?? []).find((p: any) => p.name === pageName);
     const el = (page?.elements ?? []).find((e: any) => e.name === elementName);
@@ -60,7 +65,12 @@ export function removeElement(prev: SurveyJson, pageName: string, elementName: s
   });
 }
 
-export function changeElementKind(prev: any, pageName: string, elementName: string, nextKind: QuestionKind) {
+export function changeElementKind(
+  prev: any,
+  pageName: string,
+  elementName: string,
+  nextKind: QuestionKind,
+) {
   return updateSurveyJson(prev, (draft) => {
     const page = (draft.pages ?? []).find((p: any) => p.name === pageName);
     if (!page?.elements) return;

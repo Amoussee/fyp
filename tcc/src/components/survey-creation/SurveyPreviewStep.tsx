@@ -1,76 +1,55 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Typography,
-} from "@mui/material";
-import type { SurveyCreationForm } from "@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types";
-import { BRAND } from "@/src/styles/brand";
+import * as React from 'react';
+import { Box, Card, CardContent, Chip, Divider, Typography } from '@mui/material';
+import type { SurveyCreationForm } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types';
+import { BRAND } from '@/src/styles/brand';
 
 type Props = {
   form: SurveyCreationForm;
 };
 
-function PreviewField({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function PreviewField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <Box sx={{ display: "grid", gap: 0.75 }}>
-      <Typography sx={{ fontSize: 12, fontWeight: 800, color: BRAND.muted }}>
-        {label}
-      </Typography>
+    <Box sx={{ display: 'grid', gap: 0.75 }}>
+      <Typography sx={{ fontSize: 12, fontWeight: 800, color: BRAND.muted }}>{label}</Typography>
       <Box>{children}</Box>
     </Box>
   );
 }
 
 function PreviewText({ text }: { text?: string }) {
-  const value = (text ?? "").trim();
+  const value = (text ?? '').trim();
   return (
-    <Typography sx={{ fontSize: 14, color: value ? "text.primary" : "text.secondary" }}>
-      {value || "—"}
+    <Typography sx={{ fontSize: 14, color: value ? 'text.primary' : 'text.secondary' }}>
+      {value || '—'}
     </Typography>
   );
 }
 
-function PreviewNumber({ value }: { value: number | "" }) {
-  return (
-    <Typography sx={{ fontSize: 14 }}>
-      {value === "" ? "—" : value}
-    </Typography>
-  );
+function PreviewNumber({ value }: { value: number | '' }) {
+  return <Typography sx={{ fontSize: 14 }}>{value === '' ? '—' : value}</Typography>;
 }
 
 function PreviewDetailsCard({ form }: Props) {
   return (
     <Card elevation={0} sx={{ border: `1px solid ${BRAND.border}`, borderRadius: 3 }}>
       <CardContent sx={{ p: 3 }}>
-        <Typography sx={{ fontWeight: 800, fontSize: 16, mb: 2 }}>
-          Survey details
-        </Typography>
+        <Typography sx={{ fontWeight: 800, fontSize: 16, mb: 2 }}>Survey details</Typography>
 
-        <Box sx={{ display: "grid", gap: 2 }}>
+        <Box sx={{ display: 'grid', gap: 2 }}>
           <PreviewField label="Title">
             <Typography sx={{ fontSize: 22, fontWeight: 800 }}>
-              {form.title?.trim() || "Untitled survey"}
+              {form.title?.trim() || 'Untitled survey'}
             </Typography>
           </PreviewField>
 
           <PreviewField label="Type">
             <Chip
-              label={form.isDirected ? "Directed" : "Open"}
+              label={form.isDirected ? 'Directed' : 'Open'}
               size="small"
               sx={{
-                bgcolor: form.isDirected ? BRAND.greenSoft : "rgba(0,0,0,0.06)",
+                bgcolor: form.isDirected ? BRAND.greenSoft : 'rgba(0,0,0,0.06)',
                 border: `1px solid ${BRAND.border}`,
                 fontWeight: 700,
               }}
@@ -80,7 +59,7 @@ function PreviewDetailsCard({ form }: Props) {
           <PreviewField label="Recipients">
             {form.isDirected ? (
               form.recipients?.length ? (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                   {form.recipients.map((r) => (
                     <Chip
                       key={r.id}
@@ -91,12 +70,12 @@ function PreviewDetailsCard({ form }: Props) {
                   ))}
                 </Box>
               ) : (
-                <Typography sx={{ fontSize: 14, color: "text.secondary" }}>
+                <Typography sx={{ fontSize: 14, color: 'text.secondary' }}>
                   No recipients selected.
                 </Typography>
               )
             ) : (
-              <Typography sx={{ fontSize: 14, color: "text.secondary" }}>
+              <Typography sx={{ fontSize: 14, color: 'text.secondary' }}>
                 Not applicable for Open surveys.
               </Typography>
             )}
@@ -115,38 +94,34 @@ function PreviewDetailsCard({ form }: Props) {
   );
 }
 
-function PreviewSectionCard({
-  section,
-  index,
-}: {
-  section: any;
-  index: number;
-}) {
+function PreviewSectionCard({ section, index }: { section: any; index: number }) {
   const elements = section?.elements ?? [];
 
   return (
     <Card elevation={0} sx={{ border: `1px solid ${BRAND.border}`, borderRadius: 3 }}>
       <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 2 }}>
+        <Box
+          sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 2 }}
+        >
           <Typography sx={{ fontWeight: 800, fontSize: 16 }}>
-            Section {index + 1}: {section?.title?.trim() || "Untitled"}
+            Section {index + 1}: {section?.title?.trim() || 'Untitled'}
           </Typography>
-          <Typography sx={{ fontSize: 12, color: "text.secondary", fontWeight: 700 }}>
-            {elements.length} question{elements.length === 1 ? "" : "s"}
+          <Typography sx={{ fontSize: 12, color: 'text.secondary', fontWeight: 700 }}>
+            {elements.length} question{elements.length === 1 ? '' : 's'}
           </Typography>
         </Box>
 
         {section?.description?.trim() ? (
-          <Typography sx={{ mt: 1, fontSize: 14, color: "text.secondary" }}>
+          <Typography sx={{ mt: 1, fontSize: 14, color: 'text.secondary' }}>
             {section.description}
           </Typography>
         ) : null}
 
         <Divider sx={{ my: 2, borderColor: BRAND.border }} />
 
-        <Box sx={{ display: "grid", gap: 1.5 }}>
+        <Box sx={{ display: 'grid', gap: 1.5 }}>
           {elements.length === 0 ? (
-            <Typography sx={{ fontSize: 14, color: "text.secondary" }}>
+            <Typography sx={{ fontSize: 14, color: 'text.secondary' }}>
               No questions in this section.
             </Typography>
           ) : (
@@ -157,15 +132,15 @@ function PreviewSectionCard({
                   border: `1px solid ${BRAND.border}`,
                   borderRadius: 2.5,
                   p: 2,
-                  bgcolor: "rgba(0,0,0,0.015)",
+                  bgcolor: 'rgba(0,0,0,0.015)',
                 }}
               >
                 <Typography sx={{ fontWeight: 800, fontSize: 14 }}>
-                  Q{qIdx + 1}. {el.title?.trim() || "Untitled question"}
+                  Q{qIdx + 1}. {el.title?.trim() || 'Untitled question'}
                 </Typography>
 
                 {el.description?.trim() ? (
-                  <Typography sx={{ mt: 0.5, fontSize: 13, color: "text.secondary" }}>
+                  <Typography sx={{ mt: 0.5, fontSize: 13, color: 'text.secondary' }}>
                     {el.description}
                   </Typography>
                 ) : null}
@@ -174,21 +149,21 @@ function PreviewSectionCard({
                 <Box sx={{ mt: 1 }}>
                   <Chip
                     size="small"
-                    label={el.type ?? "question"}
+                    label={el.type ?? 'question'}
                     sx={{ border: `1px solid ${BRAND.border}`, fontWeight: 700 }}
                   />
                 </Box>
 
                 {/* Optional: very lightweight option preview */}
                 {Array.isArray(el.choices) && el.choices.length > 0 ? (
-                  <Box sx={{ mt: 1, display: "grid", gap: 0.5 }}>
+                  <Box sx={{ mt: 1, display: 'grid', gap: 0.5 }}>
                     {el.choices.slice(0, 5).map((c: any, i: number) => (
-                      <Typography key={i} sx={{ fontSize: 13, color: "text.secondary" }}>
-                        • {typeof c === "string" ? c : c?.text ?? c?.value ?? "Option"}
+                      <Typography key={i} sx={{ fontSize: 13, color: 'text.secondary' }}>
+                        • {typeof c === 'string' ? c : (c?.text ?? c?.value ?? 'Option')}
                       </Typography>
                     ))}
                     {el.choices.length > 5 ? (
-                      <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
+                      <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
                         +{el.choices.length - 5} more…
                       </Typography>
                     ) : null}
@@ -207,19 +182,15 @@ export function SurveyPreviewStep({ form }: Props) {
   const pages = form.surveyJson?.pages ?? [];
 
   return (
-    <Box sx={{ display: "grid", gap: 2 }}>
+    <Box sx={{ display: 'grid', gap: 2 }}>
       <PreviewDetailsCard form={form} />
 
-      <Typography sx={{ fontWeight: 800, fontSize: 16, mt: 1 }}>
-        Survey questions
-      </Typography>
+      <Typography sx={{ fontWeight: 800, fontSize: 16, mt: 1 }}>Survey questions</Typography>
 
       {pages.length === 0 ? (
-        <Typography sx={{ fontSize: 14, color: "text.secondary" }}>
-          No sections yet.
-        </Typography>
+        <Typography sx={{ fontSize: 14, color: 'text.secondary' }}>No sections yet.</Typography>
       ) : (
-        <Box sx={{ display: "grid", gap: 2 }}>
+        <Box sx={{ display: 'grid', gap: 2 }}>
           {pages.map((p: any, i: number) => (
             <PreviewSectionCard key={p.name ?? i} section={p} index={i} />
           ))}
