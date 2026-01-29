@@ -31,8 +31,30 @@ class UserModel {
   }
 
   async findById(id) {
-    const { rows } = await pool.query('SELECT * FROM users WHERE user_id = $1', [id]);
-    return rows[0];
+      const query = `
+          WITH user_data AS (
+              SELECT * FROM users WHERE user_id = $1
+          )
+          SELECT 
+              u.*,
+              (
+                  SELECT ARRAY_AGG(DISTINCT child->>'school')
+                  FROM jsonb_array_elements(u.child_details) AS child
+                  WHERE u.child_details IS NOT NULL AND u.child_details != '[]'
+              ) AS distinct_schools
+          FROM user_data u;
+      `;
+
+      const { rows } = await pool.query(query, [id]);
+
+      if (rows.length === 0) return null;
+
+      const { distinct_schools, ...user } = rows[0];
+
+      return {
+          user: user,
+          distinctSchools: distinct_schools || []
+      };
   }
 
   async create(data) {
