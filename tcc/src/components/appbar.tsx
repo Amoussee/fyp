@@ -147,6 +147,8 @@ export default function AppBarComponent() {
               </Box>
 
               {settings.map((setting) => {
+                const isLogout = setting === 'Logout';
+
                 // Insert a divider above Logout for structure
                 if (setting === 'Logout') {
                   return (

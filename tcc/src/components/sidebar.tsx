@@ -26,7 +26,6 @@ import InsightsRoundedIcon from '@mui/icons-material/InsightsRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import EditIcon from '@mui/icons-material/Edit';
 
 import { logout } from '@/src/lib/api/auth';
 
@@ -38,29 +37,11 @@ const navSections: NavSection[] = [
     heading: 'Overview',
     items: [{ label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> }],
   },
-  // {
-  //   heading: 'Survey',
-  //   items: [
-  //     {
-  //       label: 'Survey Toolkit',
-  //       href: '/admin/survey-toolkit/surveys',
-  //       icon: <EditIcon sx={{ fontSize: 20 }} />,
-  //     },
-  //   ],
-  // },
   {
     heading: 'Toolkit',
     items: [
-      {
-        label: 'Survey List',
-        href: '/admin/survey-toolkit/surveys',
-        icon: <AssignmentRoundedIcon />,
-      },
-      {
-        label: 'Visualisation',
-        href: '/admin/visualisation/dashboard',
-        icon: <InsightsRoundedIcon />,
-      },
+      { label: 'Survey List', href: '/admin/survey-toolkit', icon: <AssignmentRoundedIcon /> },
+      { label: 'Visualisation', href: '/admin/visualisation', icon: <InsightsRoundedIcon /> },
     ],
   },
   {
@@ -254,8 +235,6 @@ export function Sidebar() {
           </Box>
         ))}
       </Box>
-
-      {/* Footer */}
       <Box sx={{ p: collapsed ? 1 : 1.5 }}>
         <Box
           sx={{

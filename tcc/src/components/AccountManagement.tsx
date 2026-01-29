@@ -30,12 +30,13 @@ import {
 } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { UniversalFilter, type FilterConfig, type FilterValues } from './UniversalFilter';
+import type { Dayjs } from 'dayjs';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 interface Account {
   id: string;
-  first_name: string;
+  firstname: string;
   email: string;
   tag: string;
   status: 'active' | 'deactivated';
@@ -147,12 +148,11 @@ export function AccountManagement() {
       }
 
       const users: UserApiResponse[] = await response.json();
-      console.log("users", users);
 
       setAccounts(
         users.map((user) => ({
           id: String(user.user_id),
-          first_name: user.first_name,
+          firstname: user.first_name,
           email: user.email,
           tag: user.role,
           status: user.deactivated ? 'deactivated' : 'active',
@@ -180,7 +180,7 @@ export function AccountManagement() {
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const matchesSearch =
-          account.first_name.toLowerCase().includes(query) ||
+          account.firstname.toLowerCase().includes(query) ||
           account.email.toLowerCase().includes(query) ||
           account.tag.toLowerCase().includes(query);
         if (!matchesSearch) return false;
@@ -189,7 +189,7 @@ export function AccountManagement() {
       // First name alphabet filter
       const firstnameAlphabet = filterValues.firstnameAlphabet as string[];
       if (firstnameAlphabet.length > 0) {
-        const firstLetter = account.first_name.charAt(0).toUpperCase();
+        const firstLetter = account.firstname.charAt(0).toUpperCase();
         if (!firstnameAlphabet.includes(firstLetter)) return false;
       }
 
@@ -258,12 +258,30 @@ export function AccountManagement() {
     setSelectedAccountId(null);
   };
 
+  const handleEdit = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
+  const handleDelete = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
+  const handleViewDetails = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
   const handleEditClick = () => {
     const account = accounts.find((acc) => acc.id === selectedAccountId);
     if (account) {
       setAccountToEdit(account);
       setEditFormData({
-        first_name: account.first_name,
+        firstname: account.firstname,
         email: account.email,
         tag: account.tag,
       });
@@ -290,7 +308,7 @@ export function AccountManagement() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: editFormData.first_name,
+          firstname: editFormData.firstname,
           email: editFormData.email,
           tag: editFormData.tag,
           deactivated: accountToEdit.status === 'deactivated',
@@ -303,7 +321,6 @@ export function AccountManagement() {
       }
 
       await fetchAccounts();
-      
     } catch (err) {
       console.error('Failed to update account:', err);
       setError(err instanceof Error ? err.message : 'Failed to update account');
@@ -359,7 +376,7 @@ export function AccountManagement() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: account.first_name,
+          firstname: account.firstname,
           email: account.email,
           tag: account.tag,
           deactivated: false,
@@ -385,6 +402,11 @@ export function AccountManagement() {
     } finally {
       handleMenuClose();
     }
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
   };
 
   const handleFilterChange = (newFilterValues: FilterValues) => {
@@ -526,7 +548,7 @@ export function AccountManagement() {
                           <TableCell
                             sx={{ color: account.status === 'deactivated' ? '#9ca3af' : '#374151' }}
                           >
-                            {account.first_name}
+                            {account.firstname}
                           </TableCell>
                           <TableCell
                             sx={{ color: account.status === 'deactivated' ? '#9ca3af' : '#6b7280' }}
