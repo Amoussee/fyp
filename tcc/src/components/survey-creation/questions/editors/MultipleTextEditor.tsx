@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Box, Button, IconButton, TextField, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import type { SurveyElement } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
 
 type Item = {
   name: string;
@@ -12,20 +13,28 @@ type Item = {
 };
 
 type Props = {
-  element: any; // SurveyJS "multipletext" element JSON
-  onPatch: (patch: Partial<any>) => void;
+  element: SurveyElement; // SurveyJS "multipletext" element JSON
+  onPatch: (patch: Partial<SurveyElement>) => void;
 };
 
 const uid = () =>
   typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
 
-function normalizeItems(items: any[] | undefined): Item[] {
+function normalizeItems(items: unknown): Item[] {
   if (!Array.isArray(items)) return [];
-  return items.map((it, idx) => ({
-    name: String(it?.name ?? `item${idx + 1}`),
-    title: String(it?.title ?? `Item ${idx + 1}`),
-    inputType: typeof it?.inputType === 'string' ? it.inputType : undefined,
-  }));
+
+  return items.map((raw, idx) => {
+    const it = (raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {}) as Record<
+      string,
+      unknown
+    >;
+
+    return {
+      name: String(it.name ?? `item${idx + 1}`),
+      title: String(it.title ?? `Item ${idx + 1}`),
+      inputType: typeof it.inputType === 'string' ? it.inputType : undefined,
+    };
+  });
 }
 
 export function MultipleTextEditor({ element, onPatch }: Props) {

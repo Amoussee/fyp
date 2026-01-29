@@ -5,18 +5,51 @@ import { Box, Button, IconButton, TextField, Typography, Tooltip } from '@mui/ma
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import type { QuestionTypeProps } from '../../types/QuestionTypeComponent';
+import type { ChoiceItem } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
+
+type ChoiceLike = string | { value?: unknown; text?: unknown };
+
+function toChoiceItem(c: ChoiceLike): ChoiceItem {
+  if (typeof c === 'string') return { value: c, text: c };
+
+  const valueRaw = c?.value;
+  const textRaw = c?.text;
+
+  const value = typeof valueRaw === 'string' ? valueRaw : valueRaw == null ? '' : String(valueRaw);
+
+  const text =
+    typeof textRaw === 'string' ? textRaw : textRaw == null ? undefined : String(textRaw);
+
+  // Ensure required `value: string`
+  return { value, ...(text ? { text } : {}) };
+}
+
+function toChoiceLabel(c: ChoiceLike): string {
+  if (typeof c === 'string') return c;
+  if (typeof c?.text === 'string') return c.text;
+  if (typeof c?.value === 'string') return c.value;
+  return String(c?.text ?? c?.value ?? '');
+}
 
 export function ChoicesEdit({ element, onPatch }: QuestionTypeProps) {
-  const choices: any[] = Array.isArray(element?.choices) ? element.choices : [];
+  const raw: unknown[] = Array.isArray(element?.choices) ? element.choices : [];
+
+  const choicesLike: ChoiceLike[] = raw.filter(
+    (c): c is ChoiceLike => typeof c === 'string' || (c !== null && typeof c === 'object'),
+  );
+
+  // ✅ Canonical form that matches SurveyElement.choices typing
+  const choices: ChoiceItem[] = choicesLike.map(toChoiceItem);
 
   const setChoiceAt = (idx: number, value: string) => {
     const next = choices.slice();
-    next[idx] = value;
+    next[idx] = { value, text: value };
     onPatch({ choices: next });
   };
 
   const addChoice = () => {
-    const next = [...choices, `Option ${choices.length + 1}`];
+    const label = `Option ${choices.length + 1}`;
+    const next = [...choices, { value: label, text: label }];
     onPatch({ choices: next });
   };
 
@@ -32,7 +65,7 @@ export function ChoicesEdit({ element, onPatch }: QuestionTypeProps) {
       </Typography>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        {choices.map((c, idx) => (
+        {choicesLike.map((c, idx) => (
           <Box
             key={`${element.name}_choice_${idx}`}
             sx={{
@@ -43,7 +76,7 @@ export function ChoicesEdit({ element, onPatch }: QuestionTypeProps) {
             }}
           >
             <TextField
-              value={typeof c === 'string' ? c : String(c?.text ?? c?.value ?? '')}
+              value={toChoiceLabel(c)}
               onChange={(e) => setChoiceAt(idx, e.target.value)}
               fullWidth
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }}
@@ -53,9 +86,7 @@ export function ChoicesEdit({ element, onPatch }: QuestionTypeProps) {
               <IconButton
                 onClick={() => removeChoiceAt(idx)}
                 aria-label={`Delete option ${idx + 1}`}
-                sx={{
-                  borderRadius: 2,
-                }}
+                sx={{ borderRadius: 2 }}
               >
                 <DeleteOutlineIcon fontSize="small" />
               </IconButton>

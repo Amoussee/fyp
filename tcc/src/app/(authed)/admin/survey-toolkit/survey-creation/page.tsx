@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Box, Card, CardContent, Divider, Typography, Button } from '@mui/material';
+import { Box, Divider, Typography, Button } from '@mui/material';
 import { SurveyDetailsStep } from '@/src/components/survey-creation/SurveyDetailsStep';
 import { SurveyCreationTopBar } from '@/src/components/survey-creation/SurveyCreationTopBar';
 import { SURVEY_CREATION_DEFAULTS } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/defaults';

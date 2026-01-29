@@ -69,10 +69,12 @@ function parseIntOrUndef(s: string) {
 export function ScaleEdit({ element, onPatch }: QuestionTypeProps) {
   // initialize defaults in data once
   React.useEffect(() => {
-    const patch: any = {};
+    const patch: Partial<{ rateMin: number; rateMax: number; rateStep: number }> = {};
+
     if (element?.rateMin == null) patch.rateMin = 1;
     if (element?.rateMax == null) patch.rateMax = 5;
     if (element?.rateStep == null) patch.rateStep = 1;
+
     if (Object.keys(patch).length) onPatch(patch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

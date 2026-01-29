@@ -12,21 +12,23 @@ import {
 type Props = {
   value: QuestionRailKind;
   onChange: (next: QuestionRailKind) => void;
+
+  // NEW: optional controlled "expanded" state
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
 export function QuestionSettingsBar({ value, onChange, open: openProp, onOpenChange }: Props) {
   const [openLocal, setOpenLocal] = React.useState(false);
-  const [pinnedOpen, setPinnedOpen] = React.useState(false);
   const [hoverOpen, setHoverOpen] = React.useState(false);
-  const expanded = pinnedOpen || hoverOpen;
-  const open = openProp ?? openLocal;
 
   const setOpen = (v: boolean) => {
     onOpenChange?.(v);
     if (!onOpenChange) setOpenLocal(v);
   };
+
+  const pinnedOpen = openProp ?? openLocal;
+  const expanded = pinnedOpen || hoverOpen;
 
   const selectedLabel = QUESTION_KINDS.find((k) => k.kind === value)?.label ?? 'Question type';
 
@@ -63,13 +65,7 @@ export function QuestionSettingsBar({ value, onChange, open: openProp, onOpenCha
         {/* Gear */}
         <IconButton
           size="small"
-          onClick={() => {
-            setPinnedOpen((v) => {
-              const next = !v;
-              if (!next) setHoverOpen(false); // collapse cleanly when unpinning
-              return next;
-            });
-          }}
+          onClick={() => setOpen(!pinnedOpen)}
           aria-pressed={pinnedOpen}
           aria-label={
             pinnedOpen ? 'Collapse question type options' : 'Expand question type options'

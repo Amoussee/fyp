@@ -1,6 +1,7 @@
 // src/features/surveyCreation/model/helpers.ts
 import type { SurveyCreationErrors, SurveyCreationForm } from './types';
 import { Model } from 'survey-core';
+import type { ISurvey } from 'survey-core';
 import { QUESTION_PALETTE } from './questionPalette';
 
 export function hasErrors(errors: SurveyCreationErrors) {
@@ -28,7 +29,7 @@ export function createElementJson(type: string, name?: string) {
   };
 }
 
-export function buildSurveyModel(surveyJson: any) {
+export function buildSurveyModel(surveyJson: ISurvey) {
   const model = new Model(surveyJson);
   // optional: model.locale = "en";
   return model;

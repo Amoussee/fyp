@@ -6,6 +6,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import NumbersIcon from '@mui/icons-material/Numbers';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import type { JsonObject } from './surveyJson';
 
 /**
  * 1) Full list of question kinds you support in your system (ALL 11).
@@ -58,7 +59,7 @@ export type PaletteItem = {
   kind: QuestionKind;
   label: string;
   sjType: string;
-  defaults?: Record<string, any>;
+  defaults?: JsonObject;
 };
 
 /**

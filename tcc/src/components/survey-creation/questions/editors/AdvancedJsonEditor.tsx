@@ -2,10 +2,11 @@
 
 import * as React from 'react';
 import { Box, Button, Collapse, TextField, Typography } from '@mui/material';
+import type { SurveyElement } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
 
 type Props = {
-  element: any;
-  onPatch: (patch: Partial<any>) => void;
+  element: SurveyElement;
+  onPatch: (patch: Partial<SurveyElement>) => void;
 };
 
 export function AdvancedJsonEditor({ element, onPatch }: Props) {
@@ -21,14 +22,14 @@ export function AdvancedJsonEditor({ element, onPatch }: Props) {
 
   const apply = () => {
     try {
-      const parsed = JSON.parse(value);
-      // Important: you generally should NOT allow changing element.name casually,
-      // because you use it as the key. We'll keep name unchanged.
-      const { name, ...rest } = parsed ?? {};
-      onPatch(rest);
+      const parsed = JSON.parse(value) as Record<string, unknown>;
+      const { ...rest } = parsed;
+      delete (rest as Record<string, unknown>)['name'];
+      onPatch(rest as Partial<SurveyElement>);
       setError(null);
-    } catch (e: any) {
-      setError(e?.message ?? 'Invalid JSON');
+    } catch (e: unknown) {
+      if (e instanceof Error) setError(e.message);
+      else setError('Invalid JSON');
     }
   };
 

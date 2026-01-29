@@ -6,15 +6,28 @@ import type { QuestionTypeProps } from '../../types/QuestionTypeComponent';
 
 const LONG_TEXT_ROWS = 3;
 
+function toMinRows(rows: unknown, fallback = LONG_TEXT_ROWS): number {
+  // accept only finite positive numbers
+  if (typeof rows === 'number' && Number.isFinite(rows) && rows > 0) return rows;
+  // accept numeric strings too (optional)
+  if (typeof rows === 'string') {
+    const n = Number(rows);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+  return fallback;
+}
+
 export function TextPreview({ kind, element }: QuestionTypeProps) {
   if (kind === 'long_text') {
+    const minRows = toMinRows(element?.rows);
+
     return (
       <Box sx={{ mt: 1 }}>
         <TextField
           placeholder="Your answer"
           fullWidth
           multiline
-          minRows={element?.rows ?? LONG_TEXT_ROWS}
+          minRows={minRows}
           sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5, bgcolor: 'rgba(0,0,0,0.02)' } }}
         />
       </Box>
@@ -47,12 +60,11 @@ export function TextPreview({ kind, element }: QuestionTypeProps) {
     );
   }
 
-  // short_text default
   return (
     <Box sx={{ mt: 1 }}>
       <TextField
         placeholder="Your answer"
-        fullWidth
+        // fullWidth
         sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5, bgcolor: 'rgba(0,0,0,0.02)' } }}
       />
     </Box>

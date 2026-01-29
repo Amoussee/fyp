@@ -1,26 +1,20 @@
 // src/survey-creation/model/types.ts
+import type { SurveyJson } from './surveyJson';
+
 // Survey Details
 export type RecipientOption = { id: string; label: string };
 
 export type SurveyCreationForm = {
-  // for step 1:
+  // step 1
   title: string;
   description: string;
   isDirected: boolean;
   recipients: { id: string; label: string }[];
   minResponses: number | '';
 
-  // for step 2:
+  // step 2
   sections: SurveySection[];
-  surveyJson: {
-    pages: Array<{
-      name: string;
-      title?: string;
-      description?: string;
-      elements?: any[];
-    }>;
-    [k: string]: any;
-  };
+  surveyJson: SurveyJson; // ✅ no any
 };
 
 export type SurveyCreationErrors = Partial<Record<keyof SurveyCreationForm, string>>;

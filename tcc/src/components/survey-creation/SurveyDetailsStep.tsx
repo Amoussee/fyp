@@ -52,7 +52,7 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
           .sort((a, b) => a.label.localeCompare(b.label));
 
         if (alive) setRecipientOptions(opts);
-      } catch (e) {
+      } catch {
         if (alive) setRecipientsError('Failed to load schools.');
       } finally {
         if (alive) setLoadingRecipients(false);

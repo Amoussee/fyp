@@ -13,26 +13,28 @@ import {
 
 import type { QuestionTypeProps } from '../../types/QuestionTypeComponent';
 
-function normalizeChoice(c: any) {
+function normalizeChoice(c: unknown) {
   if (typeof c === 'string') return { value: c, label: c };
-  const label = String(c?.text ?? c?.label ?? c?.value ?? '');
-  const value = String(c?.value ?? c?.text ?? c?.label ?? '');
-  return { value, label };
+
+  if (c && typeof c === 'object') {
+    const obj = c as { value?: unknown; text?: unknown; label?: unknown };
+    const label = String(obj.text ?? obj.label ?? obj.value ?? '');
+    const value = String(obj.value ?? obj.text ?? obj.label ?? '');
+    return { value, label };
+  }
+
+  // fallback (shouldn’t really happen, but keeps it safe)
+  return { value: '', label: '' };
 }
 
 export function ChoicesPreview({ element, kind }: QuestionTypeProps) {
-  const choicesRaw: any[] = Array.isArray(element?.choices) ? element.choices : [];
+  const choicesRaw: unknown[] = Array.isArray(element?.choices) ? element.choices : [];
   const choices = choicesRaw.map(normalizeChoice).filter((c) => c.label);
 
   const isMulti = kind === 'multi_select';
-  // ranking not covered here — you can add a different preview later if you want
-  const isSingle = kind === 'single_choice';
 
   return (
     <Box sx={{ mt: 1 }}>
-      {/* optional: remove this title if you don’t want it */}
-      {/* <Typography sx={{ fontWeight: 700, mb: 1 }}>Preview</Typography> */}
-
       {choices.length === 0 ? (
         <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>No options yet.</Typography>
       ) : isMulti ? (

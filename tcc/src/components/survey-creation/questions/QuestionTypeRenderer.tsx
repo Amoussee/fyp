@@ -2,6 +2,7 @@
 'use client';
 
 import type { QuestionKind } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette';
+import type { SurveyElement } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
 import type { QuestionMode } from './types/QuestionTypeComponent';
 
 import { ChoicesQuestion } from './question-types/choices';
@@ -13,8 +14,8 @@ import { TextQuestion } from './question-types/text';
 type Props = {
   kind: QuestionKind;
   mode: QuestionMode;
-  element: any;
-  onPatch: (patch: Partial<any>) => void;
+  element: SurveyElement;
+  onPatch: (patch: Partial<SurveyElement>) => void;
 };
 
 export function QuestionTypeRenderer({ kind, mode, element, onPatch }: Props) {

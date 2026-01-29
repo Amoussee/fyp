@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { Box, TextField, Typography } from '@mui/material';
-import { BRAND } from '@/src/styles/brand';
 
 type BaseProps = {
   index: number;

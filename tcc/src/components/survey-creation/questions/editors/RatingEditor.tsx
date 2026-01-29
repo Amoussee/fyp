@@ -2,10 +2,11 @@
 
 import * as React from 'react';
 import { Box, TextField, Typography } from '@mui/material';
+import type { SurveyElement } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
 
 type Props = {
-  element: any;
-  onPatch: (patch: Partial<any>) => void;
+  element: SurveyElement;
+  onPatch: (patch: Partial<SurveyElement>) => void;
 };
 
 export function RatingEditor({ element, onPatch }: Props) {

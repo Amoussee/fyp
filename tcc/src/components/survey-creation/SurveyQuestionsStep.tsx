@@ -10,18 +10,14 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Divider,
   IconButton,
-  MenuItem,
-  Select,
   TextField,
   Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 import { QuestionCard } from '@/src/components/survey-creation/questions/QuestionCard';
 import { removePage } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
@@ -35,12 +31,11 @@ import {
   updateElement,
   removeElement,
   changeElementKind,
+  SurveyPage,
+  SurveyElement,
 } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
 
-import {
-  QUESTION_PALETTE,
-  type QuestionKind,
-} from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette';
+import { type QuestionKind } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette';
 
 type Props = {
   form: SurveyCreationForm;
@@ -63,8 +58,8 @@ function ensureSurveyJson(form: SurveyCreationForm) {
 }
 
 export function SurveyQuestionsStep({ form, setForm }: Props) {
-  const surveyJson = ensureSurveyJson(form);
-  const pages = surveyJson.pages ?? [];
+  const surveyJson = React.useMemo(() => ensureSurveyJson(form), [form]);
+  const pages = React.useMemo(() => surveyJson.pages ?? [], [surveyJson]);
 
   const [activePageName, setActivePageName] = React.useState<string>(() => pages[0]?.name ?? '');
 
@@ -122,7 +117,7 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
     });
   };
 
-  const onUpdateSection = (patch: Partial<any>) => {
+  const onUpdateSection = (patch: Partial<SurveyPage>) => {
     setForm((prev) => {
       const sj = ensureSurveyJson(prev);
       const nextSj = updatePage(sj, activePageName, patch);
@@ -134,22 +129,6 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
     setForm((prev) => {
       const sj = ensureSurveyJson(prev);
       const nextSj = addElementByKind(sj, activePageName, type);
-      return { ...prev, surveyJson: nextSj };
-    });
-  };
-
-  const onUpdateQuestion = (elementName: string, patch: Partial<any>) => {
-    setForm((prev) => {
-      const sj = ensureSurveyJson(prev);
-      const nextSj = updateElement(sj, activePageName, elementName, patch);
-      return { ...prev, surveyJson: nextSj };
-    });
-  };
-
-  const onRemoveQuestion = (elementName: string) => {
-    setForm((prev) => {
-      const sj = ensureSurveyJson(prev);
-      const nextSj = removeElement(sj, activePageName, elementName);
       return { ...prev, surveyJson: nextSj };
     });
   };
@@ -284,7 +263,7 @@ export function SurveyQuestionsStep({ form, setForm }: Props) {
 
       {/* Questions */}
       <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {elements.map((el: any, idx: number) => (
+        {elements.map((el: SurveyElement, idx: number) => (
           <QuestionCard
             key={el.name}
             index={idx}

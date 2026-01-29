@@ -1,8 +1,5 @@
 // src/survey-creation/model/defaults.ts
-import type { SurveyCreationForm, SurveySection } from './types';
-
-const uid = () =>
-  typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+import type { SurveyCreationForm } from './types';
 
 export const SURVEY_CREATION_DEFAULTS: SurveyCreationForm = {
   title: '',

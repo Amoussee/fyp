@@ -3,56 +3,85 @@
 import * as React from 'react';
 import { Box, TextField, Typography } from '@mui/material';
 
+import type { SurveyElement } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
+
 const SHORT_TEXT_MAX = 1000;
 const LONG_TEXT_MAX = 3000;
 const LONG_TEXT_ROWS = 3;
 
-function enforceIfDifferent(element: any, desired: Record<string, any>) {
-  const patch: Record<string, any> = {};
+type JsonRecord = Record<string, unknown>;
+
+function enforceIfDifferent(element: SurveyElement, desired: JsonRecord) {
+  const current = element as JsonRecord;
+  const patch: JsonRecord = {};
+
   for (const [k, v] of Object.entries(desired)) {
-    if (element?.[k] !== v) patch[k] = v;
+    if (current[k] !== v) patch[k] = v;
   }
-  return patch;
+
+  return patch as Partial<SurveyElement>;
 }
+
+type NumericValidator = {
+  type: 'numeric';
+  minValue?: number;
+  maxValue?: number;
+} & JsonRecord;
 
 type Props = {
-  element: any; // SurveyJS element JSON
-  onPatch: (patch: Partial<any>) => void;
+  element: SurveyElement; // SurveyJS element JSON
+  onPatch: (patch: Partial<SurveyElement>) => void;
 };
 
-function getNumericValidator(element: any) {
-  const validators: any[] = Array.isArray(element?.validators) ? element.validators : [];
-  const v = validators.find((x) => x?.type === 'numeric');
-  return v ?? null;
+function getNumericValidator(element: SurveyElement): NumericValidator | null {
+  const rec = element as JsonRecord;
+  const validators = Array.isArray(rec.validators) ? rec.validators : [];
+
+  const found = validators.find((x) => {
+    if (!x || typeof x !== 'object') return false;
+    const xr = x as JsonRecord;
+    return xr.type === 'numeric';
+  });
+
+  return found && typeof found === 'object' ? (found as NumericValidator) : null;
 }
 
-function upsertNumericValidator(element: any, patch: { minValue?: number; maxValue?: number }) {
-  const validators: any[] = Array.isArray(element?.validators) ? [...element.validators] : [];
-  const idx = validators.findIndex((x) => x?.type === 'numeric');
+function upsertNumericValidator(
+  element: SurveyElement,
+  patch: { minValue?: number; maxValue?: number },
+): Partial<SurveyElement> {
+  const rec = element as JsonRecord;
+  const validatorsRaw = Array.isArray(rec.validators) ? rec.validators : [];
+  const validators: JsonRecord[] = validatorsRaw
+    .filter((v): v is JsonRecord => !!v && typeof v === 'object')
+    .map((v) => ({ ...v })); // clone objects
 
-  const current = idx >= 0 ? validators[idx] : { type: 'numeric' };
-  const next = { ...current, ...patch };
+  const idx = validators.findIndex((x) => x.type === 'numeric');
 
-  // Remove empty validator (optional)
-  const hasMin = typeof next.minValue === 'number';
-  const hasMax = typeof next.maxValue === 'number';
+  const current: JsonRecord = idx >= 0 ? validators[idx] : ({ type: 'numeric' } as JsonRecord);
+  const next: JsonRecord = { ...current, ...patch, type: 'numeric' };
+
+  const hasMin = typeof next.minValue === 'number' && !Number.isNaN(next.minValue);
+  const hasMax = typeof next.maxValue === 'number' && !Number.isNaN(next.maxValue);
+
+  // Remove validator if empty (optional behaviour)
   if (!hasMin && !hasMax) {
     if (idx >= 0) validators.splice(idx, 1);
-    return { validators };
+    return { validators } as Partial<SurveyElement>;
   }
 
   if (idx >= 0) validators[idx] = next;
   else validators.push(next);
 
-  return { validators };
+  return { validators } as Partial<SurveyElement>;
 }
 
 const toNumOrUndef = (v: string) => (v === '' ? undefined : Number(v));
 
 export function TextEditor({ element, onPatch }: Props) {
-  const kind = String(element?.kind ?? 'short_text');
+  const rec = element as JsonRecord;
+  const kind = typeof rec.kind === 'string' ? rec.kind : 'short_text';
 
-  // enforce “base” settings for each kind (without being too aggressive)
   React.useEffect(() => {
     if (kind === 'short_text') {
       const patch = enforceIfDifferent(element, {
@@ -68,26 +97,26 @@ export function TextEditor({ element, onPatch }: Props) {
         type: 'comment',
         rows: LONG_TEXT_ROWS,
         maxLength: LONG_TEXT_MAX,
-        autoGrow: true, // remove this line if your SurveyJS build doesn't support it
+        autoGrow: true,
       });
       if (Object.keys(patch).length) onPatch(patch);
     }
 
     if (kind === 'number_range') {
-      if (element.type !== 'text' || element.inputType !== 'number') {
+      if (rec.type !== 'text' || rec.inputType !== 'number') {
+        onPatch({ type: 'text', inputType: 'number' });
+      }
+    }
+
+    if (kind === 'number') {
+      if (rec.type !== 'text' || rec.inputType !== 'number') {
         onPatch({ type: 'text', inputType: 'number' });
       }
     }
 
     if (kind === 'single_date') {
-      if (element.type !== 'text' || element.inputType !== 'date') {
+      if (rec.type !== 'text' || rec.inputType !== 'date') {
         onPatch({ type: 'text', inputType: 'date' });
-      }
-    }
-
-    if (kind === 'long_text') {
-      if (element.type !== 'comment') {
-        onPatch({ type: 'comment', rows: element.rows ?? 4 });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,7 +178,7 @@ export function TextEditor({ element, onPatch }: Props) {
       <Box>
         <Typography sx={{ fontWeight: 700, mb: 1 }}>Number settings</Typography>
         <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
-          Uses SurveyJS <code>text</code> with <code>inputType: "number"</code>.
+          Uses SurveyJS <code>text</code> with <code>{'inputType: "number"'}</code>.
         </Typography>
       </Box>
     );
@@ -160,7 +189,7 @@ export function TextEditor({ element, onPatch }: Props) {
       <Box>
         <Typography sx={{ fontWeight: 700, mb: 1 }}>Date settings</Typography>
         <Typography sx={{ color: 'text.secondary', fontSize: 13 }}>
-          Uses SurveyJS <code>text</code> with <code>inputType: "date"</code>.
+          Uses SurveyJS <code>text</code> with <code>{'inputType: "date"'}</code>.
         </Typography>
       </Box>
     );

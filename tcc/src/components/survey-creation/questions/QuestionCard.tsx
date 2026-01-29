@@ -9,7 +9,6 @@ import {
   Divider,
   IconButton,
   Switch,
-  TextField,
   Tooltip,
   Typography,
   FormControlLabel,
@@ -24,17 +23,18 @@ import type {
   QuestionKind,
   QuestionRailKind,
 } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette';
+import type { SurveyElement } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson';
 
 type Props = {
   index: number;
   pageName: string;
-  element: any;
-  onPatch: (elementName: string, patch: Partial<any>) => void;
+  element: SurveyElement;
+  onPatch: (elementName: string, patch: Partial<SurveyElement>) => void;
   onRemove: (elementName: string) => void;
   onChangeKind: (elementName: string, nextKind: QuestionKind) => void;
 };
 
-const isRailKind = (k: any): k is QuestionRailKind =>
+const isRailKind = (k: string): k is QuestionRailKind =>
   k === 'short_text' ||
   k === 'long_text' ||
   k === 'multi_select' ||
