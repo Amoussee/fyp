@@ -53,7 +53,7 @@ class SurveyModel {
 
     query += ` GROUP BY s.form_id`;
 
-    const { rows } = await pool.query(query, [id]);
+    const { rows } = await pool.query(query, [surveyId]);
     return rows[0];
   }
 
@@ -168,7 +168,7 @@ class SurveyModel {
         AND (
           SELECT COUNT(*) 
           FROM survey_responses 
-          WHERE survey_id = $1
+          WHERE form_id = $1
         ) >= min_responses
       RETURNING *;
     `;

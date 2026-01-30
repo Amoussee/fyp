@@ -6,11 +6,16 @@ class ResponseController {
     // POST /responses
     create = async (req, res) => {
         try {
-            const newResponse = await SurveyResponseModel.create(req.body);
+            const responseData = {
+                ...req.body,
+                user_id: req.user ? req.user.id : null 
+            };
+
+            const newResponse = await SurveyResponseModel.create(responseData);
             const surveyId = newResponse.form_id;
 
             if (surveyId) {
-                const updatedSurvey = await SurveyModel.checkAndPromoteStatus(surveyId);
+                await SurveyModel.checkAndPromoteStatus(surveyId);
             }
             res.status(201).json(newResponse);
         } catch (error) {

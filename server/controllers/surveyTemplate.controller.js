@@ -27,7 +27,9 @@ class SurveyTemplateController {
   // POST /survey-templates
   create = async (req, res) => {
     try {
-      const newTemplate = await SurveyTemplateModel.create(req.body);
+      const { recipients, ...templateData } = req.body; // Force remove 'recipients' so we never accidentally save them in a template
+      if (req.user) templateData.created_by = req.user.id; // Ensure created_by is set 
+      const newTemplate = await SurveyTemplateModel.create(templateData);
       res.status(201).json({
         message: 'Survey template created successfully',
         template: newTemplate,

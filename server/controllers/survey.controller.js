@@ -53,10 +53,16 @@ class SurveyController {
   // POST /surveys
   createSurvey = async (req, res) => {
     try {
-      const newSurvey = await SurveyModel.create(req.body);
+      const surveyData = {
+        ...req.body, 
+        created_by: req.user? req.user.id : req.body.created_by
+      };
+      
+      const newSurvey = await SurveyModel.create(surveyData);
       const shareableLink = `${process.env.FRONTEND_URL}/surveys/respond/${newSurvey.form_id}`;
       res.status(201).json({newSurvey, link: shareableLink, message: "Survey created successfully"});
     } catch (err) {
+      console.error(err);
       res.status(500).json({ error: 'Could not create survey' });
     }
   };
