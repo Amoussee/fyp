@@ -1,15 +1,16 @@
 import express from 'express';
 import SurveyTemplateController from '../controllers/surveyTemplate.controller.js';
+import { authenticateUser } from '../middleware/auth.middleware.js'; 
 
 const router = express.Router();
 
 router.route('/')
-  .get(SurveyTemplateController.getAll)
-  .post(SurveyTemplateController.create);
+  .get(authenticateUser,SurveyTemplateController.getAll)
+  .post(authenticateUser,SurveyTemplateController.create);
 
 router.route('/:id')
-  .get(SurveyTemplateController.getById)
-  .put(SurveyTemplateController.update)
-  .delete(SurveyTemplateController.delete);
+  .get(authenticateUser,SurveyTemplateController.getById)
+  .put(authenticateUser,SurveyTemplateController.update)
+  .delete(authenticateUser,SurveyTemplateController.delete);
 
 export default router;
