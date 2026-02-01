@@ -12,11 +12,7 @@ interface ChildDetailProps {
   index: number;
   childDetail: { name: string; school: string }; // Structure for child detail
   onUpdate: (index: number, detail: { name: string; school: string }) => void; // Function to handle updates
-<<<<<<< HEAD
-  schools: Array<{ id: string; name: string }>; // Add this to receive the database list from OnboardingForm
-=======
-  schools: SchoolOption[]; // Add this to receive the database list from OnboardingForm
->>>>>>> 7b8c863 (edited some files for lint and prettier)
+  schools: any[]; // Add this to receive the database list from OnboardingForm
 }
 
 const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate, schools }) => {
