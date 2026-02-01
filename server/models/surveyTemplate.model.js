@@ -4,7 +4,7 @@ class SurveyTemplateModel {
   // Get all survey templates
   async findAll() {
     const query = `
-      SELECT template_id, title, description, created_at, created_by 
+      SELECT *
       FROM survey_templates
       ORDER BY created_at DESC
     `;
