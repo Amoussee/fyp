@@ -4,8 +4,10 @@
 // Later, you will replace this function with the real AWS Cognito verifier.
 export const authenticateUser = (req, res, next) => {
     // 1. Simulate a logged-in user
+    const testUserId = req.query.testUser;
+    const finalUserId = testUserId ? parseInt(testUserId) : 1;
     req.user = {
-        id: 1, // Assume "User ID 1" is always logged in for testing
+        id: finalUserId, 
         role: 'admin',
         school_id: 5
     };
