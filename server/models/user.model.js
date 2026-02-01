@@ -2,25 +2,18 @@ import pool from '../config/postgres.js';
 
 class UserModel {
   async findAll() {
-    const { rows } = await pool.query('SELECT * FROM users');
-    return rows;
-  }
-
-  async findPublicInfo() {
     const { rows } = await pool.query(
-      `SELECT 
-        user_id,
-        first_name,
-        last_name,
-        full_name,
-        email,
-        organisation,
-        role,
-        is_active,
-        number_child,
-        child_details,
-        school_id
-       FROM users`,
+      `WITH user_data AS (
+              SELECT * FROM users
+          )
+          SELECT 
+              u.*,
+              (
+                  SELECT ARRAY_AGG(DISTINCT child->>'school')
+                  FROM jsonb_array_elements(u.child_details) AS child
+                  WHERE u.child_details IS NOT NULL AND u.child_details != '[]'
+              ) AS distinct_schools
+          FROM user_data u;`
     );
     return rows;
   }
@@ -31,8 +24,30 @@ class UserModel {
   }
 
   async findById(id) {
-    const { rows } = await pool.query('SELECT * FROM users WHERE user_id = $1', [id]);
-    return rows[0];
+      const query = `
+          WITH user_data AS (
+              SELECT * FROM users WHERE user_id = $1
+          )
+          SELECT 
+              u.*,
+              (
+                  SELECT ARRAY_AGG(DISTINCT child->>'school')
+                  FROM jsonb_array_elements(u.child_details) AS child
+                  WHERE u.child_details IS NOT NULL AND u.child_details != '[]'
+              ) AS distinct_schools
+          FROM user_data u;
+      `;
+
+      const { rows } = await pool.query(query, [id]);
+
+      if (rows.length === 0) return null;
+
+      const { distinct_schools, ...user } = rows[0];
+
+      return {
+          user: user,
+          distinctSchools: distinct_schools || []
+      };
   }
 
   async create(data) {

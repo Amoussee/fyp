@@ -10,15 +10,6 @@ class UserController {
     }
   };
 
-  getPublicInfo = async (req, res) => {
-    try {
-      const users = await UserModel.findPublicInfo();
-      res.status(200).json(users);
-    } catch (error) {
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
-
   getActive = async (req, res) => {
     try {
       const users = await UserModel.findActive();

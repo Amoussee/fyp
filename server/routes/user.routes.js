@@ -15,7 +15,6 @@ router.route('/')
 // GET /api/users/active -> get active users
 // GET /api/users/info   -> get public user info
 router.get('/active', UserController.getActive);
-router.get('/info', UserController.getPublicInfo);
 
 // --- Specific User Routes (:id MUST come after fixed routes) ---
 router.route('/:id')
