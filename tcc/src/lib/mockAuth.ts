@@ -50,7 +50,7 @@ export const MOCK_USERS: MockUser[] = [
     role: 'admin',
     status: 'active',
     // sub: 'user-admin-001',
-  }
+  },
 ];
 
 export function makeSession(user: MockUser): SessionPayload {

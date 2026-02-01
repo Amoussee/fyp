@@ -74,7 +74,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
     setChildDetails(updatedDetails);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
     setIsSubmitting(true);
@@ -146,6 +146,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
       console.log('Success:', data);
     } catch (err) {
       // Network / server down
+      console.error(err);
       setSubmitError('Unable to connect. Please try again later.');
     } finally {
       setIsSubmitting(false);
@@ -155,7 +156,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Grid container spacing={2}>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label="First Name"
@@ -165,7 +166,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
             sx={{ mb: 2 }} // Margin bottom
           />
         </Grid>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label="Last Name"
@@ -175,7 +176,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label="Email"
@@ -186,7 +187,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
             label="Password"
@@ -196,7 +197,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid size={6} item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <PhoneNumber
             value={phoneNumber}
             onChange={(newValue) => {
@@ -218,7 +219,7 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
           />
         </Grid>
 
-        <Grid item size={10} xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <Numberfield
             label="Number of Children"
             error={!!numberChildError} // Set error state
@@ -236,9 +237,9 @@ const OnboardingForm = ({ initialData }: OnboardingFormProps) => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={2} column={2}>
+      <Grid container spacing={2} columns={2}>
         {Array.from({ length: numberChild || 0 }, (_, index) => (
-          <Grid item size={12} key={index}>
+          <Grid size={12} key={index}>
             <ChildDetail
               index={index}
               childDetail={childDetails[index] || { name: '', school: '' }}
