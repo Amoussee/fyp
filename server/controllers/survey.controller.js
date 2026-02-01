@@ -8,10 +8,15 @@ class SurveyController {
       const { status, type } = req.query;
       const userId = req.user ? req.user.id : undefined;
       const filters = {status, type, userId};
+      const validStatuses = ['draft', 'open', 'ready', 'closed'];
+      if (status && !validStatuses.includes(status)) {
+        return res.status(400).json({ error: `Invalid status parameter` });
+      }
 
       const data = await SurveyModel.findAll(filters);
       res.status(200).json(data);
     } catch (err) {
+      console.error("Error in getAllsurveys:", err);
       res.status(500).json({ error: 'Failed to retrieve surveys' });
     }
   };
@@ -31,24 +36,24 @@ class SurveyController {
   };
 
   // GET /surveys/status/:status
-  getByStatus = async (req, res) => {
-    try {
-      const { status } = req.params;
-      const userId = req.user ? req.user.id : undefined;
+  // getByStatus = async (req, res) => {
+  //   try {
+  //     const { status } = req.params;
+  //     const userId = req.user ? req.user.id : undefined;
 
-      // Validate against ENUM list
-      const validStatuses = ['draft', 'open', 'ready', 'closed'];
-      if (!validStatuses.includes(status)) {
-        return res.status(400).json({error: `Invalid status` });
-      }
-      // Call the specific model function
-      const surveys = await SurveyModel.findByStatus(status);
-      res.status(200).json(surveys);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to fetch surveys by status' });
-    }
-  };
+  //     // Validate against ENUM list
+  //     const validStatuses = ['draft', 'open', 'ready', 'closed'];
+  //     if (!validStatuses.includes(status)) {
+  //       return res.status(400).json({error: `Invalid status` });
+  //     }
+  //     // Call the specific model function
+  //     const surveys = await SurveyModel.findByStatus(status);
+  //     res.status(200).json(surveys);
+  //   } catch (err) {
+  //     console.error(err);
+  //     res.status(500).json({ error: 'Failed to fetch surveys by status' });
+  //   }
+  // };
 
   // POST /surveys
   createSurvey = async (req, res) => {

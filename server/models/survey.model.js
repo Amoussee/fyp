@@ -9,16 +9,10 @@ class SurveyModel {
     let query = `
       SELECT form_id, title, description, status, min_responses, created_at, created_by 
       FROM surveys 
-      ORDER BY created_at DESC
+      WHERE 1=1
     `;
     const values = [];
     let paramIndex = 1;
-
-    if (userId) {
-      query += ` AND created_by = $${paramIndex}`;
-      values.push(userId);
-      paramIndex++;
-    }
 
     if (status) {
       query += ` AND status = $${paramIndex}`;
@@ -26,9 +20,17 @@ class SurveyModel {
       paramIndex++;
     }
 
+    if (userId) {
+      query += ` AND (status != 'draft' OR created_by = $${paramIndex})`;
+      values.push(userId);
+      paramIndex++;
+    } else {
+      query += ` AND status != 'draft'`;
+    }
+
     query += ` ORDER BY created_at DESC`;
 
-    const { rows } = await pool.query(query);
+    const { rows } = await pool.query(query, values);
     return rows;
   }
 
@@ -41,33 +43,34 @@ class SurveyModel {
       FROM surveys s
       LEFT JOIN survey_recipients sr ON s.form_id = sr.survey_id
       WHERE s.form_id = $1
-      GROUP BY s.form_id
     `;
 
     const values = [surveyId];
 
     if (userId) {
-      query += ` AND s.created_by = $2`;
+      query += ` AND (s.status != 'draft' OR s.created_by = $2)`;
       values.push(userId);
+    } else {
+      query += ` AND s.status != 'draft'`;
     }
 
     query += ` GROUP BY s.form_id`;
 
-    const { rows } = await pool.query(query, [surveyId]);
+    const { rows } = await pool.query(query, values);
     return rows[0];
   }
 
   // 3. Get By Status 
-  async findByStatus(status) {
-    const query = `
-      SELECT form_id, title, description, status, min_responses, created_at, created_by 
-      FROM surveys 
-      WHERE status = $1 
-      ORDER BY created_at DESC
-    `;
-    const { rows } = await pool.query(query, [status]);
-    return rows;
-  }
+  // async findByStatus(status) {
+  //   const query = `
+  //     SELECT form_id, title, description, status, min_responses, created_at, created_by 
+  //     FROM surveys 
+  //     WHERE status = $1 
+  //     ORDER BY created_at DESC
+  //   `;
+  //   const { rows } = await pool.query(query, [status]);
+  //   return rows;
+  // }
 
   // 4. Create
   async create(data) {
@@ -85,7 +88,7 @@ class SurveyModel {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *`;
 
-      const surveyValues = [title, description, metadata, schema_json, source_template_id, created_by, status || 'draft', minResponse || 0];
+      const surveyValues = [title, description, metadata || {}, schema_json || {}, source_template_id, created_by, status || 'draft', minResponse || 0];
       const { rows: surveyRows } = await client.query(insertSurveyQuery, surveyValues);
       const newSurvey = surveyRows[0];
 
