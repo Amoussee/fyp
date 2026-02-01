@@ -33,7 +33,6 @@ const ChartConfigModal = ({ isOpen, onClose, onSave, surveySchema }: ChartConfig
 
   return (
     <div className="modal-overlay">
-
       <div className="bg-white p-6 rounded-lg w-96 shadow-xl">
         <h2 className="text-xl font-bold mb-4">Configure Chart</h2>
 
@@ -61,7 +60,7 @@ const ChartConfigModal = ({ isOpen, onClose, onSave, surveySchema }: ChartConfig
             <select
               className="w-full p-2 border rounded"
               value={aggregation}
-              onChange={(e) => setAggregation(e.target.value as any)}
+              onChange={(e) => setAggregation(e.target.value as 'count' | 'sum' | 'average')}
             >
               <option value="count">Count (Frequency)</option>
               <option value="sum">Sum (Numeric)</option>

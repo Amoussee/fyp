@@ -1,23 +1,94 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+  value: true,
 });
-exports.PivotData = exports.sortAs = exports.getSort = exports.numberFormat = exports.naturalSort = exports.locales = exports.derivers = exports.aggregators = exports.aggregatorTemplates = undefined;
+exports.PivotData =
+  exports.sortAs =
+  exports.getSort =
+  exports.numberFormat =
+  exports.naturalSort =
+  exports.locales =
+  exports.derivers =
+  exports.aggregators =
+  exports.aggregatorTemplates =
+    undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ('value' in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+})();
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function () {
+  function sliceIterator(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i['return']) _i['return']();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+    return _arr;
+  }
+  return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (Symbol.iterator in Object(arr)) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError('Invalid attempt to destructure non-iterable instance');
+    }
+  };
+})();
 
 var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError('Cannot call a class as a function');
+  }
+}
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+}
 
 /*
  * decaffeinate suggestions:
@@ -49,14 +120,18 @@ var numberFormat = function numberFormat(opts_in) {
     thousandsSep: ',',
     decimalSep: '.',
     prefix: '',
-    suffix: ''
+    suffix: '',
   };
   var opts = Object.assign({}, defaults, opts_in);
   return function (x) {
     if (isNaN(x) || !isFinite(x)) {
       return '';
     }
-    var result = addSeparators((opts.scaler * x).toFixed(opts.digitsAfterDecimal), opts.thousandsSep, opts.decimalSep);
+    var result = addSeparators(
+      (opts.scaler * x).toFixed(opts.digitsAfterDecimal),
+      opts.thousandsSep,
+      opts.decimalSep,
+    );
     return '' + opts.prefix + result + opts.suffix;
   };
 };
@@ -186,7 +261,7 @@ var usFmtInt = numberFormat({ digitsAfterDecimal: 0 });
 var usFmtPct = numberFormat({
   digitsAfterDecimal: 1,
   scaler: 100,
-  suffix: '%'
+  suffix: '%',
 });
 
 var aggregatorTemplates = {
@@ -204,7 +279,7 @@ var aggregatorTemplates = {
             return this.count;
           },
 
-          format: formatter
+          format: formatter,
         };
       };
     };
@@ -229,7 +304,7 @@ var aggregatorTemplates = {
           },
 
           format: formatter,
-          numInputs: typeof attr !== 'undefined' ? 0 : 1
+          numInputs: typeof attr !== 'undefined' ? 0 : 1,
         };
       };
     };
@@ -254,7 +329,7 @@ var aggregatorTemplates = {
           },
 
           format: formatter,
-          numInputs: typeof attr !== 'undefined' ? 0 : 1
+          numInputs: typeof attr !== 'undefined' ? 0 : 1,
         };
       };
     };
@@ -295,7 +370,7 @@ var aggregatorTemplates = {
             return formatter(x);
           },
 
-          numInputs: typeof attr !== 'undefined' ? 0 : 1
+          numInputs: typeof attr !== 'undefined' ? 0 : 1,
         };
       };
     };
@@ -328,7 +403,7 @@ var aggregatorTemplates = {
           },
 
           format: formatter,
-          numInputs: typeof attr !== 'undefined' ? 0 : 1
+          numInputs: typeof attr !== 'undefined' ? 0 : 1,
         };
       };
     };
@@ -381,7 +456,7 @@ var aggregatorTemplates = {
           },
 
           format: formatter,
-          numInputs: typeof attr !== 'undefined' ? 0 : 1
+          numInputs: typeof attr !== 'undefined' ? 0 : 1,
         };
       };
     };
@@ -411,7 +486,7 @@ var aggregatorTemplates = {
           },
 
           format: formatter,
-          numInputs: typeof num !== 'undefined' && typeof denom !== 'undefined' ? 0 : 2
+          numInputs: typeof num !== 'undefined' && typeof denom !== 'undefined' ? 0 : 2,
         };
       };
     };
@@ -428,21 +503,30 @@ var aggregatorTemplates = {
       return function (data, rowKey, colKey) {
         return {
           selector: { total: [[], []], row: [rowKey, []], col: [[], colKey] }[type],
-          inner: wrapped.apply(undefined, _toConsumableArray(Array.from(x || [])))(data, rowKey, colKey),
+          inner: wrapped.apply(undefined, _toConsumableArray(Array.from(x || [])))(
+            data,
+            rowKey,
+            colKey,
+          ),
           push: function push(record) {
             this.inner.push(record);
           },
 
           format: formatter,
           value: function value() {
-            return this.inner.value() / data.getAggregator.apply(data, _toConsumableArray(Array.from(this.selector || []))).inner.value();
+            return (
+              this.inner.value() /
+              data.getAggregator
+                .apply(data, _toConsumableArray(Array.from(this.selector || [])))
+                .inner.value()
+            );
           },
 
-          numInputs: wrapped.apply(undefined, _toConsumableArray(Array.from(x || [])))().numInputs
+          numInputs: wrapped.apply(undefined, _toConsumableArray(Array.from(x || [])))().numInputs,
         };
       };
     };
-  }
+  },
 };
 
 aggregatorTemplates.countUnique = function (f) {
@@ -451,11 +535,14 @@ aggregatorTemplates.countUnique = function (f) {
   }, f);
 };
 aggregatorTemplates.listUnique = function (s) {
-  return aggregatorTemplates.uniques(function (x) {
-    return x.join(s);
-  }, function (x) {
-    return x;
-  });
+  return aggregatorTemplates.uniques(
+    function (x) {
+      return x.join(s);
+    },
+    function (x) {
+      return x;
+    },
+  );
 };
 aggregatorTemplates.max = function (f) {
   return aggregatorTemplates.extremes('max', f);
@@ -483,7 +570,7 @@ aggregatorTemplates.stdev = function (ddof, f) {
 };
 
 // default aggregators & renderers use US naming and number formatting
-var aggregators = function (tpl) {
+var aggregators = (function (tpl) {
   return {
     Count: tpl.count(usFmtInt),
     'Count Unique Values': tpl.countUnique(usFmtInt),
@@ -504,9 +591,9 @@ var aggregators = function (tpl) {
     'Sum as Fraction of Columns': tpl.fractionOf(tpl.sum(), 'col', usFmtPct),
     'Count as Fraction of Total': tpl.fractionOf(tpl.count(), 'total', usFmtPct),
     'Count as Fraction of Rows': tpl.fractionOf(tpl.count(), 'row', usFmtPct),
-    'Count as Fraction of Columns': tpl.fractionOf(tpl.count(), 'col', usFmtPct)
+    'Count as Fraction of Columns': tpl.fractionOf(tpl.count(), 'col', usFmtPct),
   };
-}(aggregatorTemplates);
+})(aggregatorTemplates);
 
 var locales = {
   en: {
@@ -523,13 +610,26 @@ var locales = {
       cancel: 'Cancel',
       totals: 'Totals',
       vs: 'vs',
-      by: 'by'
-    }
-  }
+      by: 'by',
+    },
+  },
 };
 
 // dateFormat deriver l10n requires month and day names to be passed in directly
-var mthNamesEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var mthNamesEn = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 var dayNamesEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 var zeroPad = function zeroPad(number) {
   return ('0' + number).substr(-2, 2);
@@ -538,7 +638,7 @@ var zeroPad = function zeroPad(number) {
 var derivers = {
   bin: function bin(col, binWidth) {
     return function (record) {
-      return record[col] - record[col] % binWidth;
+      return record[col] - (record[col] % binWidth);
     };
   },
   dateFormat: function dateFormat(col, formatString) {
@@ -577,14 +677,14 @@ var derivers = {
         }
       });
     };
-  }
+  },
 };
 
 /*
 Data Model class
 */
 
-var PivotData = function () {
+var PivotData = (function () {
   function PivotData() {
     var _this = this;
 
@@ -612,272 +712,302 @@ var PivotData = function () {
     });
   }
 
-  _createClass(PivotData, [{
-    key: 'filter',
-    value: function filter(record) {
-      for (var k in this.props.valueFilter) {
-        if (record[k] in this.props.valueFilter[k]) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }, {
-    key: 'forEachMatchingRecord',
-    value: function forEachMatchingRecord(criteria, callback) {
-      var _this2 = this;
-
-      return PivotData.forEachRecord(this.props.data, this.props.derivedAttributes, function (record) {
-        if (!_this2.filter(record)) {
-          return;
-        }
-        for (var k in criteria) {
-          var v = criteria[k];
-          if (v !== (k in record ? record[k] : 'null')) {
-            return;
+  _createClass(PivotData, [
+    {
+      key: 'filter',
+      value: function filter(record) {
+        for (var k in this.props.valueFilter) {
+          if (record[k] in this.props.valueFilter[k]) {
+            return false;
           }
         }
-        callback(record);
-      });
-    }
-  }, {
-    key: 'arrSort',
-    value: function arrSort(attrs) {
-      var _this3 = this;
+        return true;
+      },
+    },
+    {
+      key: 'forEachMatchingRecord',
+      value: function forEachMatchingRecord(criteria, callback) {
+        var _this2 = this;
 
-      var a = void 0;
-      var sortersArr = function () {
-        var result = [];
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        return PivotData.forEachRecord(
+          this.props.data,
+          this.props.derivedAttributes,
+          function (record) {
+            if (!_this2.filter(record)) {
+              return;
+            }
+            for (var k in criteria) {
+              var v = criteria[k];
+              if (v !== (k in record ? record[k] : 'null')) {
+                return;
+              }
+            }
+            callback(record);
+          },
+        );
+      },
+    },
+    {
+      key: 'arrSort',
+      value: function arrSort(attrs) {
+        var _this3 = this;
 
-        try {
-          for (var _iterator = Array.from(attrs)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            a = _step.value;
+        var a = void 0;
+        var sortersArr = (function () {
+          var result = [];
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
 
-            result.push(getSort(_this3.props.sorters, a));
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
+            for (
+              var _iterator = Array.from(attrs)[Symbol.iterator](), _step;
+              !(_iteratorNormalCompletion = (_step = _iterator.next()).done);
+              _iteratorNormalCompletion = true
+            ) {
+              a = _step.value;
+
+              result.push(getSort(_this3.props.sorters, a));
             }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
           } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
             }
           }
-        }
 
-        return result;
-      }();
-      return function (a, b) {
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+          return result;
+        })();
+        return function (a, b) {
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
 
-        try {
-          for (var _iterator2 = Object.keys(sortersArr || {})[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var i = _step2.value;
-
-            var sorter = sortersArr[i];
-            var comparison = sorter(a[i], b[i]);
-            if (comparison !== 0) {
-              return comparison;
-            }
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
           try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
+            for (
+              var _iterator2 = Object.keys(sortersArr || {})[Symbol.iterator](), _step2;
+              !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done);
+              _iteratorNormalCompletion2 = true
+            ) {
+              var i = _step2.value;
+
+              var sorter = sortersArr[i];
+              var comparison = sorter(a[i], b[i]);
+              if (comparison !== 0) {
+                return comparison;
+              }
             }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
           } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
             }
           }
-        }
 
-        return 0;
-      };
-    }
-  }, {
-    key: 'sortKeys',
-    value: function sortKeys() {
-      var _this4 = this;
-
-      if (!this.sorted) {
-        this.sorted = true;
-        var v = function v(r, c) {
-          return _this4.getAggregator(r, c).value();
+          return 0;
         };
-        switch (this.props.rowOrder) {
-          case 'value_a_to_z':
-            this.rowKeys.sort(function (a, b) {
-              return naturalSort(v(a, []), v(b, []));
-            });
-            break;
-          case 'value_z_to_a':
-            this.rowKeys.sort(function (a, b) {
-              return -naturalSort(v(a, []), v(b, []));
-            });
-            break;
-          default:
-            this.rowKeys.sort(this.arrSort(this.props.rows));
-        }
-        switch (this.props.colOrder) {
-          case 'value_a_to_z':
-            this.colKeys.sort(function (a, b) {
-              return naturalSort(v([], a), v([], b));
-            });
-            break;
-          case 'value_z_to_a':
-            this.colKeys.sort(function (a, b) {
-              return -naturalSort(v([], a), v([], b));
-            });
-            break;
-          default:
-            this.colKeys.sort(this.arrSort(this.props.cols));
-        }
-      }
-    }
-  }, {
-    key: 'getColKeys',
-    value: function getColKeys() {
-      this.sortKeys();
-      return this.colKeys;
-    }
-  }, {
-    key: 'getRowKeys',
-    value: function getRowKeys() {
-      this.sortKeys();
-      return this.rowKeys;
-    }
-  }, {
-    key: 'processRecord',
-    value: function processRecord(record) {
-      // this code is called in a tight loop
-      var colKey = [];
-      var rowKey = [];
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      },
+    },
+    {
+      key: 'sortKeys',
+      value: function sortKeys() {
+        var _this4 = this;
 
-      try {
-        for (var _iterator3 = Array.from(this.props.cols)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var x = _step3.value;
-
-          colKey.push(x in record ? record[x] : 'null');
+        if (!this.sorted) {
+          this.sorted = true;
+          var v = function v(r, c) {
+            return _this4.getAggregator(r, c).value();
+          };
+          switch (this.props.rowOrder) {
+            case 'value_a_to_z':
+              this.rowKeys.sort(function (a, b) {
+                return naturalSort(v(a, []), v(b, []));
+              });
+              break;
+            case 'value_z_to_a':
+              this.rowKeys.sort(function (a, b) {
+                return -naturalSort(v(a, []), v(b, []));
+              });
+              break;
+            default:
+              this.rowKeys.sort(this.arrSort(this.props.rows));
+          }
+          switch (this.props.colOrder) {
+            case 'value_a_to_z':
+              this.colKeys.sort(function (a, b) {
+                return naturalSort(v([], a), v([], b));
+              });
+              break;
+            case 'value_z_to_a':
+              this.colKeys.sort(function (a, b) {
+                return -naturalSort(v([], a), v([], b));
+              });
+              break;
+            default:
+              this.colKeys.sort(this.arrSort(this.props.cols));
+          }
         }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
+      },
+    },
+    {
+      key: 'getColKeys',
+      value: function getColKeys() {
+        this.sortKeys();
+        return this.colKeys;
+      },
+    },
+    {
+      key: 'getRowKeys',
+      value: function getRowKeys() {
+        this.sortKeys();
+        return this.rowKeys;
+      },
+    },
+    {
+      key: 'processRecord',
+      value: function processRecord(record) {
+        // this code is called in a tight loop
+        var colKey = [];
+        var rowKey = [];
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
+          for (
+            var _iterator3 = Array.from(this.props.cols)[Symbol.iterator](), _step3;
+            !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done);
+            _iteratorNormalCompletion3 = true
+          ) {
+            var x = _step3.value;
+
+            colKey.push(x in record ? record[x] : 'null');
           }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
         } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
           }
         }
-      }
 
-      var _iteratorNormalCompletion4 = true;
-      var _didIteratorError4 = false;
-      var _iteratorError4 = undefined;
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
 
-      try {
-        for (var _iterator4 = Array.from(this.props.rows)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-          var _x16 = _step4.value;
-
-          rowKey.push(_x16 in record ? record[_x16] : 'null');
-        }
-      } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
-      } finally {
         try {
-          if (!_iteratorNormalCompletion4 && _iterator4.return) {
-            _iterator4.return();
+          for (
+            var _iterator4 = Array.from(this.props.rows)[Symbol.iterator](), _step4;
+            !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done);
+            _iteratorNormalCompletion4 = true
+          ) {
+            var _x16 = _step4.value;
+
+            rowKey.push(_x16 in record ? record[_x16] : 'null');
           }
+        } catch (err) {
+          _didIteratorError4 = true;
+          _iteratorError4 = err;
         } finally {
-          if (_didIteratorError4) {
-            throw _iteratorError4;
+          try {
+            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+              _iterator4.return();
+            }
+          } finally {
+            if (_didIteratorError4) {
+              throw _iteratorError4;
+            }
           }
         }
-      }
 
-      var flatRowKey = rowKey.join(String.fromCharCode(0));
-      var flatColKey = colKey.join(String.fromCharCode(0));
+        var flatRowKey = rowKey.join(String.fromCharCode(0));
+        var flatColKey = colKey.join(String.fromCharCode(0));
 
-      this.allTotal.push(record);
+        this.allTotal.push(record);
 
-      if (rowKey.length !== 0) {
-        if (!this.rowTotals[flatRowKey]) {
-          this.rowKeys.push(rowKey);
-          this.rowTotals[flatRowKey] = this.aggregator(this, rowKey, []);
+        if (rowKey.length !== 0) {
+          if (!this.rowTotals[flatRowKey]) {
+            this.rowKeys.push(rowKey);
+            this.rowTotals[flatRowKey] = this.aggregator(this, rowKey, []);
+          }
+          this.rowTotals[flatRowKey].push(record);
         }
-        this.rowTotals[flatRowKey].push(record);
-      }
 
-      if (colKey.length !== 0) {
-        if (!this.colTotals[flatColKey]) {
-          this.colKeys.push(colKey);
-          this.colTotals[flatColKey] = this.aggregator(this, [], colKey);
+        if (colKey.length !== 0) {
+          if (!this.colTotals[flatColKey]) {
+            this.colKeys.push(colKey);
+            this.colTotals[flatColKey] = this.aggregator(this, [], colKey);
+          }
+          this.colTotals[flatColKey].push(record);
         }
-        this.colTotals[flatColKey].push(record);
-      }
 
-      if (colKey.length !== 0 && rowKey.length !== 0) {
-        if (!this.tree[flatRowKey]) {
-          this.tree[flatRowKey] = {};
+        if (colKey.length !== 0 && rowKey.length !== 0) {
+          if (!this.tree[flatRowKey]) {
+            this.tree[flatRowKey] = {};
+          }
+          if (!this.tree[flatRowKey][flatColKey]) {
+            this.tree[flatRowKey][flatColKey] = this.aggregator(this, rowKey, colKey);
+          }
+          this.tree[flatRowKey][flatColKey].push(record);
         }
-        if (!this.tree[flatRowKey][flatColKey]) {
-          this.tree[flatRowKey][flatColKey] = this.aggregator(this, rowKey, colKey);
+      },
+    },
+    {
+      key: 'getAggregator',
+      value: function getAggregator(rowKey, colKey) {
+        var agg = void 0;
+        var flatRowKey = rowKey.join(String.fromCharCode(0));
+        var flatColKey = colKey.join(String.fromCharCode(0));
+        if (rowKey.length === 0 && colKey.length === 0) {
+          agg = this.allTotal;
+        } else if (rowKey.length === 0) {
+          agg = this.colTotals[flatColKey];
+        } else if (colKey.length === 0) {
+          agg = this.rowTotals[flatRowKey];
+        } else {
+          agg = this.tree[flatRowKey][flatColKey];
         }
-        this.tree[flatRowKey][flatColKey].push(record);
-      }
-    }
-  }, {
-    key: 'getAggregator',
-    value: function getAggregator(rowKey, colKey) {
-      var agg = void 0;
-      var flatRowKey = rowKey.join(String.fromCharCode(0));
-      var flatColKey = colKey.join(String.fromCharCode(0));
-      if (rowKey.length === 0 && colKey.length === 0) {
-        agg = this.allTotal;
-      } else if (rowKey.length === 0) {
-        agg = this.colTotals[flatColKey];
-      } else if (colKey.length === 0) {
-        agg = this.rowTotals[flatRowKey];
-      } else {
-        agg = this.tree[flatRowKey][flatColKey];
-      }
-      return agg || {
-        value: function value() {
-          return null;
-        },
-        format: function format() {
-          return '';
-        }
-      };
-    }
-  }]);
+        return (
+          agg || {
+            value: function value() {
+              return null;
+            },
+            format: function format() {
+              return '';
+            },
+          }
+        );
+      },
+    },
+  ]);
 
   return PivotData;
-}();
+})();
 
 // can handle arrays or jQuery selections of tables
-
 
 PivotData.forEachRecord = function (input, derivedAttributes, f) {
   var addRecord = void 0,
@@ -902,14 +1032,18 @@ PivotData.forEachRecord = function (input, derivedAttributes, f) {
   } else if (Array.isArray(input)) {
     if (Array.isArray(input[0])) {
       // array of arrays
-      return function () {
+      return (function () {
         var result = [];
         var _iteratorNormalCompletion5 = true;
         var _didIteratorError5 = false;
         var _iteratorError5 = undefined;
 
         try {
-          for (var _iterator5 = Object.keys(input || {})[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          for (
+            var _iterator5 = Object.keys(input || {})[Symbol.iterator](), _step5;
+            !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done);
+            _iteratorNormalCompletion5 = true
+          ) {
             var i = _step5.value;
 
             var compactRecord = input[i];
@@ -920,7 +1054,11 @@ PivotData.forEachRecord = function (input, derivedAttributes, f) {
               var _iteratorError6 = undefined;
 
               try {
-                for (var _iterator6 = Object.keys(input[0] || {})[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                for (
+                  var _iterator6 = Object.keys(input[0] || {})[Symbol.iterator](), _step6;
+                  !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done);
+                  _iteratorNormalCompletion6 = true
+                ) {
                   var j = _step6.value;
 
                   var k = input[0][j];
@@ -960,18 +1098,22 @@ PivotData.forEachRecord = function (input, derivedAttributes, f) {
         }
 
         return result;
-      }();
+      })();
     }
 
     // array of objects
-    return function () {
+    return (function () {
       var result1 = [];
       var _iteratorNormalCompletion7 = true;
       var _didIteratorError7 = false;
       var _iteratorError7 = undefined;
 
       try {
-        for (var _iterator7 = Array.from(input)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+        for (
+          var _iterator7 = Array.from(input)[Symbol.iterator](), _step7;
+          !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done);
+          _iteratorNormalCompletion7 = true
+        ) {
           record = _step7.value;
 
           result1.push(addRecord(record));
@@ -992,7 +1134,7 @@ PivotData.forEachRecord = function (input, derivedAttributes, f) {
       }
 
       return result1;
-    }();
+    })();
   }
   throw new Error('unknown input format');
 };
@@ -1007,20 +1149,27 @@ PivotData.defaultProps = {
   valueFilter: {},
   rowOrder: 'key_a_to_z',
   colOrder: 'key_a_to_z',
-  derivedAttributes: {}
+  derivedAttributes: {},
 };
 
 PivotData.propTypes = {
-  data: _propTypes2.default.oneOfType([_propTypes2.default.array, _propTypes2.default.object, _propTypes2.default.func]).isRequired,
+  data: _propTypes2.default.oneOfType([
+    _propTypes2.default.array,
+    _propTypes2.default.object,
+    _propTypes2.default.func,
+  ]).isRequired,
   aggregatorName: _propTypes2.default.string,
   cols: _propTypes2.default.arrayOf(_propTypes2.default.string),
   rows: _propTypes2.default.arrayOf(_propTypes2.default.string),
   vals: _propTypes2.default.arrayOf(_propTypes2.default.string),
   valueFilter: _propTypes2.default.objectOf(_propTypes2.default.objectOf(_propTypes2.default.bool)),
-  sorters: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.objectOf(_propTypes2.default.func)]),
+  sorters: _propTypes2.default.oneOfType([
+    _propTypes2.default.func,
+    _propTypes2.default.objectOf(_propTypes2.default.func),
+  ]),
   derivedAttributes: _propTypes2.default.objectOf(_propTypes2.default.func),
   rowOrder: _propTypes2.default.oneOf(['key_a_to_z', 'value_a_to_z', 'value_z_to_a']),
-  colOrder: _propTypes2.default.oneOf(['key_a_to_z', 'value_a_to_z', 'value_z_to_a'])
+  colOrder: _propTypes2.default.oneOf(['key_a_to_z', 'value_a_to_z', 'value_z_to_a']),
 };
 
 exports.aggregatorTemplates = aggregatorTemplates;

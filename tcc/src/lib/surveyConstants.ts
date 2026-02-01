@@ -25,7 +25,7 @@
 // export const ChartSelector = ({ current, onSelect }: { current: ChartType, onSelect: (v: ChartType) => void }) => (
 //   <div className="flex flex-col gap-2">
 //     {CHART_TYPES.map((type) => (
-//       <button 
+//       <button
 //         key={type}
 //         className={current === type ? 'active' : ''}
 //         onClick={() => onSelect(type)}
@@ -85,7 +85,7 @@ export type ChartType = (typeof CHART_TYPES)[number];
 
 // categorization helper for labels to render chart
 export const CHART_CATEGORIES: Record<ChartType, 'table' | 'chart' | 'export'> = {
-  'Table': 'table',
+  Table: 'table',
   'Table Heatmap': 'table',
   'Table Col Heatmap': 'table',
   'Table Row Heatmap': 'table',
