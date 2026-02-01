@@ -7,13 +7,7 @@ class UserValidator {
   };
 
   validateCreate = (req, res, next) => {
-    const {
-      first_name,
-      last_name,
-      email,
-      role,
-      organisation,
-    } = req.body;
+    const { first_name, last_name, email, role, organisation } = req.body;
 
     if (!first_name || !last_name || !email || !role || !organisation) {
       return res.status(400).json({

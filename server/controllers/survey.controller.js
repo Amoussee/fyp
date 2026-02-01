@@ -7,7 +7,7 @@ class SurveyController {
     try {
       const { status, type } = req.query;
       const userId = req.user ? req.user.id : undefined;
-      const filters = {status, type, userId};
+      const filters = { status, type, userId };
       const validStatuses = ['draft', 'open', 'ready', 'closed'];
       if (status && !validStatuses.includes(status)) {
         return res.status(400).json({ error: `Invalid status parameter` });
@@ -16,7 +16,7 @@ class SurveyController {
       const data = await SurveyModel.findAll(filters);
       res.status(200).json(data);
     } catch (err) {
-      console.error("Error in getAllsurveys:", err);
+      console.error('Error in getAllsurveys:', err);
       res.status(500).json({ error: 'Failed to retrieve surveys' });
     }
   };
@@ -26,7 +26,7 @@ class SurveyController {
     try {
       const surveyId = req.params.id;
       const userId = req.user ? req.user.id : null;
-      
+
       const survey = await SurveyModel.findById(surveyId, userId);
       if (!survey) return res.status(404).json({ message: 'Survey not found' });
       res.status(200).json(survey);
@@ -39,13 +39,15 @@ class SurveyController {
   createSurvey = async (req, res) => {
     try {
       const surveyData = {
-        ...req.body, 
-        created_by: req.user? req.user.id : req.body.created_by
+        ...req.body,
+        created_by: req.user ? req.user.id : req.body.created_by,
       };
-      
+
       const newSurvey = await SurveyModel.create(surveyData);
       const shareableLink = `${process.env.FRONTEND_URL}/surveys/respond/${newSurvey.form_id}`;
-      res.status(201).json({newSurvey, link: shareableLink, message: "Survey created successfully"});
+      res
+        .status(201)
+        .json({ newSurvey, link: shareableLink, message: 'Survey created successfully' });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Could not create survey' });
@@ -65,9 +67,9 @@ class SurveyController {
       }
 
       if (updates.status) {
-          return res.status(400).json({ 
-              error: "Unable to edit status using this method" 
-          });
+        return res.status(400).json({
+          error: 'Unable to edit status using this method',
+        });
       }
 
       const existingSurvey = await SurveyModel.findById(surveyId, userId);
@@ -79,78 +81,84 @@ class SurveyController {
       }
       // lock questions if status is not draft
       if (existingSurvey.status !== 'draft' && updates.schema_json) {
-         return res.status(400).json({ error: "Cannot edit questions while survey is live." });
+        return res.status(400).json({ error: 'Cannot edit questions while survey is live.' });
       }
 
       // Call the model to update the survey
       const updated = await SurveyModel.update(surveyId, userId, updates);
 
       if (!updated) return res.status(404).json({ message: 'Survey not found' });
-      res.status(200).json(updated);  // Return the updated survey data
+      res.status(200).json(updated); // Return the updated survey data
     } catch (err) {
       res.status(500).json({ error: 'Update failed', details: err.message });
     }
   };
 
-updateStatus = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const surveyId = req.params.id;
-    const { status: newStatus } = req.body; 
+  updateStatus = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const surveyId = req.params.id;
+      const { status: newStatus } = req.body;
 
-    const survey = await SurveyModel.findById(surveyId, userId);
-    
-    if (!survey) return res.status(404).json({ error: 'Survey not found' });
-    if (survey.created_by != userId) return res.status(403).json({ error: 'Access denied' });
+      const survey = await SurveyModel.findById(surveyId, userId);
 
-    switch (newStatus) {
-      
-      // draft -> open
-      case 'open':
-        if (survey.status !== 'draft') {
-            return res.status(400).json({ error: `Cannot open survey. Current status is '${survey.status}'.` });
-        }
+      if (!survey) return res.status(404).json({ error: 'Survey not found' });
+      if (survey.created_by != userId) return res.status(403).json({ error: 'Access denied' });
 
-        if (!survey.title) return res.status(400).json({ error: "Title is required." });
+      switch (newStatus) {
+        // draft -> open
+        case 'open':
+          if (survey.status !== 'draft') {
+            return res
+              .status(400)
+              .json({ error: `Cannot open survey. Current status is '${survey.status}'.` });
+          }
 
-        let dbQuestions = survey.schema_json;
-        if (typeof dbQuestions === 'string') {
-            try { dbQuestions = JSON.parse(dbQuestions); } catch(e) { dbQuestions = []; }
-        }
+          if (!survey.title) return res.status(400).json({ error: 'Title is required.' });
 
-        const hasQuestions = dbQuestions && (
-            (Array.isArray(dbQuestions) && dbQuestions.length > 0) || 
-            (typeof dbQuestions === 'object' && Object.keys(dbQuestions).length > 0)
-        );
+          let dbQuestions = survey.schema_json;
+          if (typeof dbQuestions === 'string') {
+            try {
+              dbQuestions = JSON.parse(dbQuestions);
+            } catch (e) {
+              dbQuestions = [];
+            }
+          }
 
-        if (!hasQuestions) {
-            return res.status(400).json({ error: "Cannot publish a survey without questions." });
-        }
-        break;
+          const hasQuestions =
+            dbQuestions &&
+            ((Array.isArray(dbQuestions) && dbQuestions.length > 0) ||
+              (typeof dbQuestions === 'object' && Object.keys(dbQuestions).length > 0));
 
-      // open/ready -> closed
-      case 'closed':
-        const allowedOrigins = ['open', 'ready'];
-        if (!allowedOrigins.includes(survey.status)) {
-            return res.status(400).json({ error: "Survey cannot be closed from its current state." });
-        }
-        break;
+          if (!hasQuestions) {
+            return res.status(400).json({ error: 'Cannot publish a survey without questions.' });
+          }
+          break;
 
-      default:
-        // block users from manually sending "ready", "draft"
-        return res.status(400).json({ 
-            error: `Invalid status transition to '${newStatus}'. Status updates are restricted.` 
-        });
+        // open/ready -> closed
+        case 'closed':
+          const allowedOrigins = ['open', 'ready'];
+          if (!allowedOrigins.includes(survey.status)) {
+            return res
+              .status(400)
+              .json({ error: 'Survey cannot be closed from its current state.' });
+          }
+          break;
+
+        default:
+          // block users from manually sending "ready", "draft"
+          return res.status(400).json({
+            error: `Invalid status transition to '${newStatus}'. Status updates are restricted.`,
+          });
+      }
+
+      const result = await SurveyModel.update(surveyId, userId, { status: newStatus });
+      res.status(200).json({ message: `Survey is now ${newStatus}`, survey: result });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Status update failed', details: err.message });
     }
-
-    const result = await SurveyModel.update(surveyId, userId, { status: newStatus });
-    res.status(200).json({ message: `Survey is now ${newStatus}`, survey: result });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Status update failed', details: err.message });
-  }
-};
+  };
 
   // DELETE /surveys/:id
   delete = async (req, res) => {
