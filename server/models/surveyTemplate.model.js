@@ -14,7 +14,9 @@ class SurveyTemplateModel {
 
   // Get a single survey template by ID
   async findById(id) {
-    const { rows } = await pool.query('SELECT * FROM survey_templates WHERE template_id = $1', [id]);
+    const { rows } = await pool.query('SELECT * FROM survey_templates WHERE template_id = $1', [
+      id,
+    ]);
     return rows[0];
   }
 

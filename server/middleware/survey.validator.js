@@ -1,7 +1,7 @@
 // middleware/survey.validator.js
 class SurveyValidator {
   validateCreate = (req, res, next) => {
-    const {status} = req.body;
+    const { status } = req.body;
 
     // if survey is ready to be sent out, run strict checks
     if (status === 'open') {
@@ -13,10 +13,10 @@ class SurveyValidator {
   };
 
   validateUpdate = (req, res, next) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
     if (!id || isNaN(Number(id))) {
-      return res.status(400).json({ error: "form_id must be a valid integer" });
+      return res.status(400).json({ error: 'form_id must be a valid integer' });
     }
     return this.validateTypeCheck(req, res, next);
   };
@@ -26,8 +26,8 @@ class SurveyValidator {
     const userId = req.user ? req.user.id : created_by;
 
     // drafts only need title and owner
-    if (!title) return res.status(400).json({ error: "Draft must have a title" });
-    if (!userId) return res.status(400).json({ error: "Missing created_by (User ID required)" });
+    if (!title) return res.status(400).json({ error: 'Draft must have a title' });
+    if (!userId) return res.status(400).json({ error: 'Missing created_by (User ID required)' });
 
     next();
   };
@@ -36,7 +36,7 @@ class SurveyValidator {
     const { title, schema_json, recipients } = req.body;
     // 1. Title Required
     if (!title || typeof title !== 'string' || title.trim() === '') {
-        return res.status(400).json({ error: "Title is required to publish" });
+      return res.status(400).json({ error: 'Title is required to publish' });
     }
 
     // 2. Questions Required
@@ -44,12 +44,12 @@ class SurveyValidator {
     const questions = schema_json?.questions || (Array.isArray(schema_json) ? schema_json : null);
 
     if (!questions || !Array.isArray(questions) || questions.length === 0) {
-        return res.status(400).json({ error: "Cannot publish a survey without questions" });
+      return res.status(400).json({ error: 'Cannot publish a survey without questions' });
     }
 
     // 3. Recipients Required
     if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
-        return res.status(400).json({ error: "Cannot publish without recipient schools" });
+      return res.status(400).json({ error: 'Cannot publish without recipient schools' });
     }
 
     next();
@@ -68,34 +68,34 @@ class SurveyValidator {
       status !== undefined;
 
     if (!hasUpdatableField) {
-      return res.status(400).json({ error: "At least one field must be provided for update" });
+      return res.status(400).json({ error: 'At least one field must be provided for update' });
     }
 
     if (status !== undefined) {
-       const validStatuses = ['draft', 'open', 'ready', 'closed'];
-       if (!validStatuses.includes(status)) {
-         return res.status(400).json({ error: "Invalid status value" });
-       }
+      const validStatuses = ['draft', 'open', 'ready', 'closed'];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({ error: 'Invalid status value' });
+      }
     }
 
-    if (title !== undefined && typeof title !== "string") {
-      return res.status(400).json({ error: "title must be a string" });
+    if (title !== undefined && typeof title !== 'string') {
+      return res.status(400).json({ error: 'title must be a string' });
     }
 
-    if (description !== undefined && typeof description !== "string") {
-      return res.status(400).json({ error: "description must be a string" });
+    if (description !== undefined && typeof description !== 'string') {
+      return res.status(400).json({ error: 'description must be a string' });
     }
 
-    if (survey_type !== undefined && typeof survey_type !== "string") {
-      return res.status(400).json({ error: "survey_type must be a string" });
+    if (survey_type !== undefined && typeof survey_type !== 'string') {
+      return res.status(400).json({ error: 'survey_type must be a string' });
     }
 
-    if (metadata !== undefined && typeof metadata !== "object") {
-      return res.status(400).json({ error: "metadata must be an object" });
+    if (metadata !== undefined && typeof metadata !== 'object') {
+      return res.status(400).json({ error: 'metadata must be an object' });
     }
 
-    if (schema_json !== undefined && typeof schema_json !== "object") {
-      return res.status(400).json({ error: "schema_json must be an object" });
+    if (schema_json !== undefined && typeof schema_json !== 'object') {
+      return res.status(400).json({ error: 'schema_json must be an object' });
     }
 
     next();

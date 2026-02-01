@@ -4,7 +4,7 @@ import pool from '../config/postgres.js';
 class SurveyModel {
   // 1. Get All
   async findAll(filters = {}) {
-    const {userId, status } = filters;
+    const { userId, status } = filters;
 
     let query = `
       SELECT form_id, title, description, status, min_responses, created_at, created_by 
@@ -64,9 +64,19 @@ class SurveyModel {
 
   // 4. Create
   async create(data) {
-    const { title, description, metadata, schema_json, source_template_id, created_by, status, minResponse, recipients } = data;
+    const {
+      title,
+      description,
+      metadata,
+      schema_json,
+      source_template_id,
+      created_by,
+      status,
+      minResponse,
+      recipients,
+    } = data;
     const client = await pool.connect();
-    
+
     try {
       await client.query('BEGIN');
       // insert survey
@@ -78,30 +88,40 @@ class SurveyModel {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *`;
 
-      const surveyValues = [title, description, metadata || {}, schema_json || {}, source_template_id, created_by, status || 'draft', minResponse || 0];
+      const surveyValues = [
+        title,
+        description,
+        metadata || {},
+        schema_json || {},
+        source_template_id,
+        created_by,
+        status || 'draft',
+        minResponse || 0,
+      ];
       const { rows: surveyRows } = await client.query(insertSurveyQuery, surveyValues);
       const newSurvey = surveyRows[0];
 
       // insert recipients
       if (recipients && recipients.length > 0) {
-        const recipientValues = recipients.map((schoolId) => `(${newSurvey.form_id}, ${schoolId})`).join(',');
-        
+        const recipientValues = recipients
+          .map((schoolId) => `(${newSurvey.form_id}, ${schoolId})`)
+          .join(',');
+
         const insertRecipientsQuery = `
           INSERT INTO survey_recipients (survey_id, school_id)
           VALUES ${recipientValues}
         `;
-        
+
         await client.query(insertRecipientsQuery);
       }
 
       await client.query('COMMIT');
       return { ...newSurvey, recipients: recipients || [] };
-      
     } catch (error) {
-      await client.query('ROLLBACK'); 
+      await client.query('ROLLBACK');
       throw error;
     } finally {
-      client.release(); 
+      client.release();
     }
   }
 
@@ -113,8 +133,8 @@ class SurveyModel {
 
     // Map frontend 'minResponse' to database 'min_responses'
     if (data.minResponse !== undefined) {
-        data.min_responses = data.minResponse;
-        delete data.minResponse;
+      data.min_responses = data.minResponse;
+      delete data.minResponse;
     }
 
     // Security: Prevent users from changing 'form_id' or 'created_by' or 'created_at'
@@ -124,7 +144,8 @@ class SurveyModel {
 
     // Dynamically build the fields and values for the update
     for (const [key, value] of Object.entries(data)) {
-      if (value !== undefined) {  // Ensure we only update fields with defined values
+      if (value !== undefined) {
+        // Ensure we only update fields with defined values
         fields.push(`${key} = $${idx}`);
         values.push(value);
         idx++;
@@ -145,13 +166,13 @@ class SurveyModel {
     // Construct the query
     const query = `
       UPDATE surveys
-      SET ${fields.join(", ")}
+      SET ${fields.join(', ')}
       WHERE form_id = $${idParamIndex} AND created_by = $${userParamIndex}      
       RETURNING *
     `;
 
     const { rows } = await pool.query(query, values);
-    return rows[0];  // Return the updated survey
+    return rows[0]; // Return the updated survey
   }
 
   // 6. Delete
@@ -175,17 +196,17 @@ class SurveyModel {
         ) >= min_responses
       RETURNING *;
     `;
-    
+
     const { rows } = await pool.query(query, [surveyId]);
     return rows[0] || null;
   }
 
-  // 3. Get By Status 
+  // 3. Get By Status
   // async findByStatus(status) {
   //   const query = `
-  //     SELECT form_id, title, description, status, min_responses, created_at, created_by 
-  //     FROM surveys 
-  //     WHERE status = $1 
+  //     SELECT form_id, title, description, status, min_responses, created_at, created_by
+  //     FROM surveys
+  //     WHERE status = $1
   //     ORDER BY created_at DESC
   //   `;
   //   const { rows } = await pool.query(query, [status]);

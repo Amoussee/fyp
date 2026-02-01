@@ -28,7 +28,7 @@ class SurveyTemplateController {
   create = async (req, res) => {
     try {
       const { recipients, ...templateData } = req.body; // Force remove 'recipients' so we never accidentally save them in a template
-      if (req.user) templateData.created_by = req.user.id; // Ensure created_by is set 
+      if (req.user) templateData.created_by = req.user.id; // Ensure created_by is set
       const newTemplate = await SurveyTemplateModel.create(templateData);
       res.status(201).json({
         message: 'Survey template created successfully',
@@ -42,10 +42,7 @@ class SurveyTemplateController {
   // PUT /survey-templates/:id
   update = async (req, res) => {
     try {
-      const updatedTemplate = await SurveyTemplateModel.update(
-        req.params.id,
-        req.body
-      );
+      const updatedTemplate = await SurveyTemplateModel.update(req.params.id, req.body);
       if (!updatedTemplate) {
         return res.status(404).json({ message: 'Template not found' });
       }
