@@ -21,5 +21,7 @@ router.route('/:id')
     .put(authenticateUser, SurveyValidator.validateUpdate ,SurveyController.update)
     .delete(authenticateUser, SurveyController.delete);
 
+// Allows "Publish" (Draft->Open) and "Force Close" (Open->Closed)
+router.patch('/:id/status', authenticateUser, SurveyController.updateStatus);
 
 export default router;

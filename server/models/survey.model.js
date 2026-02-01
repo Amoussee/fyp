@@ -38,10 +38,14 @@ class SurveyModel {
   async findById(surveyId, userId = null) {
     // do a JOIN here to get the list of school_ids associated with this survey
     let query = `
-      SELECT s.*, 
-             COALESCE(json_agg(sr.school_id) FILTER (WHERE sr.school_id IS NOT NULL), '[]') AS recipients
+      SELECT s.*,
+            COALESCE(r.recipient_list, '[]') AS recipients
       FROM surveys s
-      LEFT JOIN survey_recipients sr ON s.form_id = sr.survey_id
+      LEFT JOIN (
+        SELECT survey_id, json_agg(school_id) AS recipient_list
+        FROM survey_recipients
+        GROUP BY survey_id
+      ) r ON s.form_id = r.survey_id
       WHERE s.form_id = $1
     `;
 
@@ -54,23 +58,9 @@ class SurveyModel {
       query += ` AND s.status != 'draft'`;
     }
 
-    query += ` GROUP BY s.form_id`;
-
     const { rows } = await pool.query(query, values);
     return rows[0];
   }
-
-  // 3. Get By Status 
-  // async findByStatus(status) {
-  //   const query = `
-  //     SELECT form_id, title, description, status, min_responses, created_at, created_by 
-  //     FROM surveys 
-  //     WHERE status = $1 
-  //     ORDER BY created_at DESC
-  //   `;
-  //   const { rows } = await pool.query(query, [status]);
-  //   return rows;
-  // }
 
   // 4. Create
   async create(data) {
@@ -116,7 +106,7 @@ class SurveyModel {
   }
 
   // 5. Update
-  async update(id, data) {
+  async update(id, userId, data) {
     const fields = [];
     const values = [];
     let idx = 1;
@@ -126,6 +116,11 @@ class SurveyModel {
         data.min_responses = data.minResponse;
         delete data.minResponse;
     }
+
+    // Security: Prevent users from changing 'form_id' or 'created_by' or 'created_at'
+    delete data.form_id;
+    delete data.created_by;
+    delete data.created_at;
 
     // Dynamically build the fields and values for the update
     for (const [key, value] of Object.entries(data)) {
@@ -141,12 +136,17 @@ class SurveyModel {
 
     // Add the ID at the end of the values for the WHERE clause
     values.push(id);
+    const idParamIndex = idx;
+    idx++;
+
+    values.push(userId);
+    const userParamIndex = idx;
 
     // Construct the query
     const query = `
       UPDATE surveys
       SET ${fields.join(", ")}
-      WHERE form_id = $${idx}
+      WHERE form_id = $${idParamIndex} AND created_by = $${userParamIndex}      
       RETURNING *
     `;
 
@@ -179,6 +179,18 @@ class SurveyModel {
     const { rows } = await pool.query(query, [surveyId]);
     return rows[0] || null;
   }
+
+  // 3. Get By Status 
+  // async findByStatus(status) {
+  //   const query = `
+  //     SELECT form_id, title, description, status, min_responses, created_at, created_by 
+  //     FROM surveys 
+  //     WHERE status = $1 
+  //     ORDER BY created_at DESC
+  //   `;
+  //   const { rows } = await pool.query(query, [status]);
+  //   return rows;
+  // }
 }
 
 export default new SurveyModel();
