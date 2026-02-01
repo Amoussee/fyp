@@ -1,8 +1,12 @@
 TRUNCATE TABLE
   survey_recipients,
+  survey_recipients,
   survey_responses,
   dashboards,
   surveys,
+  survey_templates,
+  users,
+  schools
   survey_templates,
   users,
   schools
