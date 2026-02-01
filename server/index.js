@@ -10,6 +10,11 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`DEBUG: ${req.method} request to ${req.url}`);
+  next();
+});
+
 // Use the grouped routes
 // This makes every route in that file start with /api
 app.use('/api', apiRouter);
@@ -23,7 +28,4 @@ app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
 
-app.use((req, res, next) => {
-  console.log(`DEBUG: ${req.method} request to ${req.url}`);
-  next();
-});
+
