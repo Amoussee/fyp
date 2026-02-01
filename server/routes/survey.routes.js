@@ -11,8 +11,8 @@ router.route('/')
     .post(authenticateUser, SurveyValidator.validateCreate, SurveyController.createSurvey);
 
 // ---- Filtered Routes ---
-router.route('/status/:status')
-    .get(authenticateUser, SurveyController.getByStatus);
+// router.route('/status/:status')
+//     .get(authenticateUser, SurveyController.getByStatus);
 
 
 // --- Specific Survey Routes (:id) ---
