@@ -6,15 +6,15 @@ import React from 'react';
 // the library only loads on the client.
 const PivotTableV2Impl = dynamic(() => import('./pivotTableV2Impl'), {
   ssr: false,
-  loading: () => <div className="p-4 text-center text-gray-500 text-sm">Loading Chart...</div>
+  loading: () => <div className="p-4 text-center text-gray-500 text-sm">Loading Chart...</div>,
 });
 
 interface PivotTableV2Props {
-  data?: any[];
-  onSave?: (state: any) => void;
+  data?: unknown[];
+  onSave?: (state: unknown) => void;
   onCancel?: () => void;
   readOnly?: boolean;
-  initialState?: any;
+  initialState?: unknown;
 }
 
 const PivotTableV2 = (props: PivotTableV2Props) => {
