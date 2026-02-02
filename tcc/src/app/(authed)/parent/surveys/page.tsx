@@ -1,327 +1,159 @@
 'use client';
 
-import * as React from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  Typography,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Checkbox,
-  LinearProgress,
-} from "@mui/material";
+import * as React from 'react';
+import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { BRAND } from '@/src/styles/brand';
+
+import { SurveyDetails } from '@/src/components/survey-creation/parent-view/SurveyDetails';
+import { SurveyProgress } from '@/src/components/survey-creation/parent-view/SurveyProgress';
+import { SurveySection, type Section } from '@/src/components/survey-creation/parent-view/SurveySection';
+
+// import your existing QuestionTypeRenderer from wherever you keep it
+import { QuestionRenderer } from '@/src/components/survey-creation/parent-view/QuestionRenderer';
 
 // -----------------------------
-// Types (simplified)
+// Types for page data
 // -----------------------------
-
-type QuestionKind =
-  | "short_text"
-  | "long_text"
-  | "single_select"
-  | "multi_select"
-  | "single_date";
-
-interface Option {
-  id: string;
-  label: string;
-}
-
-interface Question {
-  id: string;
-  kind: QuestionKind;
-  prompt: string;
-  description?: string;
-  required?: boolean;
-  config?: {
-    options?: Option[];
-    placeholder?: string;
-    rows?: number;
-  };
-}
-
-interface Section {
-  id: string;
-  title: string;
-  description?: string;
-  questions: Question[];
-}
-
-interface SurveyPayload {
+type SurveyPayload = {
   title: string;
   description?: string;
   sections: Section[];
-}
-
-// -----------------------------
-// Page
-// -----------------------------
+};
 
 export default function ParentSurveyPage() {
-  // mock data (replace with API result)
+  // TODO: replace with API result
   const survey: SurveyPayload = {
-    title: "Placholder Page",
+    title: 'Placholder Page',
     description: "We would love to hear about your child's experience.",
     sections: [
       {
-        id: "s1",
+        id: 's1',
         title: "Your Child's Experience",
-        description: "Questions about learning and enjoyment.",
+        description: 'Questions about learning and enjoyment.',
         questions: [
+          { id: 'q1', kind: 'short_text', prompt: "What is your child's name?", required: true },
           {
-            id: "q1",
-            kind: "short_text",
-            prompt: "What is your child's name?",
-            required: true,
-          },
-          {
-            id: "q2",
-            kind: "single_select",
-            prompt: "How satisfied are you with the programme?",
+            id: 'q2',
+            kind: 'single_choice',
+            prompt: 'How satisfied are you with the programme?',
             config: {
               options: [
-                { id: "a", label: "Very satisfied" },
-                { id: "b", label: "Satisfied" },
-                { id: "c", label: "Neutral" },
-                { id: "d", label: "Dissatisfied" },
+                { id: 'a', label: 'Very satisfied' },
+                { id: 'b', label: 'Satisfied' },
+                { id: 'c', label: 'Neutral' },
+                { id: 'd', label: 'Dissatisfied' },
               ],
             },
           },
+          { id: 'q3', kind: 'long_text', prompt: 'Any additional comments?', config: { rows: 4 } },
+        ],
+      },
+      {
+        id: 's2',
+        title: "Carbon Tracking Page",
+        description: 'Questions about learning and enjoyment.',
+        questions: [
+          { id: 'q1', kind: 'short_text', prompt: "What is your child's name?", required: true },
           {
-            id: "q3",
-            kind: "long_text",
-            prompt: "Any additional comments?",
-            config: { rows: 4 },
+            id: 'q2',
+            kind: 'single_choice',
+            prompt: 'How satisfied are you with the programme?',
+            config: {
+              options: [
+                { id: 'a', label: 'Very satisfied' },
+                { id: 'b', label: 'Satisfied' },
+                { id: 'c', label: 'Neutral' },
+                { id: 'd', label: 'Dissatisfied' },
+              ],
+            },
           },
+          { id: 'q3', kind: 'long_text', prompt: 'Any additional comments?', config: { rows: 4 } },
         ],
       },
     ],
   };
 
+  // 0 = details, 1..N = sections
+  const [step, setStep] = React.useState(0);
   const [answers, setAnswers] = React.useState<Record<string, any>>({});
 
-  const handleChange = (id: string, value: any) => {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
+  const sectionCount = survey.sections.length;
+  const atDetails = step === 0;
+  const sectionIndex = step - 1;
+  const atLastSection = step === sectionCount;
+
+  const currentSection = !atDetails ? survey.sections[sectionIndex] : null;
+
+  const setAnswer = (questionId: string, value: any) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
-  const totalQuestions = survey.sections.reduce(
-    (acc, s) => acc + s.questions.length,
-    0
-  );
-
-  const answeredCount = Object.keys(answers).length;
-  const progress = Math.round((answeredCount / totalQuestions) * 100);
-
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        bgcolor: "#f9fafb",
-        py: 6,
-      }}
-    >
-      <Box
-        sx={{
-          maxWidth: 720,
-          mx: "auto",
-          px: 2,
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-        }}
-      >
-        {/* Header */}
-        <Box>
-          <Typography sx={{ fontSize: 26, fontWeight: 700 }}>
-            {survey.title}
-          </Typography>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f9fafb', py: 6 }}>
+      <Box sx={{ maxWidth: 860, mx: 'auto', px: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <SurveyProgress
+          step={step}
+          sectionCount={sectionCount}
+          sections={survey.sections.map((s) => ({ id: s.id, title: s.title }))}
+          onSelectSection={(idx) => setStep(idx + 1)}
+        />
 
-          {survey.description && (
-            <Typography sx={{ mt: 1, color: "text.secondary" }}>
-              {survey.description}
-            </Typography>
-          )}
+        {atDetails ? (
+          <SurveyDetails title={survey.title} description={survey.description} />
+        ) : (
+          <SurveySection
+            section={currentSection!}
+            answers={answers}
+            onChangeAnswer={setAnswer}
+            QuestionRenderer={QuestionRenderer}
+          />
+        )}
 
-          <Box sx={{ mt: 2 }}>
-            <LinearProgress
-              variant="determinate"
-              value={progress}
-              sx={{ height: 8, borderRadius: 999 }}
-            />
-            <Typography sx={{ fontSize: 12, mt: 0.5, color: "text.secondary" }}>
-              {progress}% completed
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Sections */}
-        {survey.sections.map((section) => (
-          <Box key={section.id} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography sx={{ fontSize: 18, fontWeight: 600 }}>
-              {section.title}
-            </Typography>
-
-            {section.description && (
-              <Typography sx={{ color: "text.secondary" }}>
-                {section.description}
-              </Typography>
-            )}
-
-            {section.questions.map((q) => (
-              <QuestionRenderer
-                key={q.id}
-                question={q}
-                value={answers[q.id]}
-                onChange={(val) => handleChange(q.id, val)}
-              />
-            ))}
-          </Box>
-        ))}
-
-        {/* Submit */}
-        <Card variant="outlined">
-          <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Card elevation={0} sx={{ border: `1px solid ${BRAND.border}`, borderRadius: 3 }}>
+          <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Button
-              variant="contained"
-              size="large"
-              sx={{ borderRadius: 2 }}
-              onClick={() => console.log("Submit", answers)}
+              variant="outlined"
+              onClick={() => setStep((s) => Math.max(0, s - 1))}
+              disabled={step === 0}
+              sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 700 }}
             >
-              Submit
+              Back
             </Button>
 
-            <Typography sx={{ fontSize: 12, color: "text.secondary", textAlign: "center" }}>
-              Your responses are confidential and will be used for improvement only.
-            </Typography>
+            <Box sx={{ flex: 1 }} />
+
+            {atLastSection ? (
+              <Button
+                variant="contained"
+                onClick={() => console.log('Submit', answers)}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 800,
+                  bgcolor: BRAND.green,
+                  '&:hover': { bgcolor: BRAND.green },
+                }}
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={() => setStep((s) => Math.min(sectionCount, s + 1))}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 800,
+                  bgcolor: BRAND.green,
+                  '&:hover': { bgcolor: BRAND.green },
+                }}
+              >
+                Next
+              </Button>
+            )}
           </CardContent>
         </Card>
       </Box>
     </Box>
   );
-}
-
-// -----------------------------
-// Question Renderer
-// -----------------------------
-
-function QuestionRenderer({
-  question,
-  value,
-  onChange,
-}: {
-  question: Question;
-  value: any;
-  onChange: (v: any) => void;
-}) {
-  return (
-    <Card variant="outlined">
-      <CardContent sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-        <Typography sx={{ fontWeight: 600 }}>
-          {question.prompt}
-          {question.required && (
-            <Box component="span" sx={{ color: "error.main" }}>
-              {" "}*
-            </Box>
-          )}
-        </Typography>
-
-        {question.description && (
-          <Typography sx={{ fontSize: 13, color: "text.secondary" }}>
-            {question.description}
-          </Typography>
-        )}
-
-        {renderInput(question, value, onChange)}
-      </CardContent>
-    </Card>
-  );
-}
-
-function renderInput(
-  q: Question,
-  value: any,
-  onChange: (v: any) => void
-) {
-  switch (q.kind) {
-    case "short_text":
-      return (
-        <TextField
-          fullWidth
-          placeholder={q.config?.placeholder}
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      );
-
-    case "long_text":
-      return (
-        <TextField
-          fullWidth
-          multiline
-          minRows={q.config?.rows ?? 4}
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      );
-
-    case "single_select":
-      return (
-        <RadioGroup
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
-        >
-          {q.config?.options?.map((opt) => (
-            <FormControlLabel
-              key={opt.id}
-              value={opt.id}
-              control={<Radio />}
-              label={opt.label}
-            />
-          ))}
-        </RadioGroup>
-      );
-
-    case "multi_select":
-      return (
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          {q.config?.options?.map((opt) => {
-            const arr = Array.isArray(value) ? value : [];
-            const checked = arr.includes(opt.id);
-
-            return (
-              <FormControlLabel
-                key={opt.id}
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={(e) => {
-                      if (e.target.checked) onChange([...arr, opt.id]);
-                      else onChange(arr.filter((v: string) => v !== opt.id));
-                    }}
-                  />
-                }
-                label={opt.label}
-              />
-            );
-          })}
-        </Box>
-      );
-
-    case "single_date":
-      return (
-        <TextField
-          type="date"
-          fullWidth
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      );
-
-    default:
-      return null;
-  }
 }

@@ -1,4 +1,4 @@
-// src/features/surveyCreation/model/helpers.ts
+// src/app/(authed)/admin/survey-toolkit/survey-creation/model/helpers.ts
 import type { SurveyCreationErrors, SurveyCreationForm } from './types';
 import { Model } from 'survey-core';
 import type { ISurvey } from 'survey-core';

@@ -19,7 +19,7 @@ type Props = {
 };
 
 export function QuestionTypeRenderer({ kind, mode, element, onPatch }: Props) {
-  if (kind === 'single_choice' || kind === 'multi_select' || kind === 'ranking') {
+  if (kind === 'single_choice' || kind === 'multi_select') {
     return <ChoicesQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
   }
 
@@ -27,17 +27,10 @@ export function QuestionTypeRenderer({ kind, mode, element, onPatch }: Props) {
     return <RatingQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
   }
 
-  if (kind === 'multiple_short_text' || kind === 'date_range') {
-    // return <MultipleTextQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
-    return null;
-  }
-
   if (
     kind === 'short_text' ||
     kind === 'long_text' ||
-    kind === 'number' ||
-    kind === 'number_range' ||
-    kind === 'single_date'
+    kind === 'number' 
   ) {
     return <TextQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
   }
