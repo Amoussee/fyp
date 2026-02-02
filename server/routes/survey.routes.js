@@ -14,6 +14,8 @@ router
 // ---- Filtered Routes ---
 // router.route('/status/:status')
 //     .get(authenticateUser, SurveyController.getByStatus);
+router.route('/parent/:parentId')
+  .get(authenticateUser, SurveyController.getByParentId);
 
 // --- Specific Survey Routes (:id) ---
 router

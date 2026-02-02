@@ -190,6 +190,20 @@ class SurveyController {
   //     res.status(500).json({ error: 'Failed to fetch surveys by status' });
   //   }
   // };
+
+  // GET
+  getByParentId = async (req, res) => {
+    try{
+      const parentId = req.params.parentId;
+      const survey = await SurveyModel.getSurveyByParentId(parentId);
+
+      if (!survey) return res.status(404).json({ message: 'Survey not found' });
+      res.status(200).json(survey);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: 'Failed to fetch surveys by parent Id' });
+    }
+  }
 }
 
 export default new SurveyController();

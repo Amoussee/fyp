@@ -212,6 +212,27 @@ class SurveyModel {
   //   const { rows } = await pool.query(query, [status]);
   //   return rows;
   // }
+
+  // Get all surveys by parent's id
+  async getSurveyByParentId(parentId) {
+    const query = `
+      SELECT DISTINCT s.*
+      FROM users u
+      CROSS JOIN LATERAL jsonb_array_elements(u.child_details) AS child
+      JOIN survey_recipients r ON r.school_id = (child->>'school')
+      JOIN surveys s ON s.form_id = r.survey_id
+      WHERE u.user_id = $1
+    
+      UNION
+
+      SELECT *
+      FROM surveys
+      WHERE survey_scope = 'PUBLIC';
+    `;
+
+    const { rows } = await pool.query(query, [parentId]);
+    return rows;
+  }
 }
 
 export default new SurveyModel();
