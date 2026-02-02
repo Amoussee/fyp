@@ -1,4 +1,4 @@
-// src/survey-creation/model/defaults.ts
+// src/app/(authed)/admin/survey-toolkit/survey-creation/model/defaults.ts
 import type { SurveyCreationForm } from './types';
 
 export const SURVEY_CREATION_DEFAULTS: SurveyCreationForm = {
