@@ -1,4 +1,4 @@
-// src/survey-creation/model/surveyJson.ts
+// src/app/(authed)/admin/survey-toolkit/survey-creation/model/surveyJson.ts
 import { createElementFromKind } from './surveyElementFactory';
 import type { QuestionKind } from './questionPalette';
 
