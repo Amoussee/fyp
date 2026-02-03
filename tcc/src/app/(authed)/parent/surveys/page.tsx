@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent } from '@mui/material';
 import { BRAND } from '@/src/styles/brand';
 
 import { SurveyDetails } from '@/src/components/survey-creation/parent-view/SurveyDetails';
@@ -13,6 +13,7 @@ import {
 
 // import your existing QuestionTypeRenderer from wherever you keep it
 import { QuestionRenderer } from '@/src/components/survey-creation/parent-view/QuestionRenderer';
+import type { JsonObject, JsonValue } from '@/src/lib/api/types';
 
 // -----------------------------
 // Types for page data
@@ -78,7 +79,7 @@ export default function ParentSurveyPage() {
 
   // 0 = details, 1..N = sections
   const [step, setStep] = React.useState(0);
-  const [answers, setAnswers] = React.useState<Record<string, any>>({});
+  const [answers, setAnswers] = React.useState<Record<string, JsonValue>>({});
 
   const sectionCount = survey.sections.length;
   const atDetails = step === 0;
