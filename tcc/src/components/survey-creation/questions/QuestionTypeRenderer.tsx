@@ -27,11 +27,7 @@ export function QuestionTypeRenderer({ kind, mode, element, onPatch }: Props) {
     return <RatingQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
   }
 
-  if (
-    kind === 'short_text' ||
-    kind === 'long_text' ||
-    kind === 'number' 
-  ) {
+  if (kind === 'short_text' || kind === 'long_text' || kind === 'number') {
     return <TextQuestion kind={kind} mode={mode} element={element} onPatch={onPatch} />;
   }
 

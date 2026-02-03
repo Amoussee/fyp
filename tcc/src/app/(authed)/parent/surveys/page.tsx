@@ -6,7 +6,10 @@ import { BRAND } from '@/src/styles/brand';
 
 import { SurveyDetails } from '@/src/components/survey-creation/parent-view/SurveyDetails';
 import { SurveyProgress } from '@/src/components/survey-creation/parent-view/SurveyProgress';
-import { SurveySection, type Section } from '@/src/components/survey-creation/parent-view/SurveySection';
+import {
+  SurveySection,
+  type Section,
+} from '@/src/components/survey-creation/parent-view/SurveySection';
 
 // import your existing QuestionTypeRenderer from wherever you keep it
 import { QuestionRenderer } from '@/src/components/survey-creation/parent-view/QuestionRenderer';
@@ -50,7 +53,7 @@ export default function ParentSurveyPage() {
       },
       {
         id: 's2',
-        title: "Carbon Tracking Page",
+        title: 'Carbon Tracking Page',
         description: 'Questions about learning and enjoyment.',
         questions: [
           { id: 'q1', kind: 'short_text', prompt: "What is your child's name?", required: true },
@@ -90,7 +93,9 @@ export default function ParentSurveyPage() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f9fafb', py: 6 }}>
-      <Box sx={{ maxWidth: 860, mx: 'auto', px: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box
+        sx={{ maxWidth: 860, mx: 'auto', px: 2, display: 'flex', flexDirection: 'column', gap: 3 }}
+      >
         <SurveyProgress
           step={step}
           sectionCount={sectionCount}
