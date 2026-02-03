@@ -148,6 +148,7 @@ export function AccountManagement() {
       }
 
       const users: UserApiResponse[] = await response.json();
+      console.log('users', users);
 
       setAccounts(
         users.map((user) => ({
@@ -466,6 +467,17 @@ export function AccountManagement() {
               filters={filterConfig}
               values={filterValues}
               onChange={handleFilterChange}
+            />
+
+            <TextField
+              size="small"
+              placeholder="Search name / email / tag"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              sx={{ minWidth: 280 }}
             />
           </Box>
 

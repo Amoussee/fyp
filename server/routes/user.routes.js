@@ -7,7 +7,8 @@ const router = express.Router();
 // --- Root Routes ---
 // GET /api/users        -> get all users
 // POST /api/users       -> create new user
-router.route('/')
+router
+  .route('/')
   .get(UserController.getAll)
   .post(UserValidator.validateCreate, UserController.create);
 
@@ -15,26 +16,15 @@ router.route('/')
 // GET /api/users/active -> get active users
 // GET /api/users/info   -> get public user info
 router.get('/active', UserController.getActive);
-router.get('/info', UserController.getPublicInfo);
 
 // --- Specific User Routes (:id MUST come after fixed routes) ---
-router.route('/:id')
+router
+  .route('/:id')
   .get(UserValidator.validateId, UserController.getById)
-  .put(
-    UserValidator.validateId,
-    UserValidator.validateUpdate,
-    UserController.update
-  )
-  .delete(
-    UserValidator.validateId,
-    UserController.delete
-  );
+  .put(UserValidator.validateId, UserValidator.validateUpdate, UserController.update)
+  .delete(UserValidator.validateId, UserController.delete);
 
 // --- Specific Actions ---
-router.patch(
-  '/:id/deactivate',
-  UserValidator.validateId,
-  UserController.deactivate
-);
+router.patch('/:id/deactivate', UserValidator.validateId, UserController.deactivate);
 
 export default router;

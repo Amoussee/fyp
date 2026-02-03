@@ -10,15 +10,6 @@ class UserController {
     }
   };
 
-  getPublicInfo = async (req, res) => {
-    try {
-      const users = await UserModel.findPublicInfo();
-      res.status(200).json(users);
-    } catch (error) {
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
-
   getActive = async (req, res) => {
     try {
       const users = await UserModel.findActive();
@@ -62,11 +53,11 @@ class UserController {
       organisation: req.body.organisation,
       phone_number: req.body.phone_number,
       number_child: req.body.number_child,
-      child_details: req.body.child_details
+      child_details: req.body.child_details,
     };
 
-    Object.keys(allowedUpdates).forEach(key => 
-      allowedUpdates[key] === undefined && delete allowedUpdates[key]
+    Object.keys(allowedUpdates).forEach(
+      (key) => allowedUpdates[key] === undefined && delete allowedUpdates[key],
     );
 
     const updatedUser = await UserModel.update(id, allowedUpdates);

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import apiRouter from './routes/index.js';
+import { authenticateUser } from './middleware/auth.middleware.js';
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -10,9 +11,14 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`DEBUG: ${req.method} request to ${req.url}`);
+  next();
+});
+
 // Use the grouped routes
 // This makes every route in that file start with /api
-app.use('/api', apiRouter);
+app.use('/api', authenticateUser, apiRouter);
 
 // Basic Health Check
 app.get('/', (req, res) => {
@@ -21,9 +27,4 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
-});
-
-app.use((req, res, next) => {
-  console.log(`DEBUG: ${req.method} request to ${req.url}`);
-  next();
 });

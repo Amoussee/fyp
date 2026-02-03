@@ -3,7 +3,12 @@ import pool from '../config/postgres.js';
 class SurveyTemplateModel {
   // Get all survey templates
   async findAll() {
-    const { rows } = await pool.query('SELECT * FROM survey_templates');
+    const query = `
+      SELECT *
+      FROM survey_templates
+      ORDER BY created_at DESC
+    `;
+    const { rows } = await pool.query(query);
     return rows;
   }
 
@@ -17,7 +22,7 @@ class SurveyTemplateModel {
 
   // Create a new survey template
   async create(data) {
-    const { title, description, schema_json, metadata, owner_id } = data;
+    const { title, description, schema_json, metadata, created_by } = data;
 
     const query = `
       INSERT INTO survey_templates (
@@ -27,7 +32,7 @@ class SurveyTemplateModel {
       RETURNING *;
     `;
 
-    const values = [title, description, schema_json, metadata || '{}', owner_id];
+    const values = [title, description, schema_json, metadata || '{}', created_by];
     const { rows } = await pool.query(query, values);
     return rows[0];
   }

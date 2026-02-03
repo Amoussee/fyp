@@ -496,4 +496,3 @@ VALUES
   'Food Waste Dashboard',
   '{"layout":[{"type":"wordcloud","question_id":"q1"}]}'
 );
-
