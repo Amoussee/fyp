@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
 import { BRAND } from '@/src/styles/brand';
+import type { JsonValue } from '@/src/lib/api/types';
 
 type QuestionKind = 'short_text' | 'long_text' | 'single_choice' | 'multi_select' | 'single_date';
 
@@ -30,12 +31,12 @@ export type Section = {
 
 type Props = {
   section: Section;
-  answers: Record<string, any>;
-  onChangeAnswer: (questionId: string, value: any) => void;
+  answers: Record<string, JsonValue>;
+  onChangeAnswer: (questionId: string, value: JsonValue) => void;
   QuestionRenderer: React.ComponentType<{
     question: Question;
-    value: any;
-    onChange: (v: any) => void;
+    value: JsonValue;
+    onChange: (v: JsonValue) => void;
   }>;
 };
 

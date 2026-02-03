@@ -15,7 +15,6 @@ import type {
 } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/types';
 import { SurveyQuestionsStep } from '@/src/components/survey-creation/SurveyQuestionsStep';
 import { SurveyPreviewStep } from '@/src/components/survey-creation/SurveyPreviewStep';
-import { surveyJsonToSections } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/transform';
 import { useRouter } from 'next/navigation';
 import {
   Dialog,
@@ -94,7 +93,6 @@ export default function SurveyCreationPage() {
       alert('Failed to publish survey');
     }
   };
-
 
   const clearError = (key: keyof SurveyCreationForm) => {
     setErrors((prev) => ({ ...prev, [key]: undefined }));

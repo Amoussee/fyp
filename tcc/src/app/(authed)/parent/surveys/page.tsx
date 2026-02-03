@@ -13,7 +13,7 @@ import {
 
 // import your existing QuestionTypeRenderer from wherever you keep it
 import { QuestionRenderer } from '@/src/components/survey-creation/parent-view/QuestionRenderer';
-import type { JsonObject, JsonValue } from '@/src/lib/api/types';
+import type { JsonValue } from '@/src/lib/api/types';
 
 // -----------------------------
 // Types for page data
@@ -88,7 +88,7 @@ export default function ParentSurveyPage() {
 
   const currentSection = !atDetails ? survey.sections[sectionIndex] : null;
 
-  const setAnswer = (questionId: string, value: any) => {
+  const setAnswer = (questionId: string, value: JsonValue) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 

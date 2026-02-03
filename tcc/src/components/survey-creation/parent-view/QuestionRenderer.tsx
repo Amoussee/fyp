@@ -14,11 +14,12 @@ import {
 } from '@mui/material';
 import { BRAND } from '@/src/styles/brand';
 import type { Question } from '@/src/components/survey-creation/parent-view/SurveySection'; // adjust import to your actual Question type
+import type { JsonValue } from '@/src/lib/api/types';
 
 type Props = {
   question: Question;
-  value: any;
-  onChange: (v: any) => void;
+  value: JsonValue;
+  onChange: (v: JsonValue) => void;
 };
 
 export function QuestionRenderer({ question, value, onChange }: Props) {
@@ -47,7 +48,7 @@ export function QuestionRenderer({ question, value, onChange }: Props) {
   );
 }
 
-function renderParentInput(q: Question, value: any, onChange: (v: any) => void) {
+function renderParentInput(q: Question, value: JsonValue, onChange: (v: JsonValue) => void) {
   switch (q.kind) {
     case 'short_text':
       return (
@@ -84,10 +85,12 @@ function renderParentInput(q: Question, value: any, onChange: (v: any) => void) 
 
     case 'multi_select': {
       const arr = Array.isArray(value) ? value : [];
+      const selected = arr.filter((v): v is string => typeof v === 'string');
+
       return (
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           {(q.config?.options ?? []).map((opt) => {
-            const checked = arr.includes(opt.id);
+            const checked = selected.includes(opt.id);
             return (
               <FormControlLabel
                 key={opt.id}
@@ -95,8 +98,8 @@ function renderParentInput(q: Question, value: any, onChange: (v: any) => void) 
                   <Checkbox
                     checked={checked}
                     onChange={(e) => {
-                      if (e.target.checked) onChange([...arr, opt.id]);
-                      else onChange(arr.filter((v: string) => v !== opt.id));
+                      if (e.target.checked) onChange([...selected, opt.id]);
+                      else onChange(selected.filter((v) => v !== opt.id));
                     }}
                   />
                 }

@@ -27,22 +27,16 @@ export async function createSurvey(payload: CreateSurveyPayload) {
 /**
  * Converts SurveyCreationForm → backend payload
  */
-export function createSurveyFromForm(
-  form: SurveyCreationForm,
-  status: 'draft' | 'open',
-) {
+export function createSurveyFromForm(form: SurveyCreationForm, status: 'draft' | 'open') {
   const payload: CreateSurveyPayload = {
     title: form.title.trim(),
     description: form.description.trim(),
 
     status,
 
-    minResponse:
-      form.minResponse === '' ? 0 : Number(form.minResponse),
+    minResponse: form.minResponse === '' ? 0 : Number(form.minResponse),
 
-    recipients: form.isDirected
-      ? form.recipients.map((r) => Number(r.id))
-      : [],
+    recipients: form.isDirected ? form.recipients.map((r) => Number(r.id)) : [],
 
     schema_json: form.surveyJson,
 
@@ -52,4 +46,12 @@ export function createSurveyFromForm(
   };
 
   return createSurvey(payload);
+}
+
+// used when drafts are updated
+export async function updateSurvey(id: number, payload: Partial<CreateSurveyPayload>) {
+  return apiFetch<{ survey: { form_id: number }; link?: string }>(`/api/surveys/${id}`, {
+    method: 'PUT',
+    body: payload,
+  });
 }
