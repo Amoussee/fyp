@@ -4,8 +4,17 @@ import * as React from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  Avatar, Box, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText,
-  Tooltip, Typography, useMediaQuery,
+  Avatar,
+  Box,
+  Divider,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
@@ -35,12 +44,28 @@ type NavKey =
 
 const NAV_ITEMS: Record<NavKey, NavItem> = {
   dashboard: { label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> },
-  surveyList: { label: 'Survey List', href: '/admin/survey-toolkit/surveys', icon: <AssignmentRoundedIcon /> },
-  visualisation: { label: 'Visualisation', href: '/admin/visualisation/dashboard', icon: <InsightsRoundedIcon /> },
-  accountManagement: { label: 'Account Management', href: '/admin/account-management', icon: <ManageAccountsRoundedIcon /> },
+  surveyList: {
+    label: 'Survey List',
+    href: '/admin/survey-toolkit/surveys',
+    icon: <AssignmentRoundedIcon />,
+  },
+  visualisation: {
+    label: 'Visualisation',
+    href: '/admin/visualisation/dashboard',
+    icon: <InsightsRoundedIcon />,
+  },
+  accountManagement: {
+    label: 'Account Management',
+    href: '/admin/account-management',
+    icon: <ManageAccountsRoundedIcon />,
+  },
 
   // Parent-only
-  parentSurveys: { label: 'Survey Inbox', href: '/parent/surveys', icon: <AssignmentRoundedIcon /> },
+  parentSurveys: {
+    label: 'Survey Inbox',
+    href: '/parent/surveys',
+    icon: <AssignmentRoundedIcon />,
+  },
   onboarding: { label: 'Profile', href: '/parent/onboarding', icon: <ManageAccountsRoundedIcon /> },
 };
 
@@ -49,7 +74,7 @@ function buildNavSections(role: UserRole): NavSection[] {
     return [
       { heading: 'Surveys', items: [NAV_ITEMS.parentSurveys] },
       { heading: 'Account', items: [NAV_ITEMS.onboarding] },
-  ];
+    ];
   }
 
   return [
@@ -121,7 +146,6 @@ export function Sidebar() {
 
   if (loading) return null;
   if (!user) return null;
-
 
   const widthExpanded = 280;
   const widthCollapsed = 84;

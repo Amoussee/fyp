@@ -18,7 +18,7 @@ export type QuestionKind =
   | 'multi_select'
   | 'single_choice'
   | 'number'
-  | 'scale'
+  | 'scale';
 
 /**
  * 2) Subset shown in the right-side icon rail (keep it compact).

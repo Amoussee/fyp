@@ -13,12 +13,7 @@ type Props = {
   onSelectSection: (sectionIndex: number) => void; // 0..N-1
 };
 
-export function SurveyProgress({
-  step,
-  sectionCount,
-  sections,
-  onSelectSection,
-}: Props) {
+export function SurveyProgress({ step, sectionCount, sections, onSelectSection }: Props) {
   const atDetails = step === 0;
   const sectionIndex = step - 1;
 

@@ -15,8 +15,8 @@ export type MockUser = {
 export type SessionPayload = {
   sub: string;
   email: string;
-  firstname: string,
-  lastname: string,
+  firstname: string;
+  lastname: string;
   role: Role;
   status: UserStatus;
   iat: number;

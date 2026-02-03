@@ -4,12 +4,7 @@ import * as React from 'react';
 import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
 import { BRAND } from '@/src/styles/brand';
 
-type QuestionKind =
-  | 'short_text'
-  | 'long_text'
-  | 'single_choice'
-  | 'multi_select'
-  | 'single_date';
+type QuestionKind = 'short_text' | 'long_text' | 'single_choice' | 'multi_select' | 'single_date';
 
 type Option = { id: string; label: string };
 
@@ -44,12 +39,7 @@ type Props = {
   }>;
 };
 
-export function SurveySection({
-  section,
-  answers,
-  onChangeAnswer,
-  QuestionRenderer,
-}: Props) {
+export function SurveySection({ section, answers, onChangeAnswer, QuestionRenderer }: Props) {
   return (
     <Card elevation={0} sx={{ border: `1px solid ${BRAND.border}`, borderRadius: 3 }}>
       <CardContent sx={{ p: 3, m: 3 }}>
@@ -58,9 +48,7 @@ export function SurveySection({
         </Typography>
 
         {section.description && (
-          <Typography sx={{ mt: 0.75, color: BRAND.muted }}>
-            {section.description}
-          </Typography>
+          <Typography sx={{ mt: 0.75, color: BRAND.muted }}>{section.description}</Typography>
         )}
 
         <Divider sx={{ my: 2 }} />
