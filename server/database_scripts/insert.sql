@@ -1,202 +1,12 @@
 TRUNCATE TABLE
   survey_recipients,
-  survey_recipients,
   survey_responses,
   dashboards,
   surveys,
   survey_templates,
   users,
   schools
-  survey_templates,
-  users,
-  schools
 RESTART IDENTITY CASCADE;
-
-INSERT INTO users (
-    first_name, 
-    last_name, 
-    full_name, 
-    email, 
-    phone_number, 
-    is_active,       -- changed from 'deactivated'
-    organisation, 
-    role, 
-    number_child, 
-    child_details
-)
-VALUES
-(
- 'Alice',
- 'Tan',
- 'Alice Tan',     -- Manually combined for full_name
- 'admin1@tcc.org',
- '+65 9999 9999',
-    TRUE,            -- deactivated=FALSE means is_active=TRUE
- 'TCC',
- 'admin',         -- MUST be lowercase to match Enum
-    0,
- '[]'::jsonb
-),
-(
- 'Ben',
- 'Lim',
- 'Ben Lim',
- 'admin2@tcc.org',
- '+65 8888 8888',
-    FALSE,
- 'TCC',
- 'admin',
-    0,
- '[]'::jsonb
-),
-(
- 'Clara',
- 'Ong',
- 'Clara Ong',
- 'parent1@school.edu',
- '+65 9888 8888',
-    TRUE,
- 'Greenfield Primary',
- 'parent',
-    1,
- '[{"name":"Child A", "school":"Xing Hua Primary School"}]'::jsonb
-),
-(
- 'Daniel',
- 'Lee',
- 'Daniel Lee',
- 'parent2@school.edu',
- '+65 8989 9898',
-    TRUE,
- 'Greenfield Primary',
- 'parent',
-    1,
- '[{"name":"Child B","school":"Rosyth Primary School"}]'::jsonb
-),
-(
- 'Evelyn',
- 'Ng',
- 'Evelyn Ng',
- 'parent3@school.edu',
- '+65 9898 8989',
-    TRUE,
- 'Riverside Secondary',
- 'parent',
-    1,
- '[{"name":"Child C","school":"Clementi Primary School"}]'::jsonb
-);
-
-INSERT INTO survey_templates (title, description, schema_json, metadata, owner_id)
-VALUES
-(
-  'General Recycling Audit', 
-  'Standard template for tracking student recycling habits.',
-  '{"questions":[{"id":"q1","type":"yes_no","question":"Do you recycle?"}]}', 
-  '{"difficulty":"easy", "tags":["environment","waste"]}',
-  1 -- Owned by Admin Alice
-),
-(
-  'Transport Emission Check',
-  'Template for calculating transport carbon footprint.',
-  '{"questions":[{"id":"q1","type":"multiple_choice","options":["Bus","MRT","Car","Walk"]}]}',
-  '{"difficulty":"medium", "tags":["transport","carbon"]}',
-  1
-);
-
-INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by, status, min_responses)
-VALUES
-(
-  'Recycling Habits (May 2026)',   -- Custom Title for this specific run
-  'Student recycling habits for May',
-  '{}',
-  '{"questions":[{"id":"q1","type":"yes_no","question":"Do you recycle?"}]}', -- Copied from Template 1
-  1, -- Links to "General Recycling Audit" template
-  1,  -- Created by Admin Alice
-  'open',
-  10
-),
-(
-  'Transport Check (Class 1A)',
-  'Commute methods for Class 1A',
-  '{}',
-  '{"questions":[{"id":"q1","type":"multiple_choice","options":["Bus","MRT","Car","Walk"]}]}', -- Copied from Template 2
-  2, -- Links to "Transport Emission Check" template
-  2,  -- Created by Admin Ben
-  'draft',
-  20
-),
-(
-  'Energy Awareness',
-  'Energy usage awareness',
-  '{}',
-  '{"questions":[{"id":"q1","type":"scale","min":1,"max":5}]}',
-  NULL,
-  1,
-  DEFAULT,
-  30
-),
-(
-  'Water Conservation',
-  'Water saving habits',
-  '{}',
-  '{"questions":[{"id":"q1","type":"yes_no"}]}',
-  NULL,
-  2,
-  'closed',
-  40
-),
-(
-  'Food Waste',
-  'Canteen food waste',
-  '{}',
-  '{"questions":[{"id":"q1","type":"text"}]}',
-  NULL,
-  1,
-  'ready',
-  50
-);
-
-INSERT INTO survey_recipients (survey_id, school_id)
-VALUES
-(1, (SELECT school_id FROM schools WHERE school_name = 'ADMIRALTY PRIMARY SCHOOL' LIMIT 1)),
-(1, (SELECT school_id FROM schools WHERE school_name = 'AI TONG SCHOOL' LIMIT 1)),
-(2, (SELECT school_id FROM schools WHERE school_name = 'RIVERSIDE SECONDARY SCHOOL' LIMIT 1));
-
-INSERT INTO survey_responses (form_id, responses, user_id)
-VALUES
-(1, '{"q1":"Yes"}', 3),
-(1, '{"q1":"No"}', 4),
-(2, '{"q1":4}', 3),
-(3, '{"q1":"Yes"}', 4),
-(4, '{"q1":"Bus"}', 5);
-
-INSERT INTO dashboards (owner_id, name, config)
-VALUES
-(
-  1,
-  'Recycling Dashboard',
-  '{"layout":[{"type":"barchart","question_id":"q1"}]}'
-),
-(
-  1,
-  'Energy Dashboard',
-  '{"layout":[{"type":"average","question_id":"q1"}]}'
-),
-(
-  2,
-  'Water Dashboard',
-  '{"layout":[{"type":"pie","question_id":"q1"}]}'
-),
-(
-  2,
-  'Transport Dashboard',
-  '{"layout":[{"type":"barchart","question_id":"q1"}]}'
-),
-(
-  1,
-  'Food Waste Dashboard',
-  '{"layout":[{"type":"wordcloud","question_id":"q1"}]}'
-);
 
 INSERT INTO schools (school_name, address, mrt_desc, dgp_code, mainlevel_code, nature_code, type_code, zone_code, status) VALUES
 ('ADMIRALTY PRIMARY SCHOOL', '11 WOODLANDS CIRCLE', 'Admiralty Station', 'WOODLANDS', 'PRIMARY', 'CO-ED SCHOOL', 'GOVERNMENT SCHOOL', 'NORTH', NULL),
@@ -543,7 +353,7 @@ INSERT INTO users (
     full_name, 
     email, 
     phone_number, 
-    is_active,
+    is_active,       -- changed from 'deactivated'
     organisation, 
     role, 
     number_child, 
@@ -592,7 +402,7 @@ VALUES
   1
 );
 
-INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by)
+INSERT INTO surveys (title, description, metadata, schema_json, source_template_id, created_by, status, min_responses)
 VALUES
 (
   'Recycling Habits (May 2026)',   -- Custom Title for this specific run
@@ -600,7 +410,9 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"yes_no","question":"Do you recycle?"}]}', -- Copied from Template 1
   1, -- Links to "General Recycling Audit" template
-  1  -- Created by Admin Alice
+  1,  -- Created by Admin Alice
+  'open',
+  10
 ),
 (
   'Transport Check (Class 1A)',
@@ -608,7 +420,9 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"multiple_choice","options":["Bus","MRT","Car","Walk"]}]}', -- Copied from Template 2
   2, -- Links to "Transport Emission Check" template
-  2  -- Created by Admin Ben
+  2,  -- Created by Admin Ben
+  'draft',
+  20
 ),
 (
   'Energy Awareness',
@@ -616,7 +430,9 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"scale","min":1,"max":5}]}',
   NULL,
-  1
+  1,
+  DEFAULT,
+  30
 ),
 (
   'Water Conservation',
@@ -624,7 +440,9 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"yes_no"}]}',
   NULL,
-  2
+  2,
+  'closed',
+  40
 ),
 (
   'Food Waste',
@@ -632,8 +450,16 @@ VALUES
   '{}',
   '{"questions":[{"id":"q1","type":"text"}]}',
   NULL,
-  1
+  1,
+  'ready',
+  50
 );
+
+INSERT INTO survey_recipients (survey_id, school_id)
+VALUES
+(1, (SELECT school_id FROM schools WHERE school_name = 'ADMIRALTY PRIMARY SCHOOL' LIMIT 1)),
+(1, (SELECT school_id FROM schools WHERE school_name = 'AI TONG SCHOOL' LIMIT 1)),
+(2, (SELECT school_id FROM schools WHERE school_name = 'RIVERSIDE SECONDARY SCHOOL' LIMIT 1));
 
 INSERT INTO survey_responses (form_id, responses, user_id)
 VALUES
@@ -670,4 +496,3 @@ VALUES
   'Food Waste Dashboard',
   '{"layout":[{"type":"wordcloud","question_id":"q1"}]}'
 );
-
