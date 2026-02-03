@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-export type SurveyStatus = 'pending' | 'ready' | 'closed';
+export type SurveyStatus = 'pending' | 'ready' | 'closed' | 'draft';
 export type SurveyType = 'Public - Parent' | 'Public - Student' | 'Parent' | 'Student';
 
 export interface Survey {
@@ -24,12 +24,18 @@ interface SurveyListProps {
   onDashboard?: (survey: Survey) => void;
   onEdit?: (survey: Survey) => void;
   onDelete?: (survey: Survey) => void;
+  // ViewToggle props
+  activeView?: 'published' | 'drafts';
+  onViewChange?: (view: 'published' | 'drafts') => void;
+  publishedCount?: number;
+  draftsCount?: number;
 }
 
 const statusStyles: Record<SurveyStatus, string> = {
   pending: 'bg-amber-100 text-amber-700',
-  ready: 'bg-emerald-100 text-emerald-700',
+  ready: 'bg-teal-100 text-teal-700',
   closed: 'bg-gray-100 text-gray-600',
+  draft: 'bg-blue-100 text-blue-700',
 };
 
 function formatDate(dateString: string): string {
@@ -80,9 +86,9 @@ function SurveyCard({
     <div className="flex items-center justify-between px-4 py-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-sm transition-all">
       {/* Left section */}
       <div className="flex items-start gap-4 flex-1 min-w-0">
-        <div className="flex-shrink-0 w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
+        <div className="flex-shrink-0 w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center">
           <svg
-            className="w-5 h-5 text-emerald-600"
+            className="w-5 h-5 text-teal-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -218,6 +224,10 @@ export function SurveyList({
   onDashboard,
   onEdit,
   onDelete,
+  activeView,
+  onViewChange,
+  publishedCount,
+  draftsCount,
 }: SurveyListProps) {
   const { isOpen, setIsOpen, ref } = useDropdown();
 
@@ -236,7 +246,7 @@ export function SurveyList({
         <div className="relative" ref={ref}>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -297,6 +307,62 @@ export function SurveyList({
           )}
         </div>
       </div>
+
+      {/* View Toggle - Show only if props are provided */}
+      {activeView && onViewChange && publishedCount !== undefined && draftsCount !== undefined && (
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex items-center bg-white border border-gray-200 rounded-full p-1.5 shadow-sm">
+            <button
+              onClick={() => onViewChange('published')}
+              className={`
+                px-5 py-2.5 text-sm font-medium rounded-full transition-all
+                ${
+                  activeView === 'published'
+                    ? 'bg-teal-500 text-white shadow-md'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }
+              `}
+            >
+              Published
+              <span
+                className={`
+                ml-2 text-xs px-2.5 py-0.5 rounded-full font-semibold
+                ${
+                  activeView === 'published'
+                    ? 'bg-teal-600 text-white'
+                    : 'bg-gray-100 text-gray-600'
+                }
+              `}
+              >
+                {publishedCount}
+              </span>
+            </button>
+            <button
+              onClick={() => onViewChange('drafts')}
+              className={`
+                px-5 py-2.5 text-sm font-medium rounded-full transition-all
+                ${
+                  activeView === 'drafts'
+                    ? 'bg-teal-500 text-white shadow-md'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }
+              `}
+            >
+              Drafts
+              <span
+                className={`
+                ml-2 text-xs px-2.5 py-0.5 rounded-full font-semibold
+                ${
+                  activeView === 'drafts' ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600'
+                }
+              `}
+              >
+                {draftsCount}
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Survey List */}
       <div className="flex flex-col gap-3">

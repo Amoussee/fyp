@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { SurveyList, type Survey } from '../../../../../components/ui/surveyList';
 import { SurveyTemplateList } from '../../../../../components/ui/surveyTemplateList';
-import type { Dayjs } from 'dayjs'; // Add this import at the top
+import type { Dayjs } from 'dayjs';
 import {
   UniversalFilter,
   type FilterConfig,
@@ -87,6 +87,37 @@ const mockSurveys: Survey[] = [
     type: 'Parent',
     status: 'closed',
   },
+  // Draft surveys
+  {
+    id: '5',
+    name: 'School Facilities Survey',
+    creationDate: '2025-01-25',
+    labels: ['Secondary 2', 'Secondary 3'],
+    completedCount: 0,
+    totalCount: 0,
+    type: 'Public - Student',
+    status: 'draft',
+  },
+  {
+    id: '6',
+    name: 'Parent-Teacher Conference Feedback',
+    creationDate: '2025-01-28',
+    labels: ['All Grades'],
+    completedCount: 0,
+    totalCount: 0,
+    type: 'Parent',
+    status: 'draft',
+  },
+  {
+    id: '7',
+    name: 'Extra-Curricular Activities Interest',
+    creationDate: '2025-01-30',
+    labels: ['Primary 1', 'Primary 2'],
+    completedCount: 0,
+    totalCount: 0,
+    type: 'Student',
+    status: 'draft',
+  },
 ];
 
 export default function SurveyListPage() {
@@ -100,9 +131,24 @@ export default function SurveyListPage() {
   });
 
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [activeView, setActiveView] = useState<'published' | 'drafts'>('published');
 
+  // Separate surveys into published and drafts
+  const publishedSurveys = useMemo(
+    () => mockSurveys.filter((survey) => survey.status !== 'draft'),
+    []
+  );
+
+  const draftSurveys = useMemo(
+    () => mockSurveys.filter((survey) => survey.status === 'draft'),
+    []
+  );
+
+  // Apply filters to the appropriate list
   const filteredSurveys = useMemo(() => {
-    return mockSurveys.filter((survey) => {
+    const surveysToFilter = activeView === 'published' ? publishedSurveys : draftSurveys;
+
+    return surveysToFilter.filter((survey) => {
       // Name filter
       if (
         filterValues.name &&
@@ -111,8 +157,8 @@ export default function SurveyListPage() {
         return false;
       }
 
-      // Status filter
-      if (filterValues.status && survey.status !== filterValues.status) {
+      // Status filter (only apply to published surveys)
+      if (activeView === 'published' && filterValues.status && survey.status !== filterValues.status) {
         return false;
       }
 
@@ -149,12 +195,13 @@ export default function SurveyListPage() {
 
       return true;
     });
-  }, [filterValues]);
+  }, [filterValues, activeView, publishedSurveys, draftSurveys]);
 
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-6 py-10">
-        <div className="flex justify-end mb-4">
+        {/* Filter in top-right corner */}
+        <div className="flex justify-end mb-6">
           <UniversalFilter
             filters={surveyFilters}
             values={filterValues}
@@ -178,6 +225,10 @@ export default function SurveyListPage() {
           onDashboard={(survey) => console.log('Dashboard', survey)}
           onEdit={(survey) => console.log('Edit', survey)}
           onDelete={(survey) => console.log('Delete', survey)}
+          activeView={activeView}
+          onViewChange={setActiveView}
+          publishedCount={publishedSurveys.length}
+          draftsCount={draftSurveys.length}
         />
 
         <SurveyTemplateList
