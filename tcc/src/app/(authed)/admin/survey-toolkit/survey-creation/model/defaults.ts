@@ -6,7 +6,7 @@ export const SURVEY_CREATION_DEFAULTS: SurveyCreationForm = {
   description: '',
   isDirected: true,
   recipients: [],
-  minResponses: 30,
+  minResponse: 30,
 
   surveyJson: {
     pages: [{ name: crypto.randomUUID(), title: 'Section 1', description: '', elements: [] }],

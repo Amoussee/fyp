@@ -34,16 +34,20 @@ class SurveyValidator {
 
   validatePublish = (req, res, next) => {
     const { title, schema_json, recipients } = req.body;
+
     // 1. Title Required
     if (!title || typeof title !== 'string' || title.trim() === '') {
       return res.status(400).json({ error: 'Title is required to publish' });
     }
 
-    // 2. Questions Required
-    // Check if it's an object with a 'questions' array OR if it's just a direct array of questions
-    const questions = schema_json?.questions || (Array.isArray(schema_json) ? schema_json : null);
+    // 2. SurveyJson questions required (SurveyJS-style)
+    const pages = Array.isArray(schema_json?.pages) ? schema_json.pages : [];
+    const elementCount = pages.reduce((acc, p) => {
+      const els = Array.isArray(p?.elements) ? p.elements : [];
+      return acc + els.length;
+    }, 0);
 
-    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+    if (elementCount === 0) {
       return res.status(400).json({ error: 'Cannot publish a survey without questions' });
     }
 
@@ -94,8 +98,13 @@ class SurveyValidator {
       return res.status(400).json({ error: 'metadata must be an object' });
     }
 
-    if (schema_json !== undefined && typeof schema_json !== 'object') {
-      return res.status(400).json({ error: 'schema_json must be an object' });
+    if (schema_json !== undefined) {
+      if (typeof schema_json !== 'object' || schema_json === null) {
+        return res.status(400).json({ error: 'schema_json must be an object' });
+      }
+      if (!Array.isArray(schema_json.pages)) {
+        return res.status(400).json({ error: 'schema_json.pages must be an array' });
+      }
     }
 
     next();

@@ -7,6 +7,8 @@ import { SurveyCreationTopBar } from '@/src/components/survey-creation/SurveyCre
 import { SURVEY_CREATION_DEFAULTS } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/defaults';
 import { validateSurveyDetails } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/validation';
 import { hasErrors } from '@/src/app/(authed)/admin/survey-toolkit/survey-creation/model/helpers';
+import { createSurveyFromForm } from '@/src/lib/api/surveys';
+import { ApiError } from '@/src/lib/api/client';
 import type {
   SurveyCreationForm,
   SurveyCreationErrors,
@@ -74,26 +76,25 @@ export default function SurveyCreationPage() {
     if (activeStep > 0) setActiveStep((activeStep - 1) as StepId);
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     const nextErrors = validateSurveyDetails(form);
     setErrors(nextErrors);
     if (hasErrors(nextErrors)) return;
 
-    const payload = {
-      ...form,
-      sections: surveyJsonToSections(form.surveyJson),
-    };
+    try {
+      const res = await createSurveyFromForm(form, 'open');
 
-    console.log('submit payload:', payload);
-
-    // TODO: backend publish call should return the share URL + survey id.
-    // For now we generate a placeholder.
-    const fakeSurveyId = crypto.randomUUID();
-    const link = `${window.location.origin}/surveys/${fakeSurveyId}`;
-
-    setShareLink(link);
-    setPublishOpen(true);
+      setShareLink(res.link);
+      setPublishOpen(true);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+        return;
+      }
+      alert('Failed to publish survey');
+    }
   };
+
 
   const clearError = (key: keyof SurveyCreationForm) => {
     setErrors((prev) => ({ ...prev, [key]: undefined }));
@@ -107,12 +108,13 @@ export default function SurveyCreationPage() {
           steps={steps}
           onPrev={handleBack}
           onNext={handleNext}
-          onSaveDraft={() => {
-            const draftPayload = {
-              ...form,
-              sections: surveyJsonToSections(form.surveyJson),
-            };
-            console.log('Saving draft:', draftPayload);
+          onSaveDraft={async () => {
+            try {
+              await createSurveyFromForm(form, 'draft');
+              alert('Draft saved');
+            } catch {
+              alert('Failed to save draft');
+            }
           }}
           onSaveTemplate={() => {
             /* template logic */

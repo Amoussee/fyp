@@ -10,7 +10,7 @@ export type SurveyCreationForm = {
   description: string;
   isDirected: boolean;
   recipients: { id: string; label: string }[];
-  minResponses: number | '';
+  minResponse: number | '';
 
   // step 2
   sections: SurveySection[];

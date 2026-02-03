@@ -86,7 +86,7 @@ function PreviewDetailsCard({ form }: Props) {
           </PreviewField>
 
           <PreviewField label="Minimum responses">
-            <PreviewNumber value={form.minResponses} />
+            <PreviewNumber value={form.minResponse} />
           </PreviewField>
 
           <PreviewField label="Description">

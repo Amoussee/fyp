@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS schools (
     zone_code VARCHAR(50),       -- e.g., "NORTH", "EAST"
     status VARCHAR(50),          -- e.g., "Closed", "Merging"
     is_cooperating boolean DEFAULT FALSE, -- whether the school is cooperating with tcc         
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_school_name UNIQUE (school_name)
 );
 
 -- 2. USERS
@@ -78,8 +79,8 @@ CREATE TABLE IF NOT EXISTS surveys (
     source_template_id INT,      -- added source_template_id to reference survey_templates
     survey_type survey_scope NOT NULL DEFAULT 'AUTHENTICATED', -- added to distinguish between public and private surveys
     status survey_status_enum NOT NULL DEFAULT 'draft', -- added to distinguish survey statuses
-    min_responses INT NOT NULL DEFAULT 0,
-    metadata JSONB NOT NULL DEFAULT '{}',
+    min_responses INT NOT NULL DEFAULT 0 CHECK (min_responses >= 0),
+    metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
     schema_json JSONB NOT NULL,
     created_by INT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),

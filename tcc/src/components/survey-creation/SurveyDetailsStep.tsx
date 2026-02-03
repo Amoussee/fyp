@@ -191,21 +191,21 @@ export function SurveyDetailsStep({ form, setForm, errors, clearError }: Props) 
           <TextField
             label="Minimum Number of Responses"
             type="number"
-            value={form.minResponses}
+            value={form.minResponse}
             onChange={(e) => {
               const raw = e.target.value;
               if (raw === '') {
-                setForm((prev) => ({ ...prev, minResponses: '' }));
-                clearError('minResponses');
+                setForm((prev) => ({ ...prev, minResponse: '' }));
+                clearError('minResponse');
                 return;
               }
               const n = Number(raw);
               const clamped = Math.max(0, Math.min(99999, n));
-              setForm((prev) => ({ ...prev, minResponses: clamped }));
-              clearError('minResponses');
+              setForm((prev) => ({ ...prev, minResponse: clamped }));
+              clearError('minResponse');
             }}
-            error={Boolean(errors.minResponses)}
-            helperText={errors.minResponses ?? ' '}
+            error={Boolean(errors.minResponse)}
+            helperText={errors.minResponse ?? ' '}
             inputProps={{ min: 0, step: 1 }}
             fullWidth
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5 } }}

@@ -14,11 +14,11 @@ export function validateSurveyDetails(form: SurveyCreationForm): SurveyCreationE
     errors.recipients = 'Please select at least 1 school.';
   }
 
-  const n = Number(form.minResponses);
-  if (form.minResponses === '' || Number.isNaN(n))
-    errors.minResponses = 'Minimum responses is required.';
-  else if (!Number.isInteger(n)) errors.minResponses = 'Must be a whole number.';
-  else if (n < 1) errors.minResponses = 'Must be at least 1.';
+  const n = Number(form.minResponse);
+  if (form.minResponse === '' || Number.isNaN(n))
+    errors.minResponse = 'Minimum responses is required.';
+  else if (!Number.isInteger(n)) errors.minResponse = 'Must be a whole number.';
+  else if (n < 1) errors.minResponse = 'Must be at least 1.';
 
   return errors;
 }
