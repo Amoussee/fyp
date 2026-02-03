@@ -15,6 +15,9 @@ import {
 import { QuestionRenderer } from '@/src/components/survey-creation/parent-view/QuestionRenderer';
 import type { JsonValue } from '@/src/lib/api/types';
 
+// NEW: Import the survey list component
+import { ParentSurveyList } from '@/src/components/survey-creation/parent-view/ParentSurveyList';
+
 // -----------------------------
 // Types for page data
 // -----------------------------
@@ -25,7 +28,10 @@ type SurveyPayload = {
 };
 
 export default function ParentSurveyPage() {
-  // TODO: replace with API result
+  // NEW: Add state to track if we're viewing the list or a specific survey
+  const [selectedSurveyId, setSelectedSurveyId] = React.useState<string | null>(null);
+
+  // TODO: replace with API result - this would be fetched when a survey is selected
   const survey: SurveyPayload = {
     title: 'Placholder Page',
     description: "We would love to hear about your child's experience.",
@@ -92,11 +98,46 @@ export default function ParentSurveyPage() {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
+  // NEW: Handler for when a survey is clicked
+  const handleSurveyClick = (surveyId: string) => {
+    setSelectedSurveyId(surveyId);
+    // TODO: Fetch the actual survey data based on surveyId
+    // For now, it will just show the placeholder survey
+  };
+
+  // NEW: Handler to go back to survey list
+  const handleBackToList = () => {
+    setSelectedSurveyId(null);
+    setStep(0);
+    setAnswers({});
+  };
+
+  // NEW: If no survey is selected, show the survey list
+  if (!selectedSurveyId) {
+    return <ParentSurveyList onSurveyClick={handleSurveyClick} />;
+  }
+
+  // EXISTING CODE: Show the survey form when a survey is selected
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f9fafb', py: 6 }}>
       <Box
         sx={{ maxWidth: 860, mx: 'auto', px: 2, display: 'flex', flexDirection: 'column', gap: 3 }}
       >
+        {/* NEW: Back to surveys button */}
+        <Button
+          variant="text"
+          onClick={handleBackToList}
+          sx={{
+            alignSelf: 'flex-start',
+            textTransform: 'none',
+            color: BRAND.green,
+            fontWeight: 600,
+            '&:hover': { bgcolor: 'rgba(34, 197, 94, 0.1)' },
+          }}
+        >
+          ← Back to All Surveys
+        </Button>
+
         <SurveyProgress
           step={step}
           sectionCount={sectionCount}
