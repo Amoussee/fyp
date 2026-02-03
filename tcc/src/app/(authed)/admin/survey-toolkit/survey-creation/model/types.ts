@@ -1,4 +1,4 @@
-// src/survey-creation/model/types.ts
+// src/app/(authed)/admin/survey-toolkit/survey-creation/model/types.ts
 import type { SurveyJson } from './surveyJson';
 
 // Survey Details
@@ -10,7 +10,7 @@ export type SurveyCreationForm = {
   description: string;
   isDirected: boolean;
   recipients: { id: string; label: string }[];
-  minResponses: number | '';
+  minResponse: number | '';
 
   // step 2
   sections: SurveySection[];

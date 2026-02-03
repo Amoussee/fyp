@@ -3,7 +3,6 @@
 import * as React from 'react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-
 import {
   Avatar,
   Box,
@@ -26,65 +25,99 @@ import InsightsRoundedIcon from '@mui/icons-material/InsightsRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { BRAND } from '@/src/styles/brand';
 
-import { logout } from '@/src/lib/api/auth';
+import { BRAND } from '@/src/styles/brand';
+import { logout, me, type AuthUser } from '@/src/lib/api/auth';
+
+type UserRole = 'admin' | 'parent';
 
 type NavItem = { label: string; href: string; icon: React.ReactNode };
 type NavSection = { heading: string; items: NavItem[] };
 
-const navSections: NavSection[] = [
-  {
-    heading: 'Overview',
-    items: [{ label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> }],
-  },
-  // {
-  //   heading: 'Survey',
-  //   items: [
-  //     {
-  //       label: 'Survey Toolkit',
-  //       href: '/admin/survey-toolkit/surveys',
-  //       icon: <EditIcon sx={{ fontSize: 20 }} />,
-  //     },
-  //   ],
-  // },
-  {
-    heading: 'Toolkit',
-    items: [
-      {
-        label: 'Survey List',
-        href: '/admin/survey-toolkit/surveys',
-        icon: <AssignmentRoundedIcon />,
-      },
-      {
-        label: 'Visualisation',
-        href: '/admin/visualisation/dashboard',
-        icon: <InsightsRoundedIcon />,
-      },
-    ],
-  },
-  {
-    heading: 'Admin',
-    items: [
-      {
-        label: 'Account Management',
-        href: '/admin/account-management',
-        icon: <ManageAccountsRoundedIcon />,
-      },
-    ],
-  },
-];
+type NavKey =
+  | 'dashboard'
+  | 'surveyList'
+  | 'visualisation'
+  | 'accountManagement'
+  | 'parentSurveys'
+  | 'onboarding';
 
-// const BRAND = {
-//   bg: '#FFFFFF',
-//   surface: '#F8FCF9',
-//   border: '#DAE0DB',
-//   text: '#111827',
-//   muted: '#6C8270',
-//   green: '#50ab72',
-//   greenSoft: 'rgba(133, 201, 158, 0.50)',
-//   greenHover: 'rgba(133, 201, 158, 0.30)',
-// };
+const NAV_ITEMS: Record<NavKey, NavItem> = {
+  dashboard: { label: 'Dashboard', href: '/admin/dashboard', icon: <DashboardRoundedIcon /> },
+  surveyList: {
+    label: 'Survey List',
+    href: '/admin/survey-toolkit/surveys',
+    icon: <AssignmentRoundedIcon />,
+  },
+  visualisation: {
+    label: 'Visualisation',
+    href: '/admin/visualisation/dashboard',
+    icon: <InsightsRoundedIcon />,
+  },
+  accountManagement: {
+    label: 'Account Management',
+    href: '/admin/account-management',
+    icon: <ManageAccountsRoundedIcon />,
+  },
+
+  // Parent-only
+  parentSurveys: {
+    label: 'Survey Inbox',
+    href: '/parent/surveys',
+    icon: <AssignmentRoundedIcon />,
+  },
+  onboarding: { label: 'Profile', href: '/parent/onboarding', icon: <ManageAccountsRoundedIcon /> },
+};
+
+function buildNavSections(role: UserRole): NavSection[] {
+  if (role === 'parent') {
+    return [
+      { heading: 'Surveys', items: [NAV_ITEMS.parentSurveys] },
+      { heading: 'Account', items: [NAV_ITEMS.onboarding] },
+    ];
+  }
+
+  return [
+    { heading: 'Overview', items: [NAV_ITEMS.dashboard] },
+    { heading: 'Toolkit', items: [NAV_ITEMS.surveyList, NAV_ITEMS.visualisation] },
+    { heading: 'Admin', items: [NAV_ITEMS.accountManagement] },
+  ];
+}
+
+function useCurrentUser(): {
+  user: AuthUser | null;
+  loading: boolean;
+  error: unknown | null;
+} {
+  const [user, setUser] = React.useState<AuthUser | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<unknown | null>(null);
+
+  React.useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      try {
+        const u = await me(); // GET /api/auth/me (cookie-based)
+        if (alive) setUser(u);
+      } catch (e) {
+        // not logged in / expired cookie / server error
+        if (alive) {
+          setUser(null);
+          setError(e);
+        }
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  return { user, loading, error };
+}
 
 function isRouteActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + '/');
@@ -98,10 +131,21 @@ export function Sidebar() {
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
 
   const [collapsed, setCollapsed] = React.useState(false);
+  const { user, loading } = useCurrentUser();
 
   React.useEffect(() => {
     setCollapsed(isMdDown);
   }, [isMdDown]);
+
+  React.useEffect(() => {
+    if (!loading && !user) router.push('/login');
+  }, [loading, user, router]);
+
+  const role: UserRole = user?.role ?? 'parent';
+  const navSections = React.useMemo(() => buildNavSections(role), [role]);
+
+  if (loading) return null;
+  if (!user) return null;
 
   const widthExpanded = 280;
   const widthCollapsed = 84;
@@ -270,14 +314,18 @@ export function Sidebar() {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, overflow: 'hidden' }}>
-            {!collapsed && <Avatar sx={{ width: 36, height: 36 }}>U</Avatar>}
+            {!collapsed && (
+              <Avatar sx={{ width: 36, height: 36 }}>
+                {(user.firstname?.[0] ?? 'U').toUpperCase()}
+              </Avatar>
+            )}
             {!collapsed && (
               <Box sx={{ minWidth: 0 }}>
                 <Typography sx={{ fontSize: 13, fontWeight: 600, color: BRAND.text }} noWrap>
-                  User
+                  {user.firstname}
                 </Typography>
                 <Typography sx={{ fontSize: 12, color: BRAND.muted }} noWrap>
-                  Role
+                  {user.role}
                 </Typography>
               </Box>
             )}

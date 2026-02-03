@@ -34,20 +34,7 @@ export function TextPreview({ kind, element }: QuestionTypeProps) {
     );
   }
 
-  if (kind === 'single_date') {
-    return (
-      <Box sx={{ mt: 1 }}>
-        <TextField
-          type="date"
-          fullWidth
-          disabled
-          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2.5, bgcolor: 'rgba(0,0,0,0.02)' } }}
-        />
-      </Box>
-    );
-  }
-
-  if (kind === 'number' || kind === 'number_range') {
+  if (kind === 'number') {
     return (
       <Box sx={{ mt: 1 }}>
         <TextField

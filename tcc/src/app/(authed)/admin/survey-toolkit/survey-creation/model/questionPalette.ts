@@ -1,4 +1,4 @@
-// src/survey-creation/model/questionPalette.ts
+// src/app/(authed)/admin/survey-toolkit/survey-creation/model/questionPalette.ts
 import type { SvgIconComponent } from '@mui/icons-material';
 import ShortTextIcon from '@mui/icons-material/ShortText';
 import NotesIcon from '@mui/icons-material/Notes';
@@ -18,12 +18,7 @@ export type QuestionKind =
   | 'multi_select'
   | 'single_choice'
   | 'number'
-  | 'scale'
-  | 'multiple_short_text'
-  | 'number_range'
-  | 'single_date'
-  | 'date_range'
-  | 'ranking';
+  | 'scale';
 
 /**
  * 2) Subset shown in the right-side icon rail (keep it compact).
@@ -82,19 +77,6 @@ export const QUESTION_PALETTE: PaletteItem[] = [
     defaults: { choices: ['Option 1', 'Option 2'] },
   },
 
-  // Multiple short text
-  {
-    kind: 'multiple_short_text',
-    label: 'Multiple short text',
-    sjType: 'multipletext',
-    defaults: {
-      items: [
-        { name: 'item1', title: 'Item 1' },
-        { name: 'item2', title: 'Item 2' },
-      ],
-    },
-  },
-
   // Short text
   {
     kind: 'short_text',
@@ -125,46 +107,6 @@ export const QUESTION_PALETTE: PaletteItem[] = [
     label: 'Number',
     sjType: 'text',
     defaults: { inputType: 'number' },
-  },
-
-  // Number range
-  {
-    kind: 'number_range',
-    label: 'Number range',
-    sjType: 'text',
-    defaults: {
-      inputType: 'number',
-      validators: [{ type: 'numeric', minValue: 0, maxValue: 100 }],
-    },
-  },
-
-  // Single date
-  {
-    kind: 'single_date',
-    label: 'Single date',
-    sjType: 'text',
-    defaults: { inputType: 'date' },
-  },
-
-  // Date range
-  {
-    kind: 'date_range',
-    label: 'Date range',
-    sjType: 'multipletext',
-    defaults: {
-      items: [
-        { name: 'startDate', title: 'Start date', inputType: 'date' },
-        { name: 'endDate', title: 'End date', inputType: 'date' },
-      ],
-    },
-  },
-
-  // Ranking
-  {
-    kind: 'ranking',
-    label: 'Ranking',
-    sjType: 'ranking',
-    defaults: { choices: ['Option 1', 'Option 2', 'Option 3'] },
   },
 ];
 

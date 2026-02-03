@@ -5,6 +5,8 @@ export type Status = 'active' | 'deactivated';
 export type AuthUser = {
   sub: string;
   email: string;
+  firstname: string;
+  lastname: string;
   role: Role;
   status: Status;
 };

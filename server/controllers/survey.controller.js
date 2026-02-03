@@ -116,23 +116,25 @@ class SurveyController {
 
           if (!survey.title) return res.status(400).json({ error: 'Title is required.' });
 
-          let dbQuestions = survey.schema_json;
-          if (typeof dbQuestions === 'string') {
+          let schema = survey.schema_json;
+          if (typeof schema === 'string') {
             try {
-              dbQuestions = JSON.parse(dbQuestions);
-            } catch (e) {
-              dbQuestions = [];
+              schema = JSON.parse(schema);
+            } catch {
+              schema = {};
             }
           }
 
-          const hasQuestions =
-            dbQuestions &&
-            ((Array.isArray(dbQuestions) && dbQuestions.length > 0) ||
-              (typeof dbQuestions === 'object' && Object.keys(dbQuestions).length > 0));
+          const pages = Array.isArray(schema?.pages) ? schema.pages : [];
+          const elementCount = pages.reduce((acc, p) => {
+            const els = Array.isArray(p?.elements) ? p.elements : [];
+            return acc + els.length;
+          }, 0);
 
-          if (!hasQuestions) {
+          if (elementCount === 0) {
             return res.status(400).json({ error: 'Cannot publish a survey without questions.' });
           }
+
           break;
 
         // open/ready -> closed
