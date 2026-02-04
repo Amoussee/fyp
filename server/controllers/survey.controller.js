@@ -122,7 +122,8 @@ class SurveyController {
           }
 
           const pages = Array.isArray(schema?.pages) ? schema.pages : [];
-          const elementCount = pages.reduce((acc, p) => {
+          const questions = Array.isArray(schema?.questions) ? schema.questions : [];
+          const elementCount = questions.length + pages.reduce((acc, p) => {
             const els = Array.isArray(p?.elements) ? p.elements : [];
             return acc + els.length;
           }, 0);

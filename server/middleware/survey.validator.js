@@ -102,9 +102,9 @@ class SurveyValidator {
       if (typeof schema_json !== 'object' || schema_json === null) {
         return res.status(400).json({ error: 'schema_json must be an object' });
       }
-      if (!Array.isArray(schema_json.pages)) {
-        return res.status(400).json({ error: 'schema_json.pages must be an array' });
-      }
+      // if (!Array.isArray(schema_json.pages)) {
+      //   return res.status(400).json({ error: 'schema_json.pages must be an array' });
+      // }
     }
 
     next();
