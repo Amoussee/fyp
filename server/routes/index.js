@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import userRoutes from './userRoutes.js';
-import schoolRoutes from './schoolRoutes.js';
+import userRoutes from './user.routes.js';
+import schoolRoutes from './school.routes.js';
 import dashboardRoutes from './dashboardRoutes.js';
 import surveyRoutes from './surveyRoutes.js';
 
@@ -19,12 +19,6 @@ apiRouter.use('/schools', schoolRoutes);
 
 // Route Group: /api/surveys
 apiRouter.use('/surveys', surveyRoutes);
-
-// Route Group: /api/responses
-apiRouter.use('/responses', responsesRoutes);
-
-// Route Group: /api/template
-apiRouter.use('/templates', surveyTemplateRoutes);
 
 // Future groups (e.g., /api/products, /api/auth)
 // apiRouter.use('/products', productRoutes);
