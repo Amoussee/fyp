@@ -30,6 +30,7 @@ import {
 } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { UniversalFilter, type FilterConfig, type FilterValues } from './UniversalFilter';
+import type { Dayjs } from 'dayjs';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
@@ -58,7 +59,7 @@ interface UserApiResponse {
 }
 
 type TabType = 'accounts' | 'groups';
-type SortField = 'firstname' | 'email' | 'tag' | 'status';
+type SortField = 'first_name' | 'email' | 'tag' | 'status';
 type SortOrder = 'asc' | 'desc';
 
 export function AccountManagement() {
@@ -78,7 +79,7 @@ export function AccountManagement() {
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [accountToEdit, setAccountToEdit] = useState<Account | null>(null);
-  const [editFormData, setEditFormData] = useState({ firstname: '', email: '', tag: '' });
+  const [editFormData, setEditFormData] = useState({ first_name: '', email: '', tag: '' });
 
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
   const [accountToDeactivate, setAccountToDeactivate] = useState<Account | null>(null);
@@ -258,6 +259,24 @@ export function AccountManagement() {
     setSelectedAccountId(null);
   };
 
+  const handleEdit = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
+  const handleDelete = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
+  const handleViewDetails = () => {
+    if (!selectedAccountId) return;
+    // do something with selectedAccountId
+    handleMenuClose();
+  };
+
   const handleEditClick = () => {
     const account = accounts.find((acc) => acc.id === selectedAccountId);
     if (account) {
@@ -386,6 +405,11 @@ export function AccountManagement() {
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
+
   const handleFilterChange = (newFilterValues: FilterValues) => {
     setFilterValues(newFilterValues);
     setCurrentPage(1); // Reset to first page when filters change
@@ -478,9 +502,9 @@ export function AccountManagement() {
                     <TableRow sx={{ backgroundColor: '#f3f4f6' }}>
                       <TableCell sx={{ color: '#6b7280', fontWeight: 500 }}>
                         <TableSortLabel
-                          active={sortField === 'firstname'}
-                          direction={sortField === 'firstname' ? sortOrder : 'asc'}
-                          onClick={() => handleSort('firstname')}
+                          active={sortField === 'first_name'}
+                          direction={sortField === 'first_name' ? sortOrder : 'asc'}
+                          onClick={() => handleSort('first_name')}
                         >
                           First Name
                         </TableSortLabel>
@@ -654,8 +678,8 @@ export function AccountManagement() {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField
               label="First Name"
-              value={editFormData.firstname}
-              onChange={(e) => setEditFormData({ ...editFormData, firstname: e.target.value })}
+              value={editFormData.first_name}
+              onChange={(e) => setEditFormData({ ...editFormData, first_name: e.target.value })}
               fullWidth
               required
             />
@@ -682,7 +706,7 @@ export function AccountManagement() {
           </Button>
           <Button
             onClick={handleConfirmEdit}
-            disabled={!editFormData.firstname || !editFormData.email || !editFormData.tag}
+            disabled={!editFormData.first_name || !editFormData.email || !editFormData.tag}
             sx={{
               backgroundColor: '#15803d',
               color: 'white',
@@ -701,7 +725,7 @@ export function AccountManagement() {
         <DialogContent>
           <DialogContentText>
             Are you sure you want to deactivate the account for{' '}
-            <strong>{accountToDeactivate?.firstname}</strong> ({accountToDeactivate?.email})?
+            <strong>{accountToDeactivate?.first_name}</strong> ({accountToDeactivate?.email})?
             <br />
             <br />
             This will:

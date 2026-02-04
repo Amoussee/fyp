@@ -8,6 +8,7 @@ import responsesRoutes from './responses.routes.js';
 import surveyTemplateRoutes from './surveyTemplate.routes.js';
 
 const apiRouter = express.Router();
+const PORT = process.env.PORT || 5001;
 
 apiRouter.use(cors()); // Allows your Next.js frontend to talk to this server
 apiRouter.use(express.json()); // Allows the server to read req.body from your form
