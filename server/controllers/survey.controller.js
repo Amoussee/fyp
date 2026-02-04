@@ -108,12 +108,8 @@ class SurveyController {
       switch (newStatus) {
         // draft -> open
         case 'open':
-          if (survey.status !== 'draft') {
-            return res
-              .status(400)
-              .json({ error: `Cannot open survey. Current status is '${survey.status}'.` });
-          }
-
+          if (survey.status !== 'draft') return res.status(400).json({ error: `Cannot open survey. Current status is '${survey.status}'.`});
+          
           if (!survey.title) return res.status(400).json({ error: 'Title is required.' });
 
           let schema = survey.schema_json;
@@ -155,7 +151,17 @@ class SurveyController {
       }
 
       const result = await SurveyModel.update(surveyId, userId, { status: newStatus });
-      res.status(200).json({ message: `Survey is now ${newStatus}`, survey: result });
+
+      const responseData = {
+        message: `Survey status successfully updated to ${newStatus}`, 
+        survey: result 
+      };
+
+      if (newStatus === 'open') {
+        responseData.link = `${process.env.FRONTEND_URL}/surveys/respond/${surveyId}`;
+      }
+
+      res.status(200).json(responseData);
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Status update failed', details: err.message });
