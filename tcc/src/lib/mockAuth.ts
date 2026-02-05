@@ -5,6 +5,8 @@ export type UserStatus = 'active' | 'deactivated';
 export type MockUser = {
   email: string;
   password: string;
+  firstname: string;
+  lastname: string;
   role: Role;
   status: UserStatus;
   sub: string; // Cognito user sub equivalent
@@ -13,6 +15,8 @@ export type MockUser = {
 export type SessionPayload = {
   sub: string;
   email: string;
+  firstname: string;
+  lastname: string;
   role: Role;
   status: UserStatus;
   iat: number;
@@ -26,6 +30,8 @@ export const MOCK_USERS: MockUser[] = [
   {
     email: 'admin@email.com',
     password: 'Password123!',
+    firstname: 'Sally',
+    lastname: 'Loh',
     role: 'admin',
     status: 'active',
     sub: 'user-admin-001',
@@ -33,6 +39,8 @@ export const MOCK_USERS: MockUser[] = [
   {
     email: 'parent@email.com',
     password: 'Password123!',
+    firstname: 'Lavender',
+    lastname: 'Khoo',
     role: 'parent',
     status: 'active',
     sub: 'user-parent-001',
@@ -40,6 +48,8 @@ export const MOCK_USERS: MockUser[] = [
   {
     email: 'deactivated_parent@email.com',
     password: 'Password123!',
+    firstname: 'Lyra',
+    lastname: 'Heng',
     role: 'parent',
     status: 'deactivated',
     sub: 'user-parent-002',
@@ -51,6 +61,8 @@ export function makeSession(user: MockUser): SessionPayload {
   return {
     sub: user.sub,
     email: user.email,
+    firstname: user.firstname,
+    lastname: user.lastname,
     role: user.role,
     status: user.status,
     iat: now,

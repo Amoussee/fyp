@@ -36,7 +36,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 interface Account {
   id: string;
-  firstname: string;
+  first_name: string;
   email: string;
   tag: string;
   status: 'active' | 'deactivated';
@@ -148,11 +148,12 @@ export function AccountManagement() {
       }
 
       const users: UserApiResponse[] = await response.json();
+      console.log('users', users);
 
       setAccounts(
         users.map((user) => ({
           id: String(user.user_id),
-          firstname: user.first_name,
+          first_name: user.first_name,
           email: user.email,
           tag: user.role,
           status: user.deactivated ? 'deactivated' : 'active',
@@ -180,7 +181,7 @@ export function AccountManagement() {
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const matchesSearch =
-          account.firstname.toLowerCase().includes(query) ||
+          account.first_name.toLowerCase().includes(query) ||
           account.email.toLowerCase().includes(query) ||
           account.tag.toLowerCase().includes(query);
         if (!matchesSearch) return false;
@@ -189,7 +190,7 @@ export function AccountManagement() {
       // First name alphabet filter
       const firstnameAlphabet = filterValues.firstnameAlphabet as string[];
       if (firstnameAlphabet.length > 0) {
-        const firstLetter = account.firstname.charAt(0).toUpperCase();
+        const firstLetter = account.first_name.charAt(0).toUpperCase();
         if (!firstnameAlphabet.includes(firstLetter)) return false;
       }
 
@@ -281,7 +282,7 @@ export function AccountManagement() {
     if (account) {
       setAccountToEdit(account);
       setEditFormData({
-        firstname: account.firstname,
+        first_name: account.first_name,
         email: account.email,
         tag: account.tag,
       });
@@ -308,7 +309,7 @@ export function AccountManagement() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstname: editFormData.firstname,
+          first_name: editFormData.first_name,
           email: editFormData.email,
           tag: editFormData.tag,
           deactivated: accountToEdit.status === 'deactivated',
@@ -376,7 +377,7 @@ export function AccountManagement() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstname: account.firstname,
+          first_name: account.first_name,
           email: account.email,
           tag: account.tag,
           deactivated: false,
@@ -467,6 +468,17 @@ export function AccountManagement() {
               values={filterValues}
               onChange={handleFilterChange}
             />
+
+            <TextField
+              size="small"
+              placeholder="Search name / email / tag"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              sx={{ minWidth: 280 }}
+            />
           </Box>
 
           {error && (
@@ -548,7 +560,7 @@ export function AccountManagement() {
                           <TableCell
                             sx={{ color: account.status === 'deactivated' ? '#9ca3af' : '#374151' }}
                           >
-                            {account.firstname}
+                            {account.first_name}
                           </TableCell>
                           <TableCell
                             sx={{ color: account.status === 'deactivated' ? '#9ca3af' : '#6b7280' }}
