@@ -57,6 +57,8 @@ export const MOCK_USERS: MockUser[] = [
   {
     email: 'admin1@tcc.org',
     password: 'Password123!',
+    firstname: 'Admin',
+    lastname: 'User',
     role: 'admin',
     status: 'active',
     // sub: 'user-admin-001',
