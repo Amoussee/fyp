@@ -5,7 +5,7 @@ class UserController {
     try {
       const users = await UserModel.findAll();
       res.status(200).json(users);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -14,7 +14,7 @@ class UserController {
     try {
       const users = await UserModel.findActive();
       res.status(200).json(users);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -26,7 +26,7 @@ class UserController {
         return res.status(404).json({ message: 'User not found' });
       }
       res.status(200).json(user);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -38,7 +38,7 @@ class UserController {
         message: 'User created successfully',
         user_id: result.user_id,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -71,7 +71,7 @@ class UserController {
         return res.status(404).json({ message: 'User not found' });
       }
       res.status(200).json({ message: 'User deleted successfully' });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -83,7 +83,7 @@ class UserController {
         return res.status(404).json({ message: 'User not found' });
       }
       res.status(200).json({ message: 'User deactivated', user });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };

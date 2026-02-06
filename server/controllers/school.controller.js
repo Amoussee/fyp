@@ -5,7 +5,7 @@ class SchoolController {
     try {
       const schools = await SchoolModel.findAll();
       res.status(200).json(schools);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -17,7 +17,7 @@ class SchoolController {
         return res.status(404).json({ message: 'School not found' });
       }
       res.status(200).json(school);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -46,7 +46,7 @@ class SchoolController {
       }
 
       res.status(200).json(schools);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -55,7 +55,7 @@ class SchoolController {
     try {
       const school = await SchoolModel.create(req.body);
       res.status(201).json({ message: 'Created', school });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -90,7 +90,7 @@ class SchoolController {
       }
 
       res.status(200).json(updatedSchool);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -113,7 +113,7 @@ class SchoolController {
         message: `Status updated to ${status}`,
         school,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -127,7 +127,7 @@ class SchoolController {
       }
 
       res.status(200).json({ message: 'Deleted successfully' });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };

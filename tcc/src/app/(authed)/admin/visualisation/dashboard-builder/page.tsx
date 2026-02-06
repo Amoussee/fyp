@@ -248,7 +248,6 @@ export default function VisualisationPage() {
       }),
     );
 
-
     setIsExploring(false);
     setActiveSlot(null);
   };
