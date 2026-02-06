@@ -31,6 +31,7 @@ class SurveyController {
       if (!survey) return res.status(404).json({ message: 'Survey not found' });
       res.status(200).json(survey);
     } catch (err) {
+      console.error('getSurveyById error:', err);
       res.status(500).json({ error: 'Error fetching survey' });
     }
   };
@@ -90,6 +91,7 @@ class SurveyController {
       if (!updated) return res.status(404).json({ message: 'Survey not found' });
       res.status(200).json(updated); // Return the updated survey data
     } catch (err) {
+      console.error('udpateSurvey error:', err);
       res.status(500).json({ error: 'Update failed', details: err.message });
     }
   };
@@ -169,6 +171,7 @@ class SurveyController {
       if (!deleted) return res.status(404).json({ message: 'Survey not found' });
       res.status(200).json({ message: 'Deleted successfully' });
     } catch (err) {
+      console.error('deleteSurvey error:', err);
       res.status(500).json({ error: 'Delete failed' });
     }
   };

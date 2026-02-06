@@ -6,6 +6,7 @@ class SchoolController {
       const schools = await SchoolModel.findAll();
       res.status(200).json(schools);
     } catch (error) {
+      console.error('getAllSchool error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -18,6 +19,7 @@ class SchoolController {
       }
       res.status(200).json(school);
     } catch (error) {
+      console.error('getSchoolById error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -47,6 +49,7 @@ class SchoolController {
 
       res.status(200).json(schools);
     } catch (error) {
+      console.error('searchSchool error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -56,6 +59,7 @@ class SchoolController {
       const school = await SchoolModel.create(req.body);
       res.status(201).json({ message: 'Created', school });
     } catch (error) {
+      console.error('createSchool error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -91,6 +95,7 @@ class SchoolController {
 
       res.status(200).json(updatedSchool);
     } catch (error) {
+      console.error('updateSchool error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -114,6 +119,7 @@ class SchoolController {
         school,
       });
     } catch (error) {
+      console.error('updateSchoolStatus error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -128,6 +134,7 @@ class SchoolController {
 
       res.status(200).json({ message: 'Deleted successfully' });
     } catch (error) {
+      console.error('deleteSchool error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
