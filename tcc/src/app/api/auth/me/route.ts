@@ -5,8 +5,9 @@ import { SESSION_COOKIE_NAME, decodeSession } from '@/src/lib/mockAuth';
 
 export async function GET() {
   const cookieStore = await cookies();
-  const cookie = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  const session = cookie ? decodeSession(cookie) : null;
+  const cookieValue = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+
+  const session = cookieValue ? decodeSession(cookieValue) : null;
 
   if (!session) {
     return NextResponse.json(
@@ -21,6 +22,8 @@ export async function GET() {
         sub: session.sub,
         email: session.email,
         role: session.role,
+        firstname: session.firstname,
+        lastname: session.lastname,
         status: session.status,
       },
     },
