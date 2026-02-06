@@ -52,6 +52,7 @@ export const getDashboardById = async (req, res) => {
     if (result.rows.length === 0) return res.status(404).json({ message: 'Dashboard not found.' });
     res.status(200).json(result.rows[0]);
   } catch (error) {
+    console.error('getDashboardById error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
