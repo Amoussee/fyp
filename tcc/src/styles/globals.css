@@ -42,5 +42,14 @@
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+body {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Force Plotly Modebar to Left for Dashboard */
+.dashboard-modebar-left .modebar {
+  left: 0 !important;
+  right: auto !important;
 }

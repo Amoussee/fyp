@@ -1,8 +1,5 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { me } from '@/src/lib/api/auth';
-import { listDashboards, mapDashboards, saveDashboard } from '@/src/lib/api/dashboards';
-import { ApiError } from '@/src/lib/api/client';
 import DashboardGrid from '../../../../../components/Dashboard/DashboardGrid';
 import DashboardTabs from '../../../../../components/Dashboard/DashboardTabs';
 import CreateDashboardModal from '../../../../../components/Dashboard/CreateDashboardModal';
@@ -111,19 +108,41 @@ export default function VisualisationPage() {
   useEffect(() => {
     const initData = async () => {
       try {
-        const user = await me(); // uses /api/auth/me
+        // 1. Get current user session
+        const meRes = await fetch('/api/auth/me');
+        if (!meRes.ok) return;
+        const { user } = await meRes.json();
         setUserEmail(user.email);
 
-        const rows = await listDashboards(user.email);
-        const mapped = mapDashboards(rows);
+        // 2. Fetch dashboards for this user (REAL BACKEND)
+        const dashRes = await fetch(`/api/dashboards?email=${user.email}`);
+        if (dashRes.ok) {
+          const rawData = await dashRes.json();
+          const mappedDashboards: Dashboard[] = rawData.map(
+            (d: {
+              dashboard_id: number;
+              name: string;
+              config: { layoutType: DashboardLayoutType; widgets: WidgetConfig[] };
+            }) => ({
+              id: d.dashboard_id.toString(),
+              name: d.name,
+              layoutType: d.config.layoutType,
+              widgets: d.config.widgets || [],
+            }),
+          );
+          setDashboards(mappedDashboards);
 
-        setDashboards(mapped);
-        if (mapped.length > 0) setActiveDashboardId(mapped[0].id);
-      } catch (err) {
-        console.error('Initialization failed:', err);
+          if (mappedDashboards.length > 0) {
+            setActiveDashboardId(mappedDashboards[0].id);
+          }
+        }
+
+        // NOTE: We are NOT fetching survey responses/schema yet
+        // because those endpoints aren't ready.
+      } catch (error) {
+        console.error('Initialization failed:', error);
       }
     };
-
     initData();
   }, []);
 
@@ -235,44 +254,71 @@ export default function VisualisationPage() {
   };
 
   const handleSaveDashboard = async () => {
-    if (!activeDashboard || !userEmail) return;
+    console.log('save button pressed');
+    console.log('State check:', { activeDashboard, userEmail });
+
+    if (!activeDashboard || !userEmail) {
+      console.error('Missing activeDashboard or userEmail', {
+        hasDashboard: !!activeDashboard,
+        hasEmail: !!userEmail,
+      });
+      return;
+    }
 
     setIsSaving(true);
     try {
       const isNew = activeDashboard.id.startsWith('dash-');
 
       const payload = {
-        dashboard_id: isNew ? undefined : Number(activeDashboard.id),
+        dashboard_id: isNew ? undefined : parseInt(activeDashboard.id),
         email: userEmail,
         name: activeDashboard.name,
         layoutType: activeDashboard.layoutType,
         widgets: activeDashboard.widgets,
       };
 
-      const updated = await saveDashboard(payload);
+      const response = await fetch('/api/dashboards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-      // update id if newly created
-      if (isNew) {
+      if (response.ok) {
+        const updatedDash = await response.json();
+        console.log('Dashboard saved successfully:', updatedDash);
+
+        // Update local state with the real ID from database
         setDashboards((prev) =>
-          prev.map((d) =>
-            d.id === activeDashboard.id ? { ...d, id: String(updated.dashboard_id) } : d,
-          ),
+          prev.map((d) => {
+            if (d.id === activeDashboard.id) {
+              return {
+                ...d,
+                id: updatedDash.dashboard_id.toString(),
+              };
+            }
+            return d;
+          }),
         );
-        setActiveDashboardId(String(updated.dashboard_id));
-      }
 
-      showNotification('success', 'Changes saved successfully!');
-    } catch (err) {
-      if (err instanceof ApiError) {
-        showNotification('error', err.message);
+        if (isNew) {
+          setActiveDashboardId(updatedDash.dashboard_id.toString());
+        }
+
+        showNotification('success', 'Changes saved successfully!');
       } else {
-        showNotification('error', 'A network error occurred while saving.');
+        const errorData = await response.json();
+        console.error('Save failed:', errorData);
+        showNotification('error', `Failed to save: ${errorData.error || 'Unknown error'}`);
       }
+    } catch (error) {
+      console.error('Error saving dashboard:', error);
+      showNotification('error', 'A network error occurred while saving.');
     } finally {
       setIsSaving(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
