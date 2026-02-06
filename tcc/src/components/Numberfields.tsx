@@ -12,7 +12,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 /**
  * This component is a placeholder for FormControl to correctly set the shrink label state on SSR.
  */
-function SSRInitialFilled() {
+function SSRInitialFilled(_: BaseNumberField.Root.Props) {
   return null;
 }
 SSRInitialFilled.muiName = 'Input';
@@ -40,7 +40,7 @@ export default function NumberField({
   // Wrapper to ensure onValueChange is called correctly
   // Base UI NumberField's onValueChange signature is (value, eventDetails), not (event, value)
   const handleValueChange = React.useCallback(
-    (newValue: number | null) => {
+    (newValue: number | null, eventDetails?: unknown) => {
       if (onValueChange) {
         // Create a synthetic event for compatibility with our callback signature
         const syntheticEvent = new Event('change');
