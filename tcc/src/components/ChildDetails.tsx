@@ -3,16 +3,11 @@ import React from 'react';
 import { TextField, Box, Grid, Typography } from '@mui/material';
 import SchoolSelect from './schoolDropdown'; // Assuming this is your dropdown component
 
-interface SchoolOption {
-  school_id: number;
-  school_name: string;
-}
-
 interface ChildDetailProps {
   index: number;
   childDetail: { name: string; school: string }; // Structure for child detail
   onUpdate: (index: number, detail: { name: string; school: string }) => void; // Function to handle updates
-  schools: SchoolOption[]; // Add this to receive the database list from OnboardingForm
+  schools: Array<{ id: string; name: string }>; // Add this to receive the database list from OnboardingForm
 }
 
 const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate, schools }) => {
@@ -32,7 +27,7 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate,
         Child {index + 1} Detail
       </Typography>
       <Grid container spacing={2}>
-        <Grid size={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Child's name"
@@ -42,7 +37,7 @@ const ChildDetail: React.FC<ChildDetailProps> = ({ index, childDetail, onUpdate,
             sx={{ mb: 2 }}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid item size={6}>
           {schools && schools.length > 0 ? (
             <SchoolSelect
               schools={schools}

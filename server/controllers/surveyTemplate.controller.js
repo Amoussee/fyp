@@ -6,7 +6,7 @@ class SurveyTemplateController {
     try {
       const templates = await SurveyTemplateModel.findAll();
       res.status(200).json(templates);
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Failed to fetch survey templates' });
     }
   };
@@ -19,7 +19,7 @@ class SurveyTemplateController {
         return res.status(404).json({ message: 'Template not found' });
       }
       res.status(200).json(template);
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Error retrieving survey template' });
     }
   };
@@ -27,15 +27,14 @@ class SurveyTemplateController {
   // POST /survey-templates
   create = async (req, res) => {
     try {
-      const templateData = { ...req.body };
-      delete templateData.recipients; // Force remove 'recipients' so we never accidentally save them in a template
+      const { recipients, ...templateData } = req.body; // Force remove 'recipients' so we never accidentally save them in a template
       if (req.user) templateData.created_by = req.user.id; // Ensure created_by is set
       const newTemplate = await SurveyTemplateModel.create(templateData);
       res.status(201).json({
         message: 'Survey template created successfully',
         template: newTemplate,
       });
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Failed to create survey template' });
     }
   };
@@ -51,7 +50,7 @@ class SurveyTemplateController {
         message: 'Survey template updated successfully',
         template: updatedTemplate,
       });
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Error updating survey template' });
     }
   };
@@ -64,7 +63,7 @@ class SurveyTemplateController {
         return res.status(404).json({ message: 'Template not found' });
       }
       res.status(200).json({ message: 'Survey template deleted successfully' });
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Failed to delete survey template' });
     }
   };

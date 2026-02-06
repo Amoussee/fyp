@@ -30,7 +30,7 @@ class SurveyController {
       const survey = await SurveyModel.findById(surveyId, userId);
       if (!survey) return res.status(404).json({ message: 'Survey not found' });
       res.status(200).json(survey);
-    } catch {
+    } catch (err) {
       res.status(500).json({ error: 'Error fetching survey' });
     }
   };
@@ -168,7 +168,7 @@ class SurveyController {
       const deleted = await SurveyModel.delete(req.params.id);
       if (!deleted) return res.status(404).json({ message: 'Survey not found' });
       res.status(200).json({ message: 'Deleted successfully' });
-    } catch {
+    } catch (err) {
       res.status(500).json({ error: 'Delete failed' });
     }
   };
