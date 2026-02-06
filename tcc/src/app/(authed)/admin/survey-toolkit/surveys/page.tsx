@@ -27,6 +27,7 @@ const surveyFilters: FilterConfig[] = [
       { value: 'draft', label: 'Draft' },
       { value: 'ready', label: 'Ready' },
       { value: 'closed', label: 'Closed' },
+      { value: 'open', label: 'Open' }
     ],
   },
   {
@@ -51,7 +52,7 @@ const surveyFilters: FilterConfig[] = [
 function mapAPIStatusToUIStatus(apiStatus: 'draft' | 'open' | 'closed' | 'ready'): Survey['status'] {
   const statusMap: Record<'draft' | 'open' | 'closed' | 'ready', Survey['status']> = {
     draft: 'draft',
-    open: 'ready',  // API 'open' maps to UI 'ready'
+    open: 'open',  // API 'open' maps to UI 'ready'
     ready: 'ready', // API also has 'ready' status
     closed: 'closed',
   };
