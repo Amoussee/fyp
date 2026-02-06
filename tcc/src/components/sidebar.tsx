@@ -250,7 +250,7 @@ export function Sidebar() {
 
             <List sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, p: 0 }}>
               {section.items.map((item) => {
-                const active = pathname ? isRouteActive(pathname, item.href) : false;
+                const active = isRouteActive(pathname, item.href);
 
                 return (
                   <Tooltip key={item.label} title={collapsed ? item.label : ''} placement="right">

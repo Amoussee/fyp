@@ -17,8 +17,6 @@ const eslintConfig = defineConfig([
     'build/**',
     'node_modules/**',
     'next-env.d.ts',
-    'src/components/react-pivottable/**',
-    'src/app/(authed)/admin/visualisation/dashboard-builder/example saved dashboard payload.json',
   ]),
 ]);
 

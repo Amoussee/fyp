@@ -30,7 +30,7 @@ class ResponseController {
       const { formId } = req.params;
       const data = await SurveyResponseModel.findByFormId(formId);
       res.status(200).json(data);
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Failed to fetch responses' });
     }
   };
@@ -41,7 +41,7 @@ class ResponseController {
       const response = await SurveyResponseModel.findById(req.params.id);
       if (!response) return res.status(404).json({ message: 'Response not found' });
       res.status(200).json(response);
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Error retrieving response' });
     }
   };
@@ -52,7 +52,7 @@ class ResponseController {
       const success = await SurveyResponseModel.delete(req.params.id);
       if (!success) return res.status(404).json({ message: 'Response not found' });
       res.status(200).json({ message: 'Response deleted successfully' });
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Delete failed' });
     }
   };
@@ -62,7 +62,7 @@ class ResponseController {
     try {
       await SurveyResponseModel.deleteByFormId(req.params.formId);
       res.status(200).json({ message: `All responses for form ${req.params.formId} cleared` });
-    } catch {
+    } catch (error) {
       res.status(500).json({ error: 'Batch delete failed' });
     }
   };
