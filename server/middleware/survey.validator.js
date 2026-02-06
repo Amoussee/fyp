@@ -52,7 +52,7 @@ class SurveyValidator {
     }
 
     // 3. Recipients Required
-    if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
+    if (!recipients || !Array.isArray(recipients)) {
       return res.status(400).json({ error: 'Cannot publish without recipient schools' });
     }
 
