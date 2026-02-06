@@ -354,7 +354,6 @@ INSERT INTO users (
     email, 
     phone_number, 
     is_active,       -- changed from 'deactivated'
-    organisation, 
     role, 
     number_child, 
     child_details,
@@ -363,25 +362,25 @@ INSERT INTO users (
 VALUES
 (
  'Alice', 'Tan', 'Alice Tan', 'admin1@tcc.org', '+65 9999 9999', TRUE,
- 'TCC', 'admin', 0, '[]'::jsonb, NULL
+ 'admin', 0, '[]'::jsonb, NULL
 ),
 (
  'Ben', 'Lim', 'Ben Lim', 'admin2@tcc.org', '+65 8888 8888', FALSE,
- 'TCC', 'admin', 0, '[]'::jsonb, NULL
+ 'admin', 0, '[]'::jsonb, NULL
 ),
 (
  'Clara', 'Ong', 'Clara Ong', 'parent1@school.edu', '+65 9888 8888', TRUE,
- 'Admiralty Primary', 'parent', 1, '[{"name":"Child A", "school":"Admiralty Primary School"}]'::jsonb,
+ 'parent', 1, '[{"name":"Child A", "school":"Admiralty Primary School"}]'::jsonb,
  (SELECT school_id FROM schools WHERE school_name = 'ADMIRALTY PRIMARY SCHOOL' LIMIT 1) -- Dynamic Link
 ),
 (
  'Daniel', 'Lee', 'Daniel Lee', 'parent2@school.edu', '+65 8989 9898', TRUE,
- 'Ai Tong School', 'parent', 1, '[{"name":"Child B","school":"Ai Tong School"}]'::jsonb,
+ 'parent', 1, '[{"name":"Child B","school":"Ai Tong School"}]'::jsonb,
  (SELECT school_id FROM schools WHERE school_name = 'AI TONG SCHOOL' LIMIT 1)
 ),
 (
  'Evelyn', 'Ng', 'Evelyn Ng', 'parent3@school.edu', '+65 9898 8989', TRUE,
- 'Riverside Secondary', 'parent', 1, '[{"name":"Child C","school":"Riverside Secondary School"}]'::jsonb,
+ 'parent', 1, '[{"name":"Child C","school":"Riverside Secondary School"}]'::jsonb,
  (SELECT school_id FROM schools WHERE school_name = 'RIVERSIDE SECONDARY SCHOOL' LIMIT 1)
 );
 

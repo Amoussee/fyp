@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS users (
     full_name VARCHAR(255),
     role user_role_enum NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
-    organisation VARCHAR(255),
     logo_url VARCHAR(255),
     number_child INT DEFAULT 0,
     child_details JSONB DEFAULT '{}'::jsonb,
