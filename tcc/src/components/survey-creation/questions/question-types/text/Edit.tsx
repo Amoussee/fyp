@@ -48,6 +48,4 @@ export function TextEdit({ kind, element, onPatch }: QuestionTypeProps) {
       if (Object.keys(patch).length) onPatch(patch);
     }
   }, [kind, element, onPatch]);
-
-  return null;
 }

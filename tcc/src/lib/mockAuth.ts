@@ -27,15 +27,15 @@ const SESSION_TTL_SECONDS = 60 * 60; // 1 hour
 
 // Mock "user pool"
 export const MOCK_USERS: MockUser[] = [
-  // {
-  //   email: 'admin@email.com',
-  //   password: 'Password123!',
-  //   firstname: 'Sally',
-  //   lastname: 'Loh',
-  //   role: 'admin',
-  //   status: 'active',
-  //   sub: 'user-admin-001',
-  // },
+  {
+    email: 'admin@email.com',
+    password: 'Password123!',
+    firstname: 'Sally',
+    lastname: 'Loh',
+    role: 'admin',
+    status: 'active',
+    sub: 'user-admin-001',
+  },
   {
     email: 'parent@email.com',
     password: 'Password123!',
@@ -53,15 +53,6 @@ export const MOCK_USERS: MockUser[] = [
     role: 'parent',
     status: 'deactivated',
     sub: 'user-parent-002',
-  },
-  {
-    email: 'admin1@tcc.org',
-    password: 'Password123!',
-    firstname: 'Lyra',
-    lastname: 'Heng',
-    role: 'admin',
-    status: 'active',
-    sub: 'user-admin-001',
   },
 ];
 
