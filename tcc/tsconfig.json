@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "src/components/react-pivottable/PivotTable.js", "src/components/react-pivottable/PivotTableUI.js"  ],
   "exclude": ["node_modules", ".next", "out", "dist"]
 }
