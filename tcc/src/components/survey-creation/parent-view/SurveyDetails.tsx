@@ -75,7 +75,6 @@ export function SurveyDetails({
                 </Typography>
               </Box>
             )}
-
             {responseCount !== undefined && totalResponses !== undefined && (
               <Box>
                 <Typography sx={{ fontSize: '0.75rem', color: BRAND.muted, mb: 0.5 }}>
