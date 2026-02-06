@@ -229,7 +229,6 @@ export default function VisualisationPage() {
       }),
     );
 
-
     setIsExploring(false);
     setActiveSlot(null);
   };
@@ -272,7 +271,6 @@ export default function VisualisationPage() {
       setIsSaving(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
