@@ -70,7 +70,6 @@ function mapAPIStatusToUIStatus(apiStatus: string): Survey['status'] {
   return statusMap[apiStatus] ?? 'draft'; // fallback if unknown
 }
 
-
 export default function SurveyListPage() {
   const router = useRouter();
 
