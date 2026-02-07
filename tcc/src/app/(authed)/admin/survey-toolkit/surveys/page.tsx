@@ -12,16 +12,15 @@ import {
 } from '../../../../../components/UniversalFilter';
 import { getAllSurveys, deleteSurvey } from '@/src/lib/api/surveys';
 
-  type ApiSurvey = {
-    form_id: string | number;
-    title: string;
-    created_at?: string;
-    recipients?: unknown[]; // or a more specific type if you know
-    status: ApiSurveyStatus;
-  };
+type ApiSurvey = {
+  form_id: string | number;
+  title: string;
+  created_at?: string;
+  recipients?: unknown[]; // or a more specific type if you know
+  status: ApiSurveyStatus;
+};
 
-  type ApiSurveyStatus = "draft" | "ready" | "closed" | "open" | string; 
-
+type ApiSurveyStatus = 'draft' | 'ready' | 'closed' | 'open' | string;
 
 const surveyFilters: FilterConfig[] = [
   {
@@ -60,9 +59,7 @@ const surveyFilters: FilterConfig[] = [
 ];
 
 // Helper function to map API status to UI status
-function mapAPIStatusToUIStatus(
-  apiStatus: string
-): Survey['status'] {
+function mapAPIStatusToUIStatus(apiStatus: string): Survey['status'] {
   const statusMap: Record<string, Survey['status']> = {
     draft: 'draft',
     open: 'open', // API 'open' → UI 'open'
@@ -72,7 +69,6 @@ function mapAPIStatusToUIStatus(
 
   return statusMap[apiStatus] ?? 'draft'; // fallback if unknown
 }
-
 
 export default function SurveyListPage() {
   const router = useRouter();
