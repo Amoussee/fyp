@@ -6,9 +6,9 @@ import schoolRoutes from './school.routes.js';
 import surveyRoutes from './survey.routes.js';
 import responsesRoutes from './responses.routes.js';
 import surveyTemplateRoutes from './surveyTemplate.routes.js';
+import dashboardRoutes from './dashboardRoutes.js';
 
 const apiRouter = express.Router();
-const PORT = process.env.PORT || 5001;
 
 apiRouter.use(cors()); // Allows your Next.js frontend to talk to this server
 apiRouter.use(express.json()); // Allows the server to read req.body from your form
@@ -30,5 +30,7 @@ apiRouter.use('/templates', surveyTemplateRoutes);
 
 // Future groups (e.g., /api/products, /api/auth)
 // apiRouter.use('/products', productRoutes);
+// Route Group: /api/dashboards
+apiRouter.use('/dashboards', dashboardRoutes);
 
 export default apiRouter;

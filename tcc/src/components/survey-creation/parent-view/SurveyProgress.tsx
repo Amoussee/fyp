@@ -21,7 +21,14 @@ export function SurveyProgress({ step, sectionCount, sections, onSelectSection }
   const progress = Math.round((step / (totalSteps - 1)) * 100);
 
   return (
-    <Card elevation={0} sx={{ border: `1px solid ${BRAND.border}`, borderRadius: 3 }}>
+    <Card
+      elevation={0}
+      sx={{
+        border: `1px solid ${BRAND.border}`,
+        borderRadius: 3,
+        backgroundColor: BRAND.bg,
+      }}
+    >
       <CardContent sx={{ p: 2.5 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography sx={{ fontWeight: 800, color: BRAND.text }}>
@@ -36,7 +43,16 @@ export function SurveyProgress({ step, sectionCount, sections, onSelectSection }
         <LinearProgress
           variant="determinate"
           value={progress}
-          sx={{ mt: 1.5, height: 8, borderRadius: 999 }}
+          sx={{
+            mt: 1.5,
+            height: 8,
+            borderRadius: 999,
+            backgroundColor: BRAND.surface,
+            '& .MuiLinearProgress-bar': {
+              backgroundColor: BRAND.green,
+              borderRadius: 999,
+            },
+          }}
         />
 
         {!atDetails && (
@@ -53,9 +69,24 @@ export function SurveyProgress({ step, sectionCount, sections, onSelectSection }
                     borderRadius: 999,
                     textTransform: 'none',
                     fontWeight: 700,
+                    fontSize: '0.875rem',
                     ...(active
-                      ? { bgcolor: BRAND.green, '&:hover': { bgcolor: BRAND.green } }
-                      : { borderColor: BRAND.border, color: BRAND.text }),
+                      ? {
+                          bgcolor: BRAND.green,
+                          color: '#FFFFFF',
+                          '&:hover': {
+                            bgcolor: BRAND.green,
+                            opacity: 0.9,
+                          },
+                        }
+                      : {
+                          borderColor: BRAND.border,
+                          color: BRAND.text,
+                          '&:hover': {
+                            borderColor: BRAND.muted,
+                            backgroundColor: BRAND.surface,
+                          },
+                        }),
                   }}
                 >
                   {s.title}

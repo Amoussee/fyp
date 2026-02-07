@@ -6,6 +6,7 @@ class UserController {
       const users = await UserModel.findAll();
       res.status(200).json(users);
     } catch (error) {
+      console.error('getAllUser error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -15,6 +16,7 @@ class UserController {
       const users = await UserModel.findActive();
       res.status(200).json(users);
     } catch (error) {
+      console.error('getActiveUser error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -27,6 +29,7 @@ class UserController {
       }
       res.status(200).json(user);
     } catch (error) {
+      console.error('getUserById error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -39,6 +42,7 @@ class UserController {
         user_id: result.user_id,
       });
     } catch (error) {
+      console.error('createUser error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -72,6 +76,7 @@ class UserController {
       }
       res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
+      console.error('deleteUser error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -84,6 +89,7 @@ class UserController {
       }
       res.status(200).json({ message: 'User deactivated', user });
     } catch (error) {
+      console.error('deactivateUser error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };

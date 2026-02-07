@@ -54,6 +54,15 @@ export const MOCK_USERS: MockUser[] = [
     status: 'deactivated',
     sub: 'user-parent-002',
   },
+  {
+    email: 'admin1@tcc.org',
+    password: 'Password123!',
+    firstname: 'Lyra',
+    lastname: 'Heng',
+    role: 'admin',
+    status: 'active',
+    sub: 'user-admin-001',
+  },
 ];
 
 export function makeSession(user: MockUser): SessionPayload {

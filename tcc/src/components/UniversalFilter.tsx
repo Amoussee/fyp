@@ -55,6 +55,36 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
     });
   };
 
+  // const surveyFilters: FilterConfig[] = [
+  //   {
+  //     field: 'name',
+  //     label: 'School Name',
+  //     type: 'text',
+  //     placeholder: 'Search by school name',
+  //   },
+  //   {
+  //     field: 'status',
+  //     label: 'Status',
+  //     type: 'radio',
+  //     options: [
+  //       { value: 'pending', label: 'Pending' },
+  //       { value: 'ready', label: 'Ready' },
+  //       { value: 'closed', label: 'Closed' },
+  //     ],
+  //   },
+  //   {
+  //     field: 'type',
+  //     label: 'Survey Type',
+  //     type: 'checkbox',
+  //     options: [
+  //       { value: 'Public - Parent', label: 'Public - Parent' },
+  //       { value: 'Public - Student', label: 'Public - Student' },
+  //       { value: 'Parent', label: 'Parent' },
+  //       { value: 'Student', label: 'Student' },
+  //     ],
+  //   },
+  // ];
+
   const handleAlphabetToggle = (field: string, letter: string) => {
     const currentLetters = (values[field] as string[]) || [];
     const newLetters = currentLetters.includes(letter)
@@ -107,12 +137,12 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
         onClick={() => setDrawerOpen(true)}
         sx={{
           borderRadius: '8px',
-          borderColor: '#d1d5db',
-          color: '#374151',
+          borderColor: '#DAE0DB',
+          color: '#111827',
           textTransform: 'none',
           '&:hover': {
-            borderColor: '#9ca3af',
-            backgroundColor: '#f9fafb',
+            borderColor: '#6C8270',
+            backgroundColor: '#F8FCF9',
           },
         }}
       >
@@ -124,7 +154,7 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
             sx={{
               ml: 1,
               height: '20px',
-              backgroundColor: '#15803d',
+              backgroundColor: '#50ab72',
               color: 'white',
               fontSize: '0.7rem',
             }}
@@ -137,7 +167,7 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
           <Box
             sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}
           >
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: '#111827' }}>
               Filters
             </Typography>
             <IconButton onClick={() => setDrawerOpen(false)} size="small">
@@ -148,7 +178,7 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
           <Box sx={{ flexGrow: 1, overflowY: 'auto', pr: 1 }}>
             {filters.map((filter, index) => (
               <Box key={filter.field}>
-                {index > 0 && <Divider sx={{ my: 2 }} />}
+                {index > 0 && <Divider sx={{ my: 2, borderColor: '#DAE0DB' }} />}
 
                 <FormControl component="fieldset" fullWidth>
                   <FormLabel
@@ -171,11 +201,16 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                           control={
                             <Radio
                               size="small"
-                              sx={{ color: '#15803d', '&.Mui-checked': { color: '#15803d' } }}
+                              sx={{ color: '#50ab72', '&.Mui-checked': { color: '#50ab72' } }}
                             />
                           }
                           label={option.label}
-                          sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
+                          sx={{
+                            '& .MuiFormControlLabel-label': {
+                              fontSize: '0.875rem',
+                              color: '#111827',
+                            },
+                          }}
                         />
                       ))}
                     </RadioGroup>
@@ -200,11 +235,16 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                                   : currentValues.filter((v) => v !== option.value);
                                 handleFilterChange(filter.field, newValues);
                               }}
-                              sx={{ color: '#15803d', '&.Mui-checked': { color: '#15803d' } }}
+                              sx={{ color: '#50ab72', '&.Mui-checked': { color: '#50ab72' } }}
                             />
                           }
                           label={option.label}
-                          sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
+                          sx={{
+                            '& .MuiFormControlLabel-label': {
+                              fontSize: '0.875rem',
+                              color: '#111827',
+                            },
+                          }}
                         />
                       ))}
                     </FormGroup>
@@ -233,19 +273,19 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                             backgroundColor: ((values[filter.field] as string[]) || []).includes(
                               letter,
                             )
-                              ? '#15803d'
+                              ? '#50ab72'
                               : 'transparent',
                             color: ((values[filter.field] as string[]) || []).includes(letter)
                               ? 'white'
-                              : '#6b7280',
-                            borderColor: '#d1d5db',
+                              : '#6C8270',
+                            borderColor: '#DAE0DB',
                             '&:hover': {
                               backgroundColor: ((values[filter.field] as string[]) || []).includes(
                                 letter,
                               )
-                                ? '#166534'
-                                : '#f3f4f6',
-                              borderColor: '#9ca3af',
+                                ? '#50ab72'
+                                : '#F8FCF9',
+                              borderColor: '#6C8270',
                             },
                           }}
                         >
@@ -266,6 +306,15 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           borderRadius: '8px',
+                          '& fieldset': {
+                            borderColor: '#DAE0DB',
+                          },
+                          '&:hover fieldset': {
+                            borderColor: '#6C8270',
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#50ab72',
+                          },
                         },
                       }}
                     />
@@ -291,7 +340,20 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                           slotProps={{
                             textField: {
                               size: 'small',
-                              sx: { '& .MuiOutlinedInput-root': { borderRadius: '8px' } },
+                              sx: {
+                                '& .MuiOutlinedInput-root': {
+                                  borderRadius: '8px',
+                                  '& fieldset': {
+                                    borderColor: '#DAE0DB',
+                                  },
+                                  '&:hover fieldset': {
+                                    borderColor: '#6C8270',
+                                  },
+                                  '&.Mui-focused fieldset': {
+                                    borderColor: '#50ab72',
+                                  },
+                                },
+                              },
                             },
                           }}
                         />
@@ -311,7 +373,20 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                           slotProps={{
                             textField: {
                               size: 'small',
-                              sx: { '& .MuiOutlinedInput-root': { borderRadius: '8px' } },
+                              sx: {
+                                '& .MuiOutlinedInput-root': {
+                                  borderRadius: '8px',
+                                  '& fieldset': {
+                                    borderColor: '#DAE0DB',
+                                  },
+                                  '&:hover fieldset': {
+                                    borderColor: '#6C8270',
+                                  },
+                                  '&.Mui-focused fieldset': {
+                                    borderColor: '#50ab72',
+                                  },
+                                },
+                              },
                             },
                           }}
                         />
@@ -323,7 +398,7 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
             ))}
           </Box>
 
-          <Box sx={{ mt: 3, display: 'flex', gap: 1, pt: 2, borderTop: '1px solid #e5e7eb' }}>
+          <Box sx={{ mt: 3, display: 'flex', gap: 1, pt: 2, borderTop: '1px solid #DAE0DB' }}>
             <Button
               fullWidth
               variant="outlined"
@@ -331,11 +406,11 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
               sx={{
                 borderRadius: '8px',
                 textTransform: 'none',
-                color: '#6b7280',
-                borderColor: '#d1d5db',
+                color: '#6C8270',
+                borderColor: '#DAE0DB',
                 '&:hover': {
-                  borderColor: '#9ca3af',
-                  backgroundColor: '#f9fafb',
+                  borderColor: '#6C8270',
+                  backgroundColor: '#F8FCF9',
                 },
               }}
             >
@@ -348,9 +423,10 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
               sx={{
                 borderRadius: '8px',
                 textTransform: 'none',
-                backgroundColor: '#15803d',
+                backgroundColor: '#50ab72',
                 '&:hover': {
-                  backgroundColor: '#166534',
+                  backgroundColor: '#50ab72',
+                  opacity: 0.9,
                 },
               }}
             >
