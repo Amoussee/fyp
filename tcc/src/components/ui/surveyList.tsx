@@ -115,7 +115,10 @@ function SurveyCard({
           {survey.labels.length > 0 && (
             <div className="flex items-center gap-1.5 flex-wrap mt-1">
               {visibleLabels.map((label, index) => (
-                <span key={index} className="text-xs px-2 py-0.5 rounded bg-[rgba(11,187,7,0.1)] text-[#50ab72]">
+                <span
+                  key={index}
+                  className="text-xs px-2 py-0.5 rounded bg-[rgba(11,187,7,0.1)] text-[#50ab72]"
+                >
                   {label}
                 </span>
               ))}
@@ -353,7 +356,9 @@ export function SurveyList({
                 className={`
                 ml-2 text-xs px-2.5 py-0.5 rounded-full font-semibold
                 ${
-                  activeView === 'drafts' ? 'bg-[#50ab72]/80 text-white' : 'bg-[#F8FCF9] text-[#6C8270]'
+                  activeView === 'drafts'
+                    ? 'bg-[#50ab72]/80 text-white'
+                    : 'bg-[#F8FCF9] text-[#6C8270]'
                 }
               `}
               >

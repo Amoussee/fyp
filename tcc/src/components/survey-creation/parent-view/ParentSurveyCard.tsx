@@ -27,7 +27,9 @@ export function ParentSurveyCard({ survey, onStartSurvey }: ParentSurveyCardProp
       }}
     >
       <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}
+        >
           <Box sx={{ flex: 1 }}>
             <Typography
               sx={{
@@ -51,7 +53,7 @@ export function ParentSurveyCard({ survey, onStartSurvey }: ParentSurveyCardProp
                   height: '24px',
                 }}
               />
-              
+
               {survey.childName && (
                 <Chip
                   label={`For: ${survey.childName}`}

@@ -88,7 +88,14 @@ export function ParentSurveyList({ surveys, stats, onStartSurvey }: ParentSurvey
         </Box>
 
         {/* Stats Cards */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 2, mb: 4 }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+            gap: 2,
+            mb: 4,
+          }}
+        >
           <Card
             elevation={0}
             sx={{

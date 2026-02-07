@@ -89,10 +89,7 @@ export async function deleteSurvey(id: number) {
 }
 
 // Update survey status (publish draft or force close)
-export async function updateSurveyStatus(
-  id: number,
-  status: 'open' | 'closed'
-) {
+export async function updateSurveyStatus(id: number, status: 'open' | 'closed') {
   return apiFetch<{ survey: Survey; message: string }>(`/api/surveys/${id}/status`, {
     method: 'PATCH',
     body: { status },

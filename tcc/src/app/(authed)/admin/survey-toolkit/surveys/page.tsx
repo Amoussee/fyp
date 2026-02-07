@@ -27,7 +27,7 @@ const surveyFilters: FilterConfig[] = [
       { value: 'draft', label: 'Draft' },
       { value: 'ready', label: 'Ready' },
       { value: 'closed', label: 'Closed' },
-      { value: 'open', label: 'Open' }
+      { value: 'open', label: 'Open' },
     ],
   },
   {
@@ -49,10 +49,12 @@ const surveyFilters: FilterConfig[] = [
 ];
 
 // Helper function to map API status to UI status
-function mapAPIStatusToUIStatus(apiStatus: 'draft' | 'open' | 'closed' | 'ready'): Survey['status'] {
+function mapAPIStatusToUIStatus(
+  apiStatus: 'draft' | 'open' | 'closed' | 'ready',
+): Survey['status'] {
   const statusMap: Record<'draft' | 'open' | 'closed' | 'ready', Survey['status']> = {
     draft: 'draft',
-    open: 'open',  // API 'open' maps to UI 'ready'
+    open: 'open', // API 'open' maps to UI 'ready'
     ready: 'ready', // API also has 'ready' status
     closed: 'closed',
   };
@@ -71,7 +73,7 @@ export default function SurveyListPage() {
 
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [activeView, setActiveView] = useState<'published' | 'drafts'>('published');
-  
+
   // API integration state
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,18 +86,18 @@ export default function SurveyListPage() {
         setIsLoading(true);
         setError(null);
         const response = await getAllSurveys();
-        
+
         console.log('API Response:', response);
-        
+
         // The API returns an array directly, not wrapped in { surveys: [...] }
         const apiSurveys = Array.isArray(response) ? response : [];
-        
+
         if (apiSurveys.length === 0) {
           console.log('No surveys found');
           setSurveys([]);
           return;
         }
-        
+
         // Transform API data to match UI Survey type
         const transformedSurveys: Survey[] = apiSurveys.map((apiSurvey: any) => ({
           id: apiSurvey.form_id.toString(),
@@ -107,7 +109,7 @@ export default function SurveyListPage() {
           type: 'Student', // ⚠️ NOT PROVIDED BY API
           status: mapAPIStatusToUIStatus(apiSurvey.status),
         }));
-        
+
         console.log('Transformed surveys:', transformedSurveys);
         setSurveys(transformedSurveys);
       } catch (err) {
@@ -125,12 +127,12 @@ export default function SurveyListPage() {
   // Separate surveys into published and drafts
   const publishedSurveys = useMemo(
     () => surveys.filter((survey) => survey.status !== 'draft'),
-    [surveys]
+    [surveys],
   );
 
   const draftSurveys = useMemo(
     () => surveys.filter((survey) => survey.status === 'draft'),
-    [surveys]
+    [surveys],
   );
 
   // Apply filters to the appropriate list
@@ -147,7 +149,11 @@ export default function SurveyListPage() {
       }
 
       // Status filter (only apply to published surveys)
-      if (activeView === 'published' && filterValues.status && survey.status !== filterValues.status) {
+      if (
+        activeView === 'published' &&
+        filterValues.status &&
+        survey.status !== filterValues.status
+      ) {
         return false;
       }
 

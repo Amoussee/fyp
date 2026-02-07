@@ -6,7 +6,11 @@ import { Box, Container, Button, Stack } from '@mui/material';
 import { BRAND } from '@/src/styles/brand';
 import { SurveyDetails } from '@/src/components/survey-creation/parent-view/SurveyDetails';
 import { SurveyProgress } from '@/src/components/survey-creation/parent-view/SurveyProgress';
-import { SurveySection, Section, Question } from '@/src/components/survey-creation/parent-view/SurveySection';
+import {
+  SurveySection,
+  Section,
+  Question,
+} from '@/src/components/survey-creation/parent-view/SurveySection';
 import type { JsonValue } from '@/src/lib/api/types';
 
 // Mock question renderer component
@@ -40,9 +44,7 @@ function QuestionRenderer({
       </Box>
 
       {question.description && (
-        <Box sx={{ mb: 1.5, fontSize: '0.875rem', color: BRAND.muted }}>
-          {question.description}
-        </Box>
+        <Box sx={{ mb: 1.5, fontSize: '0.875rem', color: BRAND.muted }}>{question.description}</Box>
       )}
 
       {/* Simple text input example */}

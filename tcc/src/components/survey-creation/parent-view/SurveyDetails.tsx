@@ -12,18 +12,18 @@ type Props = {
   totalResponses?: number;
 };
 
-export function SurveyDetails({ 
-  title, 
-  description, 
-  createdDate, 
-  responseCount, 
-  totalResponses 
+export function SurveyDetails({
+  title,
+  description,
+  createdDate,
+  responseCount,
+  totalResponses,
 }: Props) {
   return (
-    <Card 
-      elevation={0} 
-      sx={{ 
-        border: `1px solid ${BRAND.border}`, 
+    <Card
+      elevation={0}
+      sx={{
+        border: `1px solid ${BRAND.border}`,
         borderRadius: 3,
         backgroundColor: BRAND.bg,
       }}
@@ -55,10 +55,10 @@ export function SurveyDetails({
 
         {/* Optional metadata section */}
         {(createdDate || (responseCount !== undefined && totalResponses !== undefined)) && (
-          <Box 
-            sx={{ 
-              mt: 2, 
-              pt: 2, 
+          <Box
+            sx={{
+              mt: 2,
+              pt: 2,
               borderTop: `1px solid ${BRAND.border}`,
               display: 'flex',
               gap: 3,
@@ -75,7 +75,7 @@ export function SurveyDetails({
                 </Typography>
               </Box>
             )}
-            
+
             {responseCount !== undefined && totalResponses !== undefined && (
               <Box>
                 <Typography sx={{ fontSize: '0.75rem', color: BRAND.muted, mb: 0.5 }}>

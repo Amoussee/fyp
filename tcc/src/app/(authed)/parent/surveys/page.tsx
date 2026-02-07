@@ -73,10 +73,6 @@ export default function ParentDashboardPage() {
   };
 
   return (
-    <ParentSurveyList 
-      surveys={mockSurveys} 
-      stats={mockStats} 
-      onStartSurvey={handleStartSurvey} 
-    />
+    <ParentSurveyList surveys={mockSurveys} stats={mockStats} onStartSurvey={handleStartSurvey} />
   );
 }
