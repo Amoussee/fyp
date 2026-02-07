@@ -133,7 +133,6 @@ export default function SurveyListPage() {
     fetchSurveys();
   }, []);
 
-
   // Separate surveys into published and drafts
   const publishedSurveys = useMemo(
     () => surveys.filter((survey) => survey.status !== 'draft'),
