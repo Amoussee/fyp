@@ -82,7 +82,7 @@ export default function SurveyListPage() {
 
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [activeView, setActiveView] = useState<'published' | 'drafts'>('published');
-  
+
   // API integration state
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,18 +95,18 @@ export default function SurveyListPage() {
         setIsLoading(true);
         setError(null);
         const response = await getAllSurveys();
-        
+
         console.log('API Response:', response);
-        
+
         // The API returns an array directly, not wrapped in { surveys: [...] }
         const apiSurveys = Array.isArray(response) ? response : [];
-        
+
         if (apiSurveys.length === 0) {
           console.log('No surveys found');
           setSurveys([]);
           return;
         }
-        
+
         // Transform API data to match UI Survey type
         const transformedSurveys: Survey[] = apiSurveys.map((apiSurvey: any) => ({
           id: apiSurvey.form_id.toString(),
@@ -118,7 +118,7 @@ export default function SurveyListPage() {
           type: 'Student', // ⚠️ NOT PROVIDED BY API
           status: mapAPIStatusToUIStatus(apiSurvey.status),
         }));
-        
+
         console.log('Transformed surveys:', transformedSurveys);
         setSurveys(transformedSurveys);
       } catch (err) {
