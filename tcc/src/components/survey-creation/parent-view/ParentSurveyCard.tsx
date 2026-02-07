@@ -53,7 +53,6 @@ export function ParentSurveyCard({ survey, onStartSurvey }: ParentSurveyCardProp
                   height: '24px',
                 }}
               />
-
               {survey.childName && (
                 <Chip
                   label={`For: ${survey.childName}`}
