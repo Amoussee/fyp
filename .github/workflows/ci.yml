@@ -37,6 +37,12 @@ jobs:
       - name: TypeScript (typecheck)
         run: npm run typecheck
 
+      - name: Install dependencies
+        working-directory: ./tcc  # adjust path
+        run: |
+          npm ci
+          npm install lightningcss-linux-x64-gnu --save-optional --force
+
       - name: Build
         run: npm run build
 
