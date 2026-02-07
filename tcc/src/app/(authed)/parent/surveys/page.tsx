@@ -69,7 +69,7 @@ export default function ParentDashboardPage() {
 
   const handleStartSurvey = (surveyId: string) => {
     // Navigate to survey taking page
-    router.push(`/parent/survey/${surveyId}`);
+    router.push(`/parent/surveytaking`);
   };
 
   return (
