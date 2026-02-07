@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { SurveyList, type Survey } from '../../../../../components/ui/surveyList';
 import { SurveyTemplateList } from '../../../../../components/ui/surveyTemplateList';
