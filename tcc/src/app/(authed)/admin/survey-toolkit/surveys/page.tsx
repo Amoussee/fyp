@@ -133,55 +133,6 @@ export default function SurveyListPage() {
     fetchSurveys();
   }, []);
 
-  // API integration state
-  const [surveys, setSurveys] = useState<Survey[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch surveys from API
-  useEffect(() => {
-    const fetchSurveys = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const response = await getAllSurveys();
-
-        console.log('API Response:', response);
-
-        // The API returns an array directly, not wrapped in { surveys: [...] }
-        const apiSurveys = Array.isArray(response) ? response : [];
-
-        if (apiSurveys.length === 0) {
-          console.log('No surveys found');
-          setSurveys([]);
-          return;
-        }
-
-        // Transform API data to match UI Survey type
-        const transformedSurveys: Survey[] = apiSurveys.map((apiSurvey: ApiSurvey) => ({
-          id: apiSurvey.form_id.toString(),
-          name: apiSurvey.title,
-          creationDate: apiSurvey.created_at || new Date().toISOString(),
-          labels: [], // ⚠️ NOT PROVIDED BY API
-          completedCount: 0, // ⚠️ NOT PROVIDED BY API
-          totalCount: apiSurvey.recipients?.length || 0,
-          type: 'Student', // ⚠️ NOT PROVIDED BY API
-          status: mapAPIStatusToUIStatus(apiSurvey.status),
-        }));
-
-        console.log('Transformed surveys:', transformedSurveys);
-        setSurveys(transformedSurveys);
-      } catch (err) {
-        console.error('Error fetching surveys:', err);
-        setError('Failed to load surveys. Please try again.');
-        setSurveys([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSurveys();
-  }, []);
 
   // Separate surveys into published and drafts
   const publishedSurveys = useMemo(

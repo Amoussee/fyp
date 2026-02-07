@@ -72,25 +72,6 @@ export default function ParentDashboardPage() {
     router.push(`/parent/surveytaking`);
   };
 
-  // NEW: Handler for when a survey is clicked
-  const handleSurveyClick = (surveyId: string) => {
-    setSelectedSurveyId(surveyId);
-    // TODO: Fetch the actual survey data based on surveyId
-    // For now, it will just show the placeholder survey
-  };
-
-  // NEW: Handler to go back to survey list
-  const handleBackToList = () => {
-    setSelectedSurveyId(null);
-    setStep(0);
-    setAnswers({});
-  };
-
-  // NEW: If no survey is selected, show the survey list
-  if (!selectedSurveyId) {
-    return <ParentSurveyList onSurveyClick={handleSurveyClick} />;
-  }
-
   // EXISTING CODE: Show the survey form when a survey is selected
   return (
     <ParentSurveyList surveys={mockSurveys} stats={mockStats} onStartSurvey={handleStartSurvey} />
