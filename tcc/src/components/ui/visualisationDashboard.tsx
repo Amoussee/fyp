@@ -10,8 +10,8 @@ interface VisualizationCardProps {
 
 function VisualizationCard({ title, children, className = '' }: VisualizationCardProps) {
   return (
-    <div className={`bg-white border-2 border-emerald-600 rounded-xl p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
+    <div className={`bg-white border-2 border-[#50ab72] rounded-xl p-6 ${className}`}>
+      <h3 className="text-lg font-semibold text-[#111827] mb-4">{title}</h3>
       <div className="w-full h-full">{children}</div>
     </div>
   );
@@ -26,7 +26,7 @@ const mockCompletionData = {
 
 const mockResponseDistribution = [
   { label: 'Q1', value: 85, color: 'from-pink-400 to-pink-300' },
-  { label: 'Q2', value: 60, color: 'from-emerald-400 to-emerald-300' },
+  { label: 'Q2', value: 60, color: 'from-[#50ab72] to-[#50ab72]/70' },
   { label: 'Q3', value: 95, color: 'from-amber-400 to-amber-300' },
 ];
 
@@ -42,20 +42,20 @@ const mockTimelineData = [
 
 const mockCategoryData = [
   { category: 'Primary 1', value: 35, color: 'bg-blue-500' },
-  { category: 'Primary 2', value: 40, color: 'bg-emerald-500' },
+  { category: 'Primary 2', value: 40, color: 'bg-[#50ab72]' },
   { category: 'Primary 3', value: 25, color: 'bg-amber-500' },
 ];
 
 const mockSentimentData = [
-  { label: 'Positive', value: 65, color: 'bg-emerald-500' },
-  { label: 'Neutral', value: 25, color: 'bg-gray-400' },
+  { label: 'Positive', value: 65, color: 'bg-[#50ab72]' },
+  { label: 'Neutral', value: 25, color: 'bg-[#6C8270]' },
   { label: 'Negative', value: 10, color: 'bg-red-500' },
 ];
 
 type CategoryDatum = {
   category: string;
   value: number;
-  color: string; // tailwind class like "bg-emerald-500"
+  color: string; // tailwind class like "bg-[#50ab72]"
 };
 
 interface PieChartProps {
@@ -71,7 +71,7 @@ function CompletionChart({ data }: CompletionChartProps) {
     <div className="flex items-center justify-center py-4">
       <div className="relative">
         <svg className="w-48 h-48 transform -rotate-90">
-          <circle cx="96" cy="96" r="80" stroke="#e5e7eb" strokeWidth="16" fill="none" />
+          <circle cx="96" cy="96" r="80" stroke="#DAE0DB" strokeWidth="16" fill="none" />
           <circle
             cx="96"
             cy="96"
@@ -84,16 +84,16 @@ function CompletionChart({ data }: CompletionChartProps) {
           />
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#10b981" />
-              <stop offset="100%" stopColor="#059669" />
+              <stop offset="0%" stopColor="#50ab72" />
+              <stop offset="100%" stopColor="#50ab72" stopOpacity="0.8" />
             </linearGradient>
           </defs>
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className="text-3xl font-bold text-gray-900">{data.percentage}%</div>
-            <div className="text-sm text-gray-600 mt-1">Completed</div>
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-3xl font-bold text-[#111827]">{data.percentage}%</div>
+            <div className="text-sm text-[#6C8270] mt-1">Completed</div>
+            <div className="text-xs text-[#6C8270] mt-1">
               {data.completed}/{data.total}
             </div>
           </div>
@@ -118,8 +118,8 @@ function BarChart({ data }: BarChartProps) {
             className={`w-full bg-gradient-to-t ${item.color} rounded-t-lg transition-all hover:opacity-80`}
             style={{ height: `${(item.value / maxValue) * 100}%` }}
           ></div>
-          <span className="text-sm font-medium text-gray-600">{item.label}</span>
-          <span className="text-xs text-gray-500">{item.value}</span>
+          <span className="text-sm font-medium text-[#6C8270]">{item.label}</span>
+          <span className="text-xs text-[#6C8270]">{item.value}</span>
         </div>
       ))}
     </div>
@@ -146,7 +146,7 @@ function LineChart({ data }: LineChartProps) {
         <polyline
           points={points}
           fill="none"
-          stroke="#10b981"
+          stroke="#50ab72"
           strokeWidth="2"
           className="drop-shadow-sm"
         />
@@ -155,8 +155,8 @@ function LineChart({ data }: LineChartProps) {
           const y = 100 - (item.responses / maxValue) * 80;
           return (
             <g key={i}>
-              <circle cx={x} cy={y} r="2" fill="#10b981" />
-              <text x={x} y="98" fontSize="4" textAnchor="middle" fill="#6b7280">
+              <circle cx={x} cy={y} r="2" fill="#50ab72" />
+              <text x={x} y="98" fontSize="4" textAnchor="middle" fill="#6C8270">
                 {item.date}
               </text>
             </g>
@@ -218,7 +218,7 @@ function PieChart({ data }: PieChartProps) {
         {data.map((item) => (
           <div key={item.category} className="flex items-center gap-2 text-sm">
             <div className={`w-3 h-3 rounded ${item.color}`} />
-            <span className="text-gray-700">
+            <span className="text-[#111827]">
               {item.category}: {item.value}%
             </span>
           </div>
@@ -240,10 +240,10 @@ function HorizontalBarChart({ data }: HorizontalBarChartProps) {
       {data.map((item, i) => (
         <div key={i} className="space-y-1">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-700 font-medium">{item.label}</span>
-            <span className="text-gray-600">{item.value}%</span>
+            <span className="text-[#111827] font-medium">{item.label}</span>
+            <span className="text-[#6C8270]">{item.value}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
+          <div className="w-full bg-[#F8FCF9] rounded-full h-3">
             <div
               className={`${item.color} h-3 rounded-full transition-all`}
               style={{ width: `${(item.value / total) * 100}%` }}
@@ -259,19 +259,19 @@ export function VisualisationDashboard() {
   const [selectedSurvey] = useState('Poi Ching School Carbon Emissions');
 
   return (
-    <main className="min-h-screen bg-gray-50 w-full">
-      <div className="bg-white border-b border-gray-200">
+    <main className="min-h-screen bg-[#F8FCF9] w-full">
+      <div className="bg-white border-b border-[#DAE0DB]">
         <div className="w-full px-6 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{selectedSurvey}</h1>
-              <p className="text-sm text-gray-500 mt-1">Survey Dashboard & Analytics</p>
+              <h1 className="text-2xl font-bold text-[#111827]">{selectedSurvey}</h1>
+              <p className="text-sm text-[#6C8270] mt-1">Survey Dashboard & Analytics</p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <button className="px-4 py-2 text-sm text-[#6C8270] border border-[#DAE0DB] rounded-lg hover:bg-[#F8FCF9] transition-colors">
                 Export Data
               </button>
-              <button className="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+              <button className="px-4 py-2 text-sm bg-[#50ab72] text-white rounded-lg hover:bg-[#50ab72]/90 transition-colors">
                 Share Dashboard
               </button>
             </div>
@@ -281,30 +281,30 @@ export function VisualisationDashboard() {
 
       <div className="w-full px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <p className="text-sm text-gray-500 mb-1">Total Responses</p>
-            <p className="text-3xl font-bold text-gray-900">145</p>
-            <p className="text-xs text-emerald-600 mt-1">↑ 12% from last survey</p>
+          <div className="bg-white border border-[#DAE0DB] rounded-lg p-4">
+            <p className="text-sm text-[#6C8270] mb-1">Total Responses</p>
+            <p className="text-3xl font-bold text-[#111827]">145</p>
+            <p className="text-xs text-[#50ab72] mt-1">↑ 12% from last survey</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <p className="text-sm text-gray-500 mb-1">Response Rate</p>
-            <p className="text-3xl font-bold text-gray-900">72.5%</p>
-            <p className="text-xs text-emerald-600 mt-1">↑ 5% increase</p>
+          <div className="bg-white border border-[#DAE0DB] rounded-lg p-4">
+            <p className="text-sm text-[#6C8270] mb-1">Response Rate</p>
+            <p className="text-3xl font-bold text-[#111827]">72.5%</p>
+            <p className="text-xs text-[#50ab72] mt-1">↑ 5% increase</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <p className="text-sm text-gray-500 mb-1">Avg. Completion Time</p>
-            <p className="text-3xl font-bold text-gray-900">6.2m</p>
-            <p className="text-xs text-gray-500 mt-1">Minutes per survey</p>
+          <div className="bg-white border border-[#DAE0DB] rounded-lg p-4">
+            <p className="text-sm text-[#6C8270] mb-1">Avg. Completion Time</p>
+            <p className="text-3xl font-bold text-[#111827]">6.2m</p>
+            <p className="text-xs text-[#6C8270] mt-1">Minutes per survey</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <p className="text-sm text-gray-500 mb-1">Survey Status</p>
-            <p className="text-3xl font-bold text-emerald-600">Active</p>
-            <p className="text-xs text-gray-500 mt-1">Closes in 5 days</p>
+          <div className="bg-white border border-[#DAE0DB] rounded-lg p-4">
+            <p className="text-sm text-[#6C8270] mb-1">Survey Status</p>
+            <p className="text-3xl font-bold text-[#50ab72]">Active</p>
+            <p className="text-xs text-[#6C8270] mt-1">Closes in 5 days</p>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-emerald-50 to-blue-50 border-2 border-emerald-600 rounded-2xl p-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Visualizations</h2>
+        <div className="bg-gradient-to-br from-[#F8FCF9] to-[rgba(11,187,7,0.05)] border-2 border-[#50ab72] rounded-2xl p-8">
+          <h2 className="text-xl font-bold text-[#111827] mb-6">Visualizations</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <VisualizationCard title="Completion Status">
@@ -332,38 +332,38 @@ export function VisualisationDashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Recent Activity</h3>
+          <div className="bg-white border border-[#DAE0DB] rounded-lg p-6">
+            <h3 className="font-semibold text-[#111827] mb-4">Recent Activity</h3>
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                <span className="text-gray-600">15 new responses today</span>
+                <div className="w-2 h-2 bg-[#50ab72] rounded-full"></div>
+                <span className="text-[#6C8270]">15 new responses today</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-gray-600">Survey shared with 3 teams</span>
+                <span className="text-[#6C8270]">Survey shared with 3 teams</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                <span className="text-gray-600">Dashboard viewed 45 times</span>
+                <span className="text-[#6C8270]">Dashboard viewed 45 times</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Key Insights</h3>
+          <div className="bg-white border border-[#DAE0DB] rounded-lg p-6">
+            <h3 className="font-semibold text-[#111827] mb-4">Key Insights</h3>
             <div className="space-y-3">
               <div className="flex items-start gap-2 text-sm">
-                <span className="text-emerald-600">✓</span>
-                <span className="text-gray-600">Response rate exceeds target by 22%</span>
+                <span className="text-[#50ab72]">✓</span>
+                <span className="text-[#6C8270]">Response rate exceeds target by 22%</span>
               </div>
               <div className="flex items-start gap-2 text-sm">
-                <span className="text-emerald-600">✓</span>
-                <span className="text-gray-600">Peak response time: 2-4 PM</span>
+                <span className="text-[#50ab72]">✓</span>
+                <span className="text-[#6C8270]">Peak response time: 2-4 PM</span>
               </div>
               <div className="flex items-start gap-2 text-sm">
                 <span className="text-amber-600">!</span>
-                <span className="text-gray-600">Low engagement from Primary 1 group</span>
+                <span className="text-[#6C8270]">Low engagement from Primary 1 group</span>
               </div>
             </div>
           </div>

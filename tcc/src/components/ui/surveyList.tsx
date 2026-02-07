@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-export type SurveyStatus = 'pending' | 'ready' | 'closed';
+export type SurveyStatus = 'open' | 'ready' | 'closed' | 'draft';
 export type SurveyType = 'Public - Parent' | 'Public - Student' | 'Parent' | 'Student';
 
 export interface Survey {
@@ -24,12 +24,18 @@ interface SurveyListProps {
   onDashboard?: (survey: Survey) => void;
   onEdit?: (survey: Survey) => void;
   onDelete?: (survey: Survey) => void;
+  // ViewToggle props
+  activeView?: 'published' | 'drafts';
+  onViewChange?: (view: 'published' | 'drafts') => void;
+  publishedCount?: number;
+  draftsCount?: number;
 }
 
 const statusStyles: Record<SurveyStatus, string> = {
-  pending: 'bg-amber-100 text-amber-700',
-  ready: 'bg-emerald-100 text-emerald-700',
-  closed: 'bg-gray-100 text-gray-600',
+  open: 'bg-amber-100 text-amber-700',
+  ready: 'bg-[rgba(11,187,7,0.2)] text-[#50ab72]',
+  closed: 'bg-[#F8FCF9] text-[#6C8270]',
+  draft: 'bg-blue-100 text-blue-700',
 };
 
 function formatDate(dateString: string): string {
@@ -77,12 +83,12 @@ function SurveyCard({
   const remainingLabels = survey.labels.length - maxLabelsToShow;
 
   return (
-    <div className="flex items-center justify-between px-4 py-4 bg-white border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-sm transition-all">
+    <div className="flex items-center justify-between px-4 py-4 bg-white border border-[#DAE0DB] rounded-lg hover:border-[#6C8270] hover:shadow-sm transition-all">
       {/* Left section */}
       <div className="flex items-start gap-4 flex-1 min-w-0">
-        <div className="flex-shrink-0 w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
+        <div className="flex-shrink-0 w-10 h-10 bg-[rgba(11,187,7,0.1)] rounded-lg flex items-center justify-center">
           <svg
-            className="w-5 h-5 text-emerald-600"
+            className="w-5 h-5 text-[#50ab72]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -98,23 +104,26 @@ function SurveyCard({
 
         <div className="flex flex-col gap-1.5 min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="font-medium text-gray-900">{survey.name}</h3>
-            <span className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+            <h3 className="font-medium text-[#111827]">{survey.name}</h3>
+            <span className="text-xs px-2 py-0.5 rounded bg-[#F8FCF9] text-[#6C8270]">
               {survey.type}
             </span>
           </div>
 
-          <p className="text-sm text-gray-500">{formatDate(survey.creationDate)}</p>
+          <p className="text-sm text-[#6C8270]">{formatDate(survey.creationDate)}</p>
 
           {survey.labels.length > 0 && (
             <div className="flex items-center gap-1.5 flex-wrap mt-1">
               {visibleLabels.map((label, index) => (
-                <span key={index} className="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700">
+                <span
+                  key={index}
+                  className="text-xs px-2 py-0.5 rounded bg-[rgba(11,187,7,0.1)] text-[#50ab72]"
+                >
                   {label}
                 </span>
               ))}
               {remainingLabels > 0 && (
-                <span className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+                <span className="text-xs px-2 py-0.5 rounded bg-[#F8FCF9] text-[#6C8270]">
                   +{remainingLabels} others
                 </span>
               )}
@@ -126,10 +135,10 @@ function SurveyCard({
       {/* Right section */}
       <div className="flex items-center gap-6 flex-shrink-0">
         <div className="text-right">
-          <p className="text-sm font-medium text-gray-900">
+          <p className="text-sm font-medium text-[#111827]">
             {survey.completedCount} / {survey.totalCount}
           </p>
-          <p className="text-xs text-gray-500">responses</p>
+          <p className="text-xs text-[#6C8270]">responses</p>
         </div>
 
         <span className={`text-xs px-2 py-1 rounded capitalize ${statusStyles[survey.status]}`}>
@@ -140,7 +149,7 @@ function SurveyCard({
         <div className="relative" ref={ref}>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+            className="p-2 text-[#6C8270] hover:text-[#111827] hover:bg-[#F8FCF9] rounded-md"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <circle cx="12" cy="5" r="2" />
@@ -150,13 +159,13 @@ function SurveyCard({
           </button>
 
           {isOpen && (
-            <div className="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+            <div className="absolute right-0 mt-1 w-36 bg-white border border-[#DAE0DB] rounded-lg shadow-lg z-10">
               <button
                 onClick={() => {
                   onDashboard?.(survey);
                   setIsOpen(false);
                 }}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                className="w-full px-4 py-2 text-left text-sm text-[#111827] hover:bg-[#F8FCF9] flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -173,7 +182,7 @@ function SurveyCard({
                   onEdit?.(survey);
                   setIsOpen(false);
                 }}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                className="w-full px-4 py-2 text-left text-sm text-[#111827] hover:bg-[#F8FCF9] flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -218,6 +227,10 @@ export function SurveyList({
   onDashboard,
   onEdit,
   onDelete,
+  activeView,
+  onViewChange,
+  publishedCount,
+  draftsCount,
 }: SurveyListProps) {
   const { isOpen, setIsOpen, ref } = useDropdown();
 
@@ -226,8 +239,8 @@ export function SurveyList({
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Survey List</h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <h1 className="text-2xl font-semibold text-[#111827]">Survey List</h1>
+          <p className="text-sm text-[#6C8270] mt-0.5">
             {surveys.length} {surveys.length === 1 ? 'survey' : 'surveys'} total
           </p>
         </div>
@@ -236,7 +249,7 @@ export function SurveyList({
         <div className="relative" ref={ref}>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-[#50ab72] hover:bg-[#50ab72]/90 text-white rounded-lg text-sm font-medium transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -258,13 +271,13 @@ export function SurveyList({
           </button>
 
           {isOpen && (
-            <div className="absolute right-0 mt-1 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+            <div className="absolute right-0 mt-1 w-44 bg-white border border-[#DAE0DB] rounded-lg shadow-lg z-10">
               <button
                 onClick={() => {
                   onNewSurvey?.();
                   setIsOpen(false);
                 }}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                className="w-full px-4 py-2 text-left text-sm text-[#111827] hover:bg-[#F8FCF9] flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -281,7 +294,7 @@ export function SurveyList({
                   onUseTemplate?.();
                   setIsOpen(false);
                 }}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                className="w-full px-4 py-2 text-left text-sm text-[#111827] hover:bg-[#F8FCF9] flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -298,12 +311,70 @@ export function SurveyList({
         </div>
       </div>
 
+      {/* View Toggle - Show only if props are provided */}
+      {activeView && onViewChange && publishedCount !== undefined && draftsCount !== undefined && (
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex items-center bg-white border border-[#DAE0DB] rounded-full p-1.5 shadow-sm">
+            <button
+              onClick={() => onViewChange('published')}
+              className={`
+                px-5 py-2.5 text-sm font-medium rounded-full transition-all
+                ${
+                  activeView === 'published'
+                    ? 'bg-[#50ab72] text-white shadow-md'
+                    : 'text-[#6C8270] hover:text-[#111827] hover:bg-[#F8FCF9]'
+                }
+              `}
+            >
+              Published
+              <span
+                className={`
+                ml-2 text-xs px-2.5 py-0.5 rounded-full font-semibold
+                ${
+                  activeView === 'published'
+                    ? 'bg-[#50ab72]/80 text-white'
+                    : 'bg-[#F8FCF9] text-[#6C8270]'
+                }
+              `}
+              >
+                {publishedCount}
+              </span>
+            </button>
+            <button
+              onClick={() => onViewChange('drafts')}
+              className={`
+                px-5 py-2.5 text-sm font-medium rounded-full transition-all
+                ${
+                  activeView === 'drafts'
+                    ? 'bg-[#50ab72] text-white shadow-md'
+                    : 'text-[#6C8270] hover:text-[#111827] hover:bg-[#F8FCF9]'
+                }
+              `}
+            >
+              Drafts
+              <span
+                className={`
+                ml-2 text-xs px-2.5 py-0.5 rounded-full font-semibold
+                ${
+                  activeView === 'drafts'
+                    ? 'bg-[#50ab72]/80 text-white'
+                    : 'bg-[#F8FCF9] text-[#6C8270]'
+                }
+              `}
+              >
+                {draftsCount}
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Survey List */}
       <div className="flex flex-col gap-3">
         {surveys.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 bg-white border border-gray-200 rounded-lg">
+          <div className="flex flex-col items-center justify-center py-16 bg-white border border-[#DAE0DB] rounded-lg">
             <svg
-              className="w-12 h-12 text-gray-300 mb-4"
+              className="w-12 h-12 text-[#DAE0DB] mb-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -315,8 +386,8 @@ export function SurveyList({
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <p className="text-gray-500 font-medium">No surveys found</p>
-            <p className="text-sm text-gray-400 mt-1">Create a new survey to get started</p>
+            <p className="text-[#6C8270] font-medium">No surveys found</p>
+            <p className="text-sm text-[#6C8270]/70 mt-1">Create a new survey to get started</p>
           </div>
         ) : (
           surveys.map((survey) => (

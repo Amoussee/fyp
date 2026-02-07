@@ -121,16 +121,16 @@ export function SurveyTemplateList({ isOpen, onClose, onSelectTemplate }: Templa
       {/* Modal */}
       <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#DAE0DB]">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Choose a Template</h2>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h2 className="text-xl font-semibold text-[#111827]">Choose a Template</h2>
+            <p className="text-sm text-[#6C8270] mt-0.5">
               Select a pre-built survey template to get started quickly
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 text-[#6C8270] hover:text-[#111827] hover:bg-[#F8FCF9] rounded-lg transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -144,11 +144,11 @@ export function SurveyTemplateList({ isOpen, onClose, onSelectTemplate }: Templa
         </div>
 
         {/* Search and Filter */}
-        <div className="px-6 py-4 border-b border-gray-200 space-y-3">
+        <div className="px-6 py-4 border-b border-[#DAE0DB] space-y-3">
           {/* Search */}
           <div className="relative">
             <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6C8270]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -165,7 +165,7 @@ export function SurveyTemplateList({ isOpen, onClose, onSelectTemplate }: Templa
               placeholder="Search templates..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-[#DAE0DB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#50ab72] focus:border-transparent"
             />
           </div>
 
@@ -177,8 +177,8 @@ export function SurveyTemplateList({ isOpen, onClose, onSelectTemplate }: Templa
                 onClick={() => setSelectedCategory(category)}
                 className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                   selectedCategory === category
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-[#50ab72] text-white'
+                    : 'bg-[#F8FCF9] text-[#6C8270] hover:bg-[rgba(11,187,7,0.1)]'
                 }`}
               >
                 {category === 'all' ? 'All Categories' : category}
@@ -192,7 +192,7 @@ export function SurveyTemplateList({ isOpen, onClose, onSelectTemplate }: Templa
           {filteredTemplates.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <svg
-                className="w-16 h-16 text-gray-300 mb-4"
+                className="w-16 h-16 text-[#DAE0DB] mb-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -204,8 +204,8 @@ export function SurveyTemplateList({ isOpen, onClose, onSelectTemplate }: Templa
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <p className="text-gray-500 font-medium">No templates found</p>
-              <p className="text-sm text-gray-400 mt-1">Try adjusting your search or filters</p>
+              <p className="text-[#6C8270] font-medium">No templates found</p>
+              <p className="text-sm text-[#6C8270]/70 mt-1">Try adjusting your search or filters</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -216,18 +216,18 @@ export function SurveyTemplateList({ isOpen, onClose, onSelectTemplate }: Templa
                     onSelectTemplate(template);
                     onClose();
                   }}
-                  className="text-left p-4 border border-gray-200 rounded-lg hover:border-emerald-500 hover:shadow-md transition-all group"
+                  className="text-left p-4 border border-[#DAE0DB] rounded-lg hover:border-[#50ab72] hover:shadow-md transition-all group"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-medium text-gray-900 group-hover:text-emerald-600 transition-colors">
+                    <h3 className="font-medium text-[#111827] group-hover:text-[#50ab72] transition-colors">
                       {template.name}
                     </h3>
-                    <span className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded">
+                    <span className="text-xs px-2 py-1 bg-[rgba(11,187,7,0.1)] text-[#50ab72] rounded">
                       {template.category}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{template.description}</p>
-                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                  <p className="text-sm text-[#6C8270] mb-3 line-clamp-2">{template.description}</p>
+                  <div className="flex items-center gap-4 text-xs text-[#6C8270]">
                     <div className="flex items-center gap-1">
                       <svg
                         className="w-4 h-4"
@@ -268,15 +268,15 @@ export function SurveyTemplateList({ isOpen, onClose, onSelectTemplate }: Templa
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+        <div className="px-6 py-4 border-t border-[#DAE0DB] bg-[#F8FCF9] rounded-b-xl">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[#6C8270]">
               {filteredTemplates.length} {filteredTemplates.length === 1 ? 'template' : 'templates'}{' '}
               available
             </p>
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm text-[#6C8270] hover:bg-white rounded-lg transition-colors"
             >
               Cancel
             </button>

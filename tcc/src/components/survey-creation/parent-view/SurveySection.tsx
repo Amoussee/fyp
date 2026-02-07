@@ -42,19 +42,28 @@ type Props = {
 
 export function SurveySection({ section, answers, onChangeAnswer, QuestionRenderer }: Props) {
   return (
-    <Card elevation={0} sx={{ border: `1px solid ${BRAND.border}`, borderRadius: 3 }}>
-      <CardContent sx={{ p: 3, m: 3 }}>
+    <Card
+      elevation={0}
+      sx={{
+        border: `1px solid ${BRAND.border}`,
+        borderRadius: 3,
+        backgroundColor: BRAND.bg,
+      }}
+    >
+      <CardContent sx={{ p: 3 }}>
         <Typography sx={{ fontSize: 22, fontWeight: 800, color: BRAND.text }}>
           {section.title}
         </Typography>
 
         {section.description && (
-          <Typography sx={{ mt: 0.75, color: BRAND.muted }}>{section.description}</Typography>
+          <Typography sx={{ mt: 0.75, color: BRAND.muted, lineHeight: 1.6 }}>
+            {section.description}
+          </Typography>
         )}
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: 2.5, borderColor: BRAND.border }} />
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {section.questions.map((q) => (
             <QuestionRenderer
               key={q.id}
