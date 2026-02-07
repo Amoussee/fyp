@@ -8,7 +8,6 @@ module.exports = [
   {
     files: ['**/*.js', '**/*.mjs'],
     ignores: ['node_modules/**', '.next/**'],
-    parser: '@typescript-eslint/parser', // <--- important
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -16,7 +15,6 @@ module.exports = [
         ...globals.node,
       },
     },
-    plugins: ['@typescript-eslint'], // <--- important
     rules: {
       'no-undef': 'error',
       'no-unused-vars': 'warn',
