@@ -29,7 +29,7 @@ class SurveyTemplateController {
   // POST /survey-templates
   create = async (req, res) => {
     try {
-      const { recipients: _recipients, ...templateData } = req.body; // explicitly discard recipients
+      const { recipients: _, ...templateData } = req.body; // explicitly discard recipients
       if (req.user) templateData.created_by = req.user.id; // Ensure created_by is set
       const newTemplate = await SurveyTemplateModel.create(templateData);
       res.status(201).json({

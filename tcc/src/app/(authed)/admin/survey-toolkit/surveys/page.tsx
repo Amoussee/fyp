@@ -70,6 +70,7 @@ function mapAPIStatusToUIStatus(apiStatus: string): Survey['status'] {
   return statusMap[apiStatus] ?? 'draft'; // fallback if unknown
 }
 
+
 export default function SurveyListPage() {
   const router = useRouter();
 
@@ -108,7 +109,7 @@ export default function SurveyListPage() {
         }
 
         // Transform API data to match UI Survey type
-        const transformedSurveys: Survey[] = apiSurveys.map((apiSurvey: any) => ({
+        const transformedSurveys: Survey[] = apiSurveys.map((apiSurvey: ApiSurvey) => ({
           id: apiSurvey.form_id.toString(),
           name: apiSurvey.title,
           creationDate: apiSurvey.created_at || new Date().toISOString(),
