@@ -12,6 +12,17 @@ import {
 } from '../../../../../components/UniversalFilter';
 import { getAllSurveys, deleteSurvey } from '@/src/lib/api/surveys';
 
+  type ApiSurvey = {
+    form_id: string | number;
+    title: string;
+    created_at?: string;
+    recipients?: unknown[]; // or a more specific type if you know
+    status: ApiSurveyStatus;
+  };
+
+  type ApiSurveyStatus = "draft" | "ready" | "closed" | "open" | string; 
+
+
 const surveyFilters: FilterConfig[] = [
   {
     field: 'name',
@@ -50,16 +61,18 @@ const surveyFilters: FilterConfig[] = [
 
 // Helper function to map API status to UI status
 function mapAPIStatusToUIStatus(
-  apiStatus: 'draft' | 'open' | 'closed' | 'ready',
+  apiStatus: string
 ): Survey['status'] {
-  const statusMap: Record<'draft' | 'open' | 'closed' | 'ready', Survey['status']> = {
+  const statusMap: Record<string, Survey['status']> = {
     draft: 'draft',
-    open: 'open', // API 'open' maps to UI 'ready'
-    ready: 'ready', // API also has 'ready' status
+    open: 'open', // API 'open' → UI 'open'
+    ready: 'ready',
     closed: 'closed',
   };
-  return statusMap[apiStatus];
+
+  return statusMap[apiStatus] ?? 'draft'; // fallback if unknown
 }
+
 
 export default function SurveyListPage() {
   const router = useRouter();
@@ -99,7 +112,7 @@ export default function SurveyListPage() {
         }
 
         // Transform API data to match UI Survey type
-        const transformedSurveys: Survey[] = apiSurveys.map((apiSurvey: any) => ({
+        const transformedSurveys: Survey[] = apiSurveys.map((apiSurvey: ApiSurvey) => ({
           id: apiSurvey.form_id.toString(),
           name: apiSurvey.title,
           creationDate: apiSurvey.created_at || new Date().toISOString(),

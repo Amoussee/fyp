@@ -67,7 +67,7 @@ const mockStats: ParentSurveyStats = {
 export default function ParentDashboardPage() {
   const router = useRouter();
 
-  const handleStartSurvey = (surveyId: string) => {
+  const handleStartSurvey = () => {
     // Navigate to survey taking page
     router.push(`/parent/surveytaking`);
   };
