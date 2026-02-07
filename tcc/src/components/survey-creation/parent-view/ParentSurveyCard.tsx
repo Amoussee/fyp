@@ -2,7 +2,7 @@
 
 import { Card, CardContent, Box, Typography, Chip, Button } from '@mui/material';
 import { BRAND } from '@/src/styles/brand';
-import type { ParentSurvey } from '@/src/types/parent-survey';
+import type { ParentSurvey } from '@/src/types/parentSurveyTypes';
 
 interface ParentSurveyCardProps {
   survey: ParentSurvey;
