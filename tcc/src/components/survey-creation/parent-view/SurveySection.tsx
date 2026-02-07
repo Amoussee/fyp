@@ -42,10 +42,10 @@ type Props = {
 
 export function SurveySection({ section, answers, onChangeAnswer, QuestionRenderer }: Props) {
   return (
-    <Card 
-      elevation={0} 
-      sx={{ 
-        border: `1px solid ${BRAND.border}`, 
+    <Card
+      elevation={0}
+      sx={{
+        border: `1px solid ${BRAND.border}`,
         borderRadius: 3,
         backgroundColor: BRAND.bg,
       }}

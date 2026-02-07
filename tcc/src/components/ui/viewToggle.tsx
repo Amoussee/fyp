@@ -30,11 +30,7 @@ export function ViewToggle({
         <span
           className={`
           ml-2 text-xs px-2.5 py-0.5 rounded-full font-semibold
-          ${
-            activeView === 'published'
-              ? 'bg-teal-600 text-white'
-              : 'bg-gray-100 text-gray-600'
-          }
+          ${activeView === 'published' ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600'}
         `}
         >
           {publishedCount}
@@ -55,9 +51,7 @@ export function ViewToggle({
         <span
           className={`
           ml-2 text-xs px-2.5 py-0.5 rounded-full font-semibold
-          ${
-            activeView === 'drafts' ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600'
-          }
+          ${activeView === 'drafts' ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600'}
         `}
         >
           {draftsCount}

@@ -205,7 +205,12 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                             />
                           }
                           label={option.label}
-                          sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: '#111827' } }}
+                          sx={{
+                            '& .MuiFormControlLabel-label': {
+                              fontSize: '0.875rem',
+                              color: '#111827',
+                            },
+                          }}
                         />
                       ))}
                     </RadioGroup>
@@ -234,7 +239,12 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                             />
                           }
                           label={option.label}
-                          sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem', color: '#111827' } }}
+                          sx={{
+                            '& .MuiFormControlLabel-label': {
+                              fontSize: '0.875rem',
+                              color: '#111827',
+                            },
+                          }}
                         />
                       ))}
                     </FormGroup>
@@ -330,8 +340,8 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                           slotProps={{
                             textField: {
                               size: 'small',
-                              sx: { 
-                                '& .MuiOutlinedInput-root': { 
+                              sx: {
+                                '& .MuiOutlinedInput-root': {
                                   borderRadius: '8px',
                                   '& fieldset': {
                                     borderColor: '#DAE0DB',
@@ -342,7 +352,7 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                                   '&.Mui-focused fieldset': {
                                     borderColor: '#50ab72',
                                   },
-                                } 
+                                },
                               },
                             },
                           }}
@@ -363,8 +373,8 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                           slotProps={{
                             textField: {
                               size: 'small',
-                              sx: { 
-                                '& .MuiOutlinedInput-root': { 
+                              sx: {
+                                '& .MuiOutlinedInput-root': {
                                   borderRadius: '8px',
                                   '& fieldset': {
                                     borderColor: '#DAE0DB',
@@ -375,7 +385,7 @@ export function UniversalFilter({ filters, values, onChange, onClear }: Universa
                                   '&.Mui-focused fieldset': {
                                     borderColor: '#50ab72',
                                   },
-                                } 
+                                },
                               },
                             },
                           }}

@@ -21,10 +21,10 @@ export function SurveyProgress({ step, sectionCount, sections, onSelectSection }
   const progress = Math.round((step / (totalSteps - 1)) * 100);
 
   return (
-    <Card 
-      elevation={0} 
-      sx={{ 
-        border: `1px solid ${BRAND.border}`, 
+    <Card
+      elevation={0}
+      sx={{
+        border: `1px solid ${BRAND.border}`,
         borderRadius: 3,
         backgroundColor: BRAND.bg,
       }}
@@ -43,15 +43,15 @@ export function SurveyProgress({ step, sectionCount, sections, onSelectSection }
         <LinearProgress
           variant="determinate"
           value={progress}
-          sx={{ 
-            mt: 1.5, 
-            height: 8, 
+          sx={{
+            mt: 1.5,
+            height: 8,
             borderRadius: 999,
             backgroundColor: BRAND.surface,
             '& .MuiLinearProgress-bar': {
               backgroundColor: BRAND.green,
               borderRadius: 999,
-            }
+            },
           }}
         />
 
@@ -71,21 +71,21 @@ export function SurveyProgress({ step, sectionCount, sections, onSelectSection }
                     fontWeight: 700,
                     fontSize: '0.875rem',
                     ...(active
-                      ? { 
-                          bgcolor: BRAND.green, 
+                      ? {
+                          bgcolor: BRAND.green,
                           color: '#FFFFFF',
-                          '&:hover': { 
+                          '&:hover': {
                             bgcolor: BRAND.green,
                             opacity: 0.9,
-                          } 
+                          },
                         }
-                      : { 
-                          borderColor: BRAND.border, 
+                      : {
+                          borderColor: BRAND.border,
                           color: BRAND.text,
                           '&:hover': {
                             borderColor: BRAND.muted,
                             backgroundColor: BRAND.surface,
-                          }
+                          },
                         }),
                   }}
                 >
