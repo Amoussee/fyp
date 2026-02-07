@@ -83,7 +83,7 @@ export function ParentSurveyList({ surveys, stats, onStartSurvey }: ParentSurvey
             My Surveys
           </Typography>
           <Typography sx={{ color: BRAND.muted }}>
-            Complete surveys for your children's schools
+            Complete surveys for your childrens schools
           </Typography>
         </Box>
 
